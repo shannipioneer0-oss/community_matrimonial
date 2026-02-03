@@ -23,17 +23,17 @@ class PreferenceFilterState extends State<PreferenceFilter> {
     'Age': true,
     'Height': false,
     'MaritalStatus': true,
-    'Subcaste': false,
+    'Shakh': false,
     'SkinTone': true,
     'State': false,
     'City': true,
     'Education': false,
     'Occupation': true,
     'BodyType': false,
-    'DietType': true,
+   /* 'DietType': true,
     'DrinkType': false,
     'SmokeType': true,
-    'FamilyValue': false,
+    'FamilyValue': false,*/
     'AnnualIncome': true,
   };
 
@@ -56,18 +56,18 @@ class PreferenceFilterState extends State<PreferenceFilter> {
       switchValues['Age'] = prefs.getString(SharedPrefs.ageRange_filter) == null  || prefs.getString(SharedPrefs.ageRange_filter) == "false"  ? false : true;
       switchValues['Height'] = prefs.getString(SharedPrefs.heightRange_filter) == null  || prefs.getString(SharedPrefs.heightRange_filter) == "false" ? false : true;
       switchValues['MaritalStatus'] = prefs.getString(SharedPrefs.maritalStatus_prefs_filter) == null || prefs.getString(SharedPrefs.maritalStatus_prefs_filter) == "false" ? false : true;
-      switchValues['Subcaste'] = prefs.getString(SharedPrefs.subcaste_prefs_filter) == null || prefs.getString(SharedPrefs.subcaste_prefs_filter) == "false" ?  false : true;
+      switchValues['Shakh'] = prefs.getString(SharedPrefs.subcaste_prefs_filter) == null || prefs.getString(SharedPrefs.subcaste_prefs_filter) == "false" ?  false : true;
       switchValues['SkinTone'] = prefs.getString(SharedPrefs.skintoneprefs_filter) == null || prefs.getString(SharedPrefs.skintoneprefs_filter) == "false" ? false : true;
       switchValues['State'] = prefs.getString(SharedPrefs.state_prefs_filter) == null || prefs.getString(SharedPrefs.state_prefs_filter) == "false" ? false : true;
       switchValues['City'] = prefs.getString(SharedPrefs.city_prefs_filter) == null || prefs.getString(SharedPrefs.city_prefs_filter) == "false"  ? false : true;
       switchValues['Education'] = prefs.getString(SharedPrefs.education_prefs_filter) == null || prefs.getString(SharedPrefs.education_prefs_filter) == "false" ? false : true;
       switchValues['Occupation'] = prefs.getString(SharedPrefs.occupation_prefs_filter) == null || prefs.getString(SharedPrefs.occupation_prefs_filter) == "false" ? false : true;
       switchValues['BodyType'] = prefs.getString(SharedPrefs.bodyType_prefs_filter) == null || prefs.getString(SharedPrefs.bodyType_prefs_filter) == "false" ? false : true;
-      switchValues['DietType'] = prefs.getString(SharedPrefs.dietType_prefs_filter) == null || prefs.getString(SharedPrefs.dietType_prefs_filter) == "false" ? false : true;
+      /*switchValues['DietType'] = prefs.getString(SharedPrefs.dietType_prefs_filter) == null || prefs.getString(SharedPrefs.dietType_prefs_filter) == "false" ? false : true;
       switchValues['DrinkType'] = prefs.getString(SharedPrefs.drinkType_prefs_filter) == null || prefs.getString(SharedPrefs.drinkType_prefs_filter) == "false" ? false : true;
       switchValues['SmokeType'] = prefs.getString(SharedPrefs.smokeType_prefs_filter) == null || prefs.getString(SharedPrefs.smokeType_prefs_filter) == "false" ? false : true;
       switchValues['FamilyValue'] = prefs.getString(SharedPrefs.familyValue_prefs_filter) == null || prefs.getString(SharedPrefs.familyValue_prefs_filter) == "false"  ? false : true;
-      switchValues['AnnualIncome'] = prefs.getString(SharedPrefs.annualIncome_prefs_filter) == null || prefs.getString(SharedPrefs.annualIncome_prefs_filter) == "false" ? false : true;
+  */    switchValues['AnnualIncome'] = prefs.getString(SharedPrefs.annualIncome_prefs_filter) == null || prefs.getString(SharedPrefs.annualIncome_prefs_filter) == "false" ? false : true;
 
 
       print(switchValues['Height'] );
@@ -117,7 +117,7 @@ class PreferenceFilterState extends State<PreferenceFilter> {
               if(label == "MaritalStatus"){
                 await prefs.setString(SharedPrefs.maritalStatus_prefs_filter , value.toString());
               }
-              if(label == "Subcaste"){
+              if(label == "Shakh"){
                 await prefs.setString(SharedPrefs.subcaste_prefs_filter, value.toString());
               }
               if(label == "SkinTone"){

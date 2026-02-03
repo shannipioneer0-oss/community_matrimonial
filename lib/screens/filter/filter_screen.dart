@@ -31,9 +31,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../app_utils/MultiSelectDialog.dart';
 
 class FilterScreenApp extends StatelessWidget {
 
@@ -380,7 +383,7 @@ class FilterScreen extends State<FilterScreenAppStateful> {
     borderRadius: BorderRadius.circular(10.0),
     ),
     padding: EdgeInsets.all(5),
-    elevation: 5.0,)  ,icon: Icon(Icons.close), label: Text("Reset"), onPressed: () async {
+    elevation: 5.0,)  ,icon: Icon(Icons.close ,color: Colors.white,), label: Text("Reset"), onPressed: () async {
 
       context.read<SearchDataFilter>().clearAllFields();
 
@@ -421,7 +424,7 @@ class FilterScreen extends State<FilterScreenAppStateful> {
               borderRadius: BorderRadius.circular(10.0),
             ),
             padding: EdgeInsets.all(5),
-            elevation: 5.0,)  ,icon: Icon(Icons.search), label: Text("Search"), onPressed: () async {
+            elevation: 5.0,)  ,icon: Icon(Icons.search ,color: Colors.white,), label: Text("Search"), onPressed: () async {
 
 
             SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -782,8 +785,8 @@ class part1Stateful extends StatefulWidget {
 
       ],)),
 
-      Container(child:Row(children: [ CircleWithNumber(number: "02") , const SizedBox(width: 15,) , Text("Gender", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
-      Container(margin:const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
+      role == "admin" ? Container(child:Row(children: [ CircleWithNumber(number: "02") , const SizedBox(width: 15,) , Text("Gender", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),) : Container(),
+      role == "admin" ? Container(margin:const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
 
 
         Image.asset("assets/images/path_two.png" , height: 60,) , const SizedBox(width: 30,) ,
@@ -796,10 +799,10 @@ class part1Stateful extends StatefulWidget {
 
         }, selectedItem: role == "admin" ? "All" : gender  , label: 'Select Gender', seq: "gender",)),
 
-      ],)),
+      ],)) : Container(),
 
 
-      Container(child:Row(children: [ CircleWithNumber(number: "03") , SizedBox(width: 15,) , Text("Age", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
+      Container(child:Row(children: [ CircleWithNumber(number: "02") , SizedBox(width: 15,) , Text("Age", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
       Container(margin:const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
 
 
@@ -824,7 +827,7 @@ class part1Stateful extends StatefulWidget {
 
       ],)),
 
-      Container(child:Row(children: [ CircleWithNumber(number: "04") , const SizedBox(width: 15,) , Text("Height(ft Inch)", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
+      Container(child:Row(children: [ CircleWithNumber(number: "03") , const SizedBox(width: 15,) , Text("Height(ft Inch)", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
       Container(margin: const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
 
 
@@ -850,7 +853,7 @@ class part1Stateful extends StatefulWidget {
 
       ],)),
 
-      Container(child:Row(children: [ CircleWithNumber(number: "05") , const SizedBox(width: 15,) , Text("Marital Status", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
+      Container(child:Row(children: [ CircleWithNumber(number: "04") , const SizedBox(width: 15,) , Text("Marital Status", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
       Container(margin: const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
 
 
@@ -858,20 +861,19 @@ class part1Stateful extends StatefulWidget {
         Expanded(child: CustomDropdown(icondata: MdiIcons.heart  ,controller: context.read<SearchDataFilter>().maritalController , labelText: TranslationService.translate("marital_status"), onButtonPressed: () async {
 
           EasyLoading.show(status: 'Please wait...');
-          List<DataFetch> listitem =  await Values.getValues(context , "marital_status" , "");
+
+          MultiSelectDialogWithBottomSheet().showMultiSelect(context , await Values.getValuesMultiple(context , "marital_status" , "") , context.read<SearchDataFilter>().maritalController , "Select Marital Status" , callback: (String newData) {
+            context.read<SearchDataFilter>().marital_status = newData;
+          },);
 
           EasyLoading.dismiss();
-
-          final value = await SingleSelectDialog().showBottomSheet(context, listitem ,"Select Marital Status");
-          context.read<SearchDataFilter>().maritalController.text = value.label;
-          context.read<SearchDataFilter>().marital_status = value.value;
 
 
         },),),
 
       ],)),
 
-      Container(child:Row(children: [ CircleWithNumber(number: "06") , const SizedBox(width: 15,) , Text("Profile Image Wise", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
+      Container(child:Row(children: [ CircleWithNumber(number: "05") , const SizedBox(width: 15,) , Text("Profile Image Wise", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
       Container(margin: const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
 
 
@@ -897,7 +899,7 @@ class part1Stateful extends StatefulWidget {
       ],)),
 
 
-      Container(child:Row(children: [ CircleWithNumber(number: "07") , const SizedBox(width: 15,) , Text("Search By Name", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
+      Container(child:Row(children: [ CircleWithNumber(number: "06") , const SizedBox(width: 15,) , Text("Search By Name", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
       Container(margin: const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
 
 
@@ -1025,10 +1027,11 @@ class part2stateful extends StatefulWidget {
 
 
 
+
    @override
   Widget build(BuildContext context) {
 
-    return Column(children: [ Container(child:Row(children: [ CircleWithNumber(number: "08") , const SizedBox(width: 15,) , Text("Search By Fathername", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
+    return Column(children: [ Container(child:Row(children: [ CircleWithNumber(number: "07") , const SizedBox(width: 15,) , Text("Search By Fathername", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
       Container(margin: const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
 
         Image.asset("assets/images/path.png" , height: 60,) , SizedBox(width: 30,) ,
@@ -1066,7 +1069,7 @@ class part2stateful extends StatefulWidget {
       ],)),*/
 
 
-      Container(child:Row(children: [ CircleWithNumber(number: "10") , const SizedBox(width: 15,) , Text("Search By Location", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
+      Container(child:Row(children: [ CircleWithNumber(number: "08") , const SizedBox(width: 15,) , Text("Search By Location", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
       Container(margin: const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
 
         Image.asset("assets/images/path.png" , height: 60,) , SizedBox(width: 30,) ,
@@ -1086,22 +1089,22 @@ class part2stateful extends StatefulWidget {
       ],)),
 
 
-      Container(child:Row(children: [ CircleWithNumber(number: "11") , const SizedBox(width: 15,) , Text("Education Search", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
+      Container(child:Row(children: [ CircleWithNumber(number: "09") , const SizedBox(width: 15,) , Text("Education Search", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
       Container(margin: const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
 
         Image.asset("assets/images/path_two.png" , height: 60,) , SizedBox(width: 30,) ,
         Expanded(child: CustomDropdown(icondata: MdiIcons.bookEducation  ,controller: context.read<SearchDataFilter>().highesteducationController , labelText: Strings.highest_education, onButtonPressed: () async {
 
-          EasyLoading.show(status: "Loading...");
-          List<EduFetchstate> listedu_fetch =  await Values.getEducationList(context , "education" , "");
+          EasyLoading.show(status: 'Please wait...');
 
-          listedu_fetch.insert(0, EduFetchstate(degree_name: 'Any', degree_hindi: 'Any', degree_guj: 'Any', degree_marathi: 'Any', degree_tamil: 'Any', degree_urdu: 'Any', Id: '0'));
+          List<MultiSelectItem<dynamic>> list_education = await Values.getValuesMultipleEducation(context , "education" , "");
+          list_education.insert(0, MultiSelectItem("Any", "Any"));
+
+          MultiSelectDialogWithBottomSheet().showMultiSelect(context , list_education  , context.read<SearchDataFilter>().highesteducationController , "Select Education" , callback: (String newData) {
+            context.read<SearchDataFilter>().education = newData;
+          },);
 
           EasyLoading.dismiss();
-
-          final value = await SingleSelectDialog().showBottomSheetEducation(context, listedu_fetch);
-          context.read<SearchDataFilter>().highesteducationController.text = value.degree_name;
-          context.read<SearchDataFilter>().education = value.Id;
 
 
         },),),
@@ -1109,21 +1112,28 @@ class part2stateful extends StatefulWidget {
       ],)),
 
 
-      Container(child:Row(children: [ CircleWithNumber(number: "12") , const SizedBox(width: 15,) , Text("Occupation Search", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
+      Container(child:Row(children: [ CircleWithNumber(number: "10") , const SizedBox(width: 15,) , Text("Occupation Search", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
       Container(margin: const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
 
         Image.asset("assets/images/path.png" , height: 60,) , SizedBox(width: 30,) ,
         Expanded(child: CustomDropdown(icondata: Icons.sell  ,controller: context.read<SearchDataFilter>().occupationController , labelText: Strings.occupation, onButtonPressed: () async {
 
-          final value = await SingleSelectDialog().showBottomSheetOccupation(context, await Values.getOccupationList(context , "education" , ""));
-          context.read<SearchDataFilter>().occupationController.text = value.occupation;
-          context.read<SearchDataFilter>().occupation = value.Id;
+          EasyLoading.show(status: 'Please wait...');
+
+          List<MultiSelectItem<dynamic>> list_occupation = await Values.getValuesMultipleOccupation(context , "occupation" , "");
+          list_occupation.insert(0, MultiSelectItem("Any", "Any"));
+
+          MultiSelectDialogWithBottomSheet().showMultiSelect(context , list_occupation , context.read<SearchDataFilter>().occupationController , "Select Occupation" , callback: (String newData) {
+            context.read<SearchDataFilter>().occupation = newData;
+          },);
+
+          EasyLoading.dismiss();
 
         },)),
 
       ],)),
 
-      Container(child:Row(children: [ CircleWithNumber(number: "13") , const SizedBox(width: 15,) , Text("Rashi Search", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
+     /* Container(child:Row(children: [ CircleWithNumber(number: "13") , const SizedBox(width: 15,) , Text("Rashi Search", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
       Container(margin: const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
 
         Image.asset("assets/images/path_two.png" , height: 60,) , SizedBox(width: 30,) ,
@@ -1149,7 +1159,11 @@ class part2stateful extends StatefulWidget {
 
         },),),
 
-      ],)),
+      ],)),*/
+
+
+
+
     ],);
 
   }
@@ -1245,16 +1259,23 @@ class part2stateful extends StatefulWidget {
     final sharedData = context.watch<SearchDataFilter>();
 
 
-    return Column(children: [Container(child:Row(children: [ CircleWithNumber(number: "15") , const SizedBox(width: 15,) , Text("Annual Income Wise Search", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
+    return Column(children: [Container(child:Row(children: [ CircleWithNumber(number: "11") , const SizedBox(width: 15,) , Text("Annual Income Wise Search", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
       Container(margin: const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
 
 
         Image.asset("assets/images/path_two.png" , height: 60,) , SizedBox(width: 30,) ,
         Expanded(child: CustomDropdown(icondata: MdiIcons.starBox  ,controller:context.read<SearchDataFilter>().Income_controller  , labelText: Strings.annual_income, onButtonPressed: () async {
 
-          final value = await SingleSelectDialog().showBottomSheet(context, await Values.getValues(context , "annual_income" , "") , "Select Annual Income");
-          context.read<SearchDataFilter>().Income_controller.text = value.label;
-          context.read<SearchDataFilter>().income = value.value;
+          EasyLoading.show(status: 'Please wait...');
+
+          List<MultiSelectItem<dynamic>> list_annual_income = await Values.getValuesMultiple(context , "annual_income" , "");
+          list_annual_income.insert(0, MultiSelectItem("Any", "Any"));
+
+          MultiSelectDialogWithBottomSheet().showMultiSelect(context , list_annual_income , context.read<SearchDataFilter>().Income_controller , "Select Annual Income" , callback: (String newData) {
+            context.read<SearchDataFilter>().income = newData;
+          },);
+
+          EasyLoading.dismiss();
 
         },),),
       ],)),
@@ -1297,7 +1318,7 @@ class part2stateful extends StatefulWidget {
       ],),),*/
 
 
-      Container(child:Row(children: [ CircleWithNumber(number: "17") , const SizedBox(width: 15,) , Text("Physically Disabled", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
+      Container(child:Row(children: [ CircleWithNumber(number: "12") , const SizedBox(width: 15,) , Text("Physically Disabled", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
       Container(margin:const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
 
 
@@ -1334,6 +1355,162 @@ class part2stateful extends StatefulWidget {
           ),
         ),
       ],),),
+
+     SizedBox(height: 30,),
+
+
+      Container(height: 50 ,width: MediaQuery.of(context).size.width*0.6  ,child:ElevatedButton.icon(style: ElevatedButton.styleFrom(backgroundColor: Colors.pink, // Background color
+        foregroundColor: Colors.white,
+        // Text color
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        padding: EdgeInsets.all(5),
+        elevation: 5.0,)  ,icon: Icon(Icons.search), label: Text("Search" , style: TextStyle(fontSize: 20 ,fontWeight: FontWeight.bold),), onPressed: () async {
+
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        if(prefs.getBool("is_save") == false) {
+
+          context
+              .read<SearchDataFilter>()
+              .profileId = context
+              .read<SearchDataFilter>()
+              .profileidController
+              .text
+              .toString()
+              .length == 0 ? "0" : context
+              .read<SearchDataFilter>()
+              .profileidController
+              .text
+              .toString();
+          context
+              .read<SearchDataFilter>()
+              .search_name = context
+              .read<SearchDataFilter>()
+              .search_name_controller
+              .text
+              .toString()
+              .length == 0 ? "0" : context
+              .read<SearchDataFilter>()
+              .search_name_controller
+              .text
+              .toString();
+          context
+              .read<SearchDataFilter>()
+              .search_fathername = context
+              .read<SearchDataFilter>()
+              .search_fathername_controller
+              .text
+              .toString()
+              .length == 0 ? "0" : context
+              .read<SearchDataFilter>()
+              .search_fathername_controller
+              .text
+              .toString();
+          context
+              .read<SearchDataFilter>()
+              .location = context
+              .read<SearchDataFilter>()
+              .search_location_controller
+              .text
+              .toString()
+              .length == 0 ? "0" : context
+              .read<SearchDataFilter>()
+              .search_location_controller
+              .text
+              .toString();
+
+          context
+              .read<SearchDataFilter>()
+              .income = context
+              .read<SearchDataFilter>()
+              .Income_controller
+              .text
+              .toString().length == 0 ? "0" : context
+              .read<SearchDataFilter>()
+              .income = context
+              .read<SearchDataFilter>()
+              .Income_controller
+              .text
+              .toString();
+
+
+
+          navService.pushNamed("/search_result", args: [
+            prefs.getString(SharedPrefs.userId),
+            context
+                .read<SearchDataFilter>()
+                .profileId,
+            context
+                .read<SearchDataFilter>()
+                .gender,
+            context
+                .read<SearchDataFilter>()
+                .search_name,
+            context
+                .read<SearchDataFilter>()
+                .search_fathername,
+            context
+                .read<SearchDataFilter>()
+                .age_from,
+            context
+                .read<SearchDataFilter>()
+                .age_to,
+            context
+                .read<SearchDataFilter>()
+                .height_from,
+            context
+                .read<SearchDataFilter>()
+                .height_to,
+            context
+                .read<SearchDataFilter>()
+                .mother_tongue,
+            context
+                .read<SearchDataFilter>()
+                .marital_status,
+            context
+                .read<SearchDataFilter>()
+                .profile_image,
+            context
+                .read<SearchDataFilter>()
+                .location,
+            context
+                .read<SearchDataFilter>()
+                .education,
+            context
+                .read<SearchDataFilter>()
+                .occupation,
+            context
+                .read<SearchDataFilter>()
+                .rashi,
+            context
+                .read<SearchDataFilter>()
+                .birth_star,
+            context
+                .read<SearchDataFilter>()
+                .income,
+
+            context
+                .read<SearchDataFilter>()
+                .mangalik,
+            context
+                .read<SearchDataFilter>()
+                .handicap,
+            context.read<SearchDataFilter>()
+                .institute_wise,
+          ]);
+        }else{
+
+          FilterScreen().showalertdailogForSaving(context);
+
+        }
+
+      },
+      ),),
+
+     SizedBox(height: 20,),
 
      /* Container(child:Row(children: [ CircleWithNumber(number: "18") , const SizedBox(width: 15,) , Text("InsituteWise Search", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
       Container(margin: const EdgeInsets.only(left: 15 , right: 15 , bottom: 50) , child:Row(children: [

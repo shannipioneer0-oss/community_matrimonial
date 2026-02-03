@@ -72,19 +72,24 @@ class ImageGalleryScreen  extends State<ImageGallery>{
   }
 
   late SharedPreferences prefs;
+  late Future<void> _prefsFuture;
+
+  Future<void> _initPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
   initPrefsImages() async {
 
-     prefs = await SharedPreferences.getInstance();
 
     setState(() {
 
-      path1 = prefs.getString(SharedPrefs.pic1) ?? "null";
-      path2 = prefs.getString(SharedPrefs.pic2) ?? "null";
-      path3 = prefs.getString(SharedPrefs.pic3) ?? "null";
-      path4 = prefs.getString(SharedPrefs.pic4) ?? "null";
-      path5 = prefs.getString(SharedPrefs.pic5) ?? "null";
-      path6 = prefs.getString(SharedPrefs.pic6) ?? "null";
-      path7 = prefs.getString(SharedPrefs.pic7) ?? "null";
+      path1 = prefs!.getString(SharedPrefs.pic1) ?? "null";
+      path2 = prefs!.getString(SharedPrefs.pic2) ?? "null";
+      path3 = prefs!.getString(SharedPrefs.pic3) ?? "null";
+      path4 = prefs!.getString(SharedPrefs.pic4) ?? "null";
+      path5 = prefs!.getString(SharedPrefs.pic5) ?? "null";
+      path6 = prefs!.getString(SharedPrefs.pic6) ?? "null";
+      path7 = prefs!.getString(SharedPrefs.pic7) ?? "null";
       path8 = prefs.getString(SharedPrefs.pic8) ?? "null";
 
       print(path1+"-------"+imagepath1);
@@ -116,59 +121,60 @@ class ImageGalleryScreen  extends State<ImageGallery>{
 
     });
 
+    print("123456");
 
-    final _response = await Provider.of<ApiService>(context, listen: false)
-        .fetch_pictures(
-        {
-          "type": "pictures",
-          "userId":prefs.getString(SharedPrefs.userId),                   // blog , caste , roles , all_staff
-          "communityId": prefs.getString(SharedPrefs.communityId),
-          "original": "en",
-          "translate": ["en"]
-        }
-    );
-
-    print(_response.body);
-
-    Pictures pictures = Pictures.fromJson(_response.body);
-
-    setState(() {
+    var _response;
 
 
-        isverifyPic1 = pictures.data[0].isVerifyPic1;
-
-
-        isverifyPic2 = pictures.data[0].isVerifyPic2;
-
-
-        isverifyPic3 = pictures.data[0].isVerifyPic3;
-
-
-        isverifyPic4 = pictures.data[0].isVerifyPic4;
+      _response = await ApiService.create()
+          .fetch_pictures(
+          {
+            "type": "pictures",
+            "userId": prefs.getString(SharedPrefs.userId),
+            // blog , caste , roles , all_staff
+            "communityId": prefs.getString(SharedPrefs.communityId),
+            "original": "en",
+            "translate": ["en"]
+          }
+      );
 
 
 
-        isverifyPic5 = pictures.data[0].isVerifyPic5;
+       print(_response.body);
+
+       Pictures pictures = Pictures.fromJson(_response.body);
+
+       setState(() {
+         isverifyPic1 = pictures.data[0].isVerifyPic1;
 
 
-
-        isverifyPic6 = pictures.data[0].isVerifyPic6;
-
-
-        isverifyPic7= pictures.data[0].isVerifyPic7;
+         isverifyPic2 = pictures.data[0].isVerifyPic2;
 
 
-
-        isverifyPic8 = pictures.data[0].isVerifyPic8;
-
-        update_id =  pictures.data[0].id.toString();
+         isverifyPic3 = pictures.data[0].isVerifyPic3;
 
 
+         isverifyPic4 = pictures.data[0].isVerifyPic4;
 
-        print(isverifyPic1+"--"+isverifyPic2+"---"+isverifyPic3+"_______"+update_id);
+
+         isverifyPic5 = pictures.data[0].isVerifyPic5;
 
 
-    });
+         isverifyPic6 = pictures.data[0].isVerifyPic6;
+
+
+         isverifyPic7 = pictures.data[0].isVerifyPic7;
+
+
+         isverifyPic8 = pictures.data[0].isVerifyPic8;
+
+         update_id = pictures.data[0].id.toString();
+
+
+         print(isverifyPic1 + "--" + isverifyPic2 + "---" + isverifyPic3 +
+             "_______" + update_id);
+       });
+
 
 
 
@@ -181,7 +187,13 @@ class ImageGalleryScreen  extends State<ImageGallery>{
 
     EasyLoading.dismiss();
 
-    initPrefsImages();
+    _prefsFuture = _initPrefs();
+
+    Future.delayed(Duration(milliseconds: 800) , (){
+      initPrefsImages();
+    });
+
+
     initLoader();
 
   }
@@ -204,7 +216,7 @@ class ImageGalleryScreen  extends State<ImageGallery>{
 
   Future<bool> _onWillPop(BuildContext context) async {
 
-     print("test");
+
      await showDialog(context: context , builder: (context) {
 
             return AlertDialog(title: Text("Save Images") ,
@@ -718,229 +730,242 @@ class ImageGalleryScreen  extends State<ImageGallery>{
       ),
     ],
      ),
-      body:SingleChildScrollView(child: SafeArea(child:Column(children: [
-
-        Row(children: [
-          SizedBox(width:15),
-          Expanded(flex: 1 ,child: FancyBorderedImage(
-            imagePath: imagepath1 == "" || imagepath1 == "0" ? null : imagepath1 , // Replace with your local image path
-            imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path1, // Replace with your network image URL
-            borderWidth: 4.0,
-            borderRadius: 12.0,
-            isverify:isverifyPic1.toString()
-            ,onEditPressed: (){
-
-              ImagePickerWithCrop(callbackFunction: (String path) {
-
-                setState(() {
-                  imagepath1 = path;
-                  listimage[0] = imagepath1;
-                });
-
-                if(!path1.contains("_")) {
-                  listimagesPath.insert(0, imagepath1);
-                }
-
-
-              }).selectImage(context);
-
-            },
-          ),),
-          SizedBox(width:10),
-          Expanded(flex: 1 ,child: FancyBorderedImage(
-            imagePath: imagepath2 == "" || imagepath2 == "0" ? null : imagepath2, // Replace with your local image path
-            imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path2, // Replace with your network image URL
-            borderWidth: 4.0,
-            borderRadius: 12.0,
-            isverify:isverifyPic2.toString(),
-            onEditPressed: (){
-
-
-              ImagePickerWithCrop(callbackFunction: (String path) {
-
-                setState(() {
-                  imagepath2 = path;
-                  listimage[1] =  imagepath2;
-                });
-
-               if(!path1.contains("_")) {
-                 listimagesPath.insert(1, imagepath2);
-               }
-
-              }).selectImage(context);
-
-
-            },
-          ),),
-          SizedBox(width:10),
-          Expanded(flex: 1 ,child: FancyBorderedImage(
-            imagePath: imagepath3 == "" || imagepath3 == "0" ? null : imagepath3, // Replace with your local image path
-            imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path3, // Replace with your network image URL
-            borderWidth: 4.0,
-            borderRadius: 12.0,
-              isverify:isverifyPic3.toString(),
-            onEditPressed: (){
-
-              ImagePickerWithCrop(callbackFunction: (String path) {
-
-                setState(() {
-                  imagepath3 = path;
-                  listimage[2] = imagepath3;
-                });
-    if(!path1.contains("_")) {
-      listimagesPath.insert(2, imagepath3);
+      body:FutureBuilder<void>(
+    future: _prefsFuture,
+    builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+    return const Center(child: CircularProgressIndicator());
     }
 
-              }).selectImage(context);
-
-            },
-          ),),
-          SizedBox(width:15),
-
-        ],),
-        SizedBox(height: 20,),
-        Row(children: [
-          SizedBox(width:15),
-          Expanded(flex: 1 ,child: FancyBorderedImage(
-            imagePath: imagepath4 == "" || imagepath4 == "0"? null : imagepath4, // Replace with your local image path
-            imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path4, // Replace with your network image URL
-            borderWidth: 4.0,
-            borderRadius: 12.0,
-              isverify:isverifyPic4.toString(),
-            onEditPressed: (){
-
-              ImagePickerWithCrop(callbackFunction: (String path) {
-
-                setState(() {
-                  imagepath4 = path;
-                  listimage[3] = imagepath4;
-                });
-    if(!path1.contains("_")) {
-      listimagesPath.insert(3, imagepath4);
+    if (snapshot.hasError) {
+    return const Center(child: Text("Failed to load preferences"));
     }
 
-              }).selectImage(context);
 
-            },
-          ),),
-          SizedBox(width:10),
-          Expanded(flex: 1 ,child: FancyBorderedImage(
-            imagePath: imagepath5 == "" || imagepath5 == "0" ? null : imagepath5, // Replace with your local image path
-            imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path5, // Replace with your network image URL
-            borderWidth: 4.0,
-            borderRadius: 12.0,
-              isverify:isverifyPic5.toString(),
-            onEditPressed: (){
+    return SingleChildScrollView(child: SafeArea(child: Column(children: [
 
-              ImagePickerWithCrop(callbackFunction: (String path) {
+    Row(children: [
+    SizedBox(width:15),
+    Expanded(flex: 1 ,child: FancyBorderedImage(
+    imagePath: imagepath1 == "" || imagepath1 == "0" ? null : imagepath1 , // Replace with your local image path
+    imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path1, // Replace with your network image URL
+    borderWidth: 4.0,
+    borderRadius: 12.0,
+    isverify:isverifyPic1.toString()
+    ,onEditPressed: (){
 
-                setState(() {
-                  imagepath5 = path;
-                  listimage[4] = imagepath5;
-                });
+    ImagePickerWithCrop(callbackFunction: (String path) {
 
-    if(!path1.contains("_")) {
-      listimagesPath.insert(4, imagepath5);
-    }
-
-              }).selectImage(context);
-
-
-
-            },
-          ),),
-          SizedBox(width:10),
-          Expanded(flex: 1 ,child: FancyBorderedImage(
-            imagePath: imagepath6 == "" || imagepath6 == "0" ? null : imagepath6, // Replace with your local image path
-            imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path6, // Replace with your network image URL
-            borderWidth: 4.0,
-            borderRadius: 12.0,
-              isverify:isverifyPic6.toString(),
-            onEditPressed: (){
-
-
-              ImagePickerWithCrop(callbackFunction: (String path) {
-
-                setState(() {
-                  imagepath6 = path;
-
-                  listimage[5] = imagepath6;
-
-                });
+    setState(() {
+    imagepath1 = path;
+    listimage[0] = imagepath1;
+    });
 
     if(!path1.contains("_")) {
-      listimagesPath.insert(5, imagepath6);
+    listimagesPath.insert(0, imagepath1);
     }
 
-              }).selectImage(context);
+
+    }).selectImage(context);
+
+    },
+    ),),
+    SizedBox(width:10),
+    Expanded(flex: 1 ,child: FancyBorderedImage(
+    imagePath: imagepath2 == "" || imagepath2 == "0" ? null : imagepath2, // Replace with your local image path
+    imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path2, // Replace with your network image URL
+    borderWidth: 4.0,
+    borderRadius: 12.0,
+    isverify:isverifyPic2.toString(),
+    onEditPressed: (){
 
 
-            },
-          ),),
-          SizedBox(width:10),
+    ImagePickerWithCrop(callbackFunction: (String path) {
 
-        ],),
-        SizedBox(height: 20,),
-        Row(children: [
-          SizedBox(width:15),
-          Expanded(flex: 1 ,child: FancyBorderedImage(
-            imagePath: imagepath7 == "" || imagepath7 == "0" ? null : imagepath7, // Replace with your local image path
-            imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path7, // Replace with your network image URL
-            borderWidth: 4.0,
-            borderRadius: 12.0,
-              isverify:isverifyPic7.toString(),
-            onEditPressed: (){
-
-              ImagePickerWithCrop(callbackFunction: (String path) {
-
-                setState(() {
-                  imagepath7 = path;
-                  listimage[6] = imagepath7;
-                });
-    if(!path1.contains("_")) {
-      listimagesPath.insert(6, imagepath7);
-    }
-
-              }).selectImage(context);
-
-
-            },
-          ),),
-          SizedBox(width:10),
-          Expanded(flex: 1 ,child: FancyBorderedImage(
-            imagePath: imagepath8 == "" || imagepath8 == "0" ? null : imagepath8, // Replace with your local image path
-            imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path8, // Replace with your network image URL
-            borderWidth: 4.0,
-            borderRadius: 12.0,
-              isverify:isverifyPic8.toString(),
-            onEditPressed: (){
-
-
-              ImagePickerWithCrop(callbackFunction: (String path) {
-
-                setState(() {
-                  imagepath8 = path;
-                  listimage[7] = imagepath8;
-                });
+    setState(() {
+    imagepath2 = path;
+    listimage[1] = imagepath2;
+    });
 
     if(!path1.contains("_")) {
-      listimagesPath.insert(7, imagepath8);
+    listimagesPath.insert(1, imagepath2);
     }
 
-              }).selectImage(context);
-
-            },
-          ),),
-          SizedBox(width:15),
+    }).selectImage(context);
 
 
-        ],),
-        SizedBox(height: 20,),
+    },
+    ),),
+    SizedBox(width:10),
+    Expanded(flex: 1 ,child: FancyBorderedImage(
+    imagePath: imagepath3 == "" || imagepath3 == "0" ? null : imagepath3, // Replace with your local image path
+    imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path3, // Replace with your network image URL
+    borderWidth: 4.0,
+    borderRadius: 12.0,
+    isverify:isverifyPic3.toString(),
+    onEditPressed: (){
 
-      ],),
+    ImagePickerWithCrop(callbackFunction: (String path) {
+
+    setState(() {
+    imagepath3 = path;
+    listimage[2] = imagepath3;
+    });
+    if(!path1.contains("_")) {
+    listimagesPath.insert(2, imagepath3);
+    }
+
+    }).selectImage(context);
+
+    },
+    ),),
+    SizedBox(width:15),
+
+    ],),
+    SizedBox(height: 20,),
+    Row(children: [
+    SizedBox(width:15),
+    Expanded(flex: 1 ,child: FancyBorderedImage(
+    imagePath: imagepath4 == "" || imagepath4 == "0"? null : imagepath4, // Replace with your local image path
+    imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path4, // Replace with your network image URL
+    borderWidth: 4.0,
+    borderRadius: 12.0,
+    isverify:isverifyPic4.toString(),
+    onEditPressed: (){
+
+    ImagePickerWithCrop(callbackFunction: (String path) {
+
+    setState(() {
+    imagepath4 = path;
+    listimage[3] = imagepath4;
+    });
+    if(!path1.contains("_")) {
+    listimagesPath.insert(3, imagepath4);
+    }
+
+    }).selectImage(context);
+
+    },
+    ),),
+    SizedBox(width:10),
+    Expanded(flex: 1 ,child: FancyBorderedImage(
+    imagePath: imagepath5 == "" || imagepath5 == "0" ? null : imagepath5, // Replace with your local image path
+    imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path5, // Replace with your network image URL
+    borderWidth: 4.0,
+    borderRadius: 12.0,
+    isverify:isverifyPic5.toString(),
+    onEditPressed: (){
+
+    ImagePickerWithCrop(callbackFunction: (String path) {
+
+    setState(() {
+    imagepath5 = path;
+    listimage[4] = imagepath5;
+    });
+
+    if(!path1.contains("_")) {
+    listimagesPath.insert(4, imagepath5);
+    }
+
+    }).selectImage(context);
 
 
-    ))));
+    },
+    ),),
+    SizedBox(width:10),
+    Expanded(flex: 1 ,child: FancyBorderedImage(
+    imagePath: imagepath6 == "" || imagepath6 == "0" ? null : imagepath6, // Replace with your local image path
+    imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path6, // Replace with your network image URL
+    borderWidth: 4.0,
+    borderRadius: 12.0,
+    isverify:isverifyPic6.toString(),
+    onEditPressed: (){
+
+
+    ImagePickerWithCrop(callbackFunction: (String path) {
+
+    setState(() {
+    imagepath6 = path;
+
+    listimage[5] = imagepath6;
+
+    });
+
+    if(!path1.contains("_")) {
+    listimagesPath.insert(5, imagepath6);
+    }
+
+    }).selectImage(context);
+
+
+    },
+    ),),
+    SizedBox(width:10),
+
+    ],),
+    SizedBox(height: 20,),
+    Row(children: [
+    SizedBox(width:15),
+    Expanded(flex: 1 ,child: FancyBorderedImage(
+    imagePath: imagepath7 == "" || imagepath7 == "0" ? null : imagepath7, // Replace with your local image path
+    imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path7, // Replace with your network image URL
+    borderWidth: 4.0,
+    borderRadius: 12.0,
+    isverify:isverifyPic7.toString(),
+    onEditPressed: (){
+
+    ImagePickerWithCrop(callbackFunction: (String path) {
+
+    setState(() {
+    imagepath7 = path;
+    listimage[6] = imagepath7;
+    });
+    if(!path1.contains("_")) {
+    listimagesPath.insert(6, imagepath7);
+    }
+
+    }).selectImage(context);
+
+
+    },
+    ),),
+    SizedBox(width:10),
+    Expanded(flex: 1 ,child: FancyBorderedImage(
+    imagePath: imagepath8 == "" || imagepath8 == "0" ? null : imagepath8, // Replace with your local image path
+    imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path8, // Replace with your network image URL
+    borderWidth: 4.0,
+    borderRadius: 12.0,
+    isverify:isverifyPic8.toString(),
+    onEditPressed: (){
+
+
+    ImagePickerWithCrop(callbackFunction: (String path) {
+
+    setState(() {
+    imagepath8 = path;
+    listimage[7] = imagepath8;
+    });
+
+    if(!path1.contains("_")) {
+    listimagesPath.insert(7, imagepath8);
+    }
+
+    }).selectImage(context);
+
+    },
+    ),),
+    SizedBox(width:15),
+
+
+    ],),
+    SizedBox(height: 20,),
+
+    ] ,),
+
+
+    ));
+
+    })));
 
   }
 

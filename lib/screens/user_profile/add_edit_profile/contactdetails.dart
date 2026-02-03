@@ -120,6 +120,8 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
 
     if(utils().replaceNull(prefs.getString(SharedPrefs.alternateMobile).toString()) != ""){
       altmobileController.setValue(CountryParser.parse(res2.split("_")[1]) , res2.split("_")[0]);
+      mobilemcc2 = CountryParser.parse(res2.split("_")[1]).phoneCode+res2.split("_")[0];
+
     }
 
     if(utils().replaceNull(prefs.getString(SharedPrefs.emailId).toString()) == ""){
@@ -613,7 +615,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
                 } else {
                   EasyLoading.show(status: 'Please wait...');
 
-                  print(locations[0].latitude.toString()+",,,,"+locations[0].longitude.toString());
+                  print(locations[0].latitude.toString()+",,,,"+locations[0].longitude.toString()+"-----"+mobilemcc2);
 
                   final _response = await Provider.of<ApiService>(
                       context, listen: false)

@@ -92,7 +92,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
      // listTabs.add(Item(text: TranslationService.translate("recently_viewed") , count: ""));
       listTabs.add(Item(text: TranslationService.translate("my_shortlists") , count: ""));
       listTabs.add(Item(text: TranslationService.translate("others_shortlist_me") , count: ""));
-      listTabs.add(Item(text: TranslationService.translate("nearby") , count: ""));
+     // listTabs.add(Item(text: TranslationService.translate("nearby") , count: ""));
       listTabs.add(Item(text: TranslationService.translate("my_viewed_profiles") , count: ""));
       listTabs.add(Item(text: TranslationService.translate("other_viewed_my_profile") , count: ""));
       listTabs.add(Item(text: TranslationService.translate("view_other_contacts") , count: ""));
@@ -395,7 +395,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
    //   print(_response.body.toString());
 
 
-    }else if(selectedIndex == 4){
+    }else if(selectedIndex == 100){
 
       Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
@@ -416,7 +416,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
         "offset": page*pageSize
       });
 
-    }else if(selectedIndex == 5){
+    }else if(selectedIndex == 4){
 
       _response = await Provider.of<ApiService>(context, listen: false).postViewProfile(
           {
@@ -433,7 +433,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
 
       );
       
-    }else if(selectedIndex == 6){
+    }else if(selectedIndex == 5){
 
 
       _response = await Provider.of<ApiService>(context, listen: false).postViewProfile(
@@ -453,7 +453,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
 
 
 
-    }else if(selectedIndex == 7){
+    }else if(selectedIndex == 6){
 
 
       print( {
@@ -484,7 +484,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
       );
 
 
-    }else if(selectedIndex == 8){
+    }else if(selectedIndex == 7){
 
       _response = await Provider.of<ApiService>(context, listen: false).postViewContact(
           {
@@ -1190,7 +1190,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
               }
             },
             child:Container(height:MediaQuery.of(context).size.height*0.68 ,margin: EdgeInsets.only(top: 15 , left: type == 1 ? 3 : 20 ) , child: selectedIndex == 0 ? setLists(123) :
-       selectedIndex == 1 ? setLists2(345) : selectedIndex == 2 ? setLists3(456) : selectedIndex == 3 ? setLists4(567) : selectedIndex == 4 ? setLists5(678) : selectedIndex == 5 ?
+       selectedIndex == 1 ? setLists2(345) : selectedIndex == 2 ? setLists3(456) : selectedIndex == 3 ? setLists4(567) : selectedIndex == 100 ? setLists5(678) : selectedIndex == 4 ?
        setLists5(789) : selectedIndex == 6 ? setLists6(890) : selectedIndex == 7 ? setLists7(900) : selectedIndex == 8 ? setLists8(901)
          :selectedIndex == 9 ? setLists9(902) : Container(),
 

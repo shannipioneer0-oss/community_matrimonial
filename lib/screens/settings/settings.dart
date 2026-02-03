@@ -14,6 +14,7 @@ import 'package:community_matrimonial/utils/Colors.dart';
 import 'package:community_matrimonial/utils/SharedPrefs.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:material_dialogs/material_dialogs.dart';
 import 'package:material_dialogs/shared/types.dart';
@@ -521,7 +522,41 @@ class SettingsState extends State<SettingsScreen> {
                         decoration: TextDecoration.underline,
                       ),
                     ),),
-                    SizedBox(height: 10,),
+
+                    SizedBox(height: 15,),
+
+                    GestureDetector(onTap: () async {
+
+                      navService.pushNamed("/member_list_trusteeshree" , args: "mlist");
+
+                    }  ,child:Text(
+                      TranslationService.translate('Member List'),
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        color: ColorsPallete.blue_2,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),),
+
+                    SizedBox(height: 15,),
+
+
+                    GestureDetector(onTap: () async {
+
+                      navService.pushNamed("/member_list_trusteeshree" , args: "trustee");
+
+                    }  ,child:Text(
+                      TranslationService.translate('Trustee Shreeo'),
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        color: ColorsPallete.blue_2,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),),
+
+
 
 
 
@@ -661,11 +696,42 @@ class SettingsState extends State<SettingsScreen> {
     ),),
 SizedBox(height: 20,),
       Container(alignment: Alignment.bottomCenter , width: MediaQuery.of(context).size.width , margin: EdgeInsets.only()  ,child:ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
 
-          TextEditingController controller  =new TextEditingController();
-          TextEditingController controllerDays  =new TextEditingController();
-          TextEditingController controllerPassword  =new TextEditingController();
+          SVProgressHUD.show(status: 'Please wait...');
+
+          bool isOn = false;
+
+
+          TextEditingController controller  = new TextEditingController();
+          TextEditingController controllerDays  = new TextEditingController();
+          TextEditingController controllerPassword  = new TextEditingController();
+
+
+          SharedPreferences prefs = await SharedPreferences
+              .getInstance();
+
+          final _response = await Provider.of<ApiService>(
+              context , listen: false).getHideAccountSelect({
+            "userId": prefs.getString(SharedPrefs.userId)
+          });
+
+        //  print(prefs.getString(SharedPrefs.userId).toString()+"-----"+_response.body.toString());
+
+          setState(() {
+
+            if(_response.body["data"][0]["hide_account"].toString() == "0"){
+               isOn = false;
+            }else{
+              isOn = true;
+            }
+
+          });
+
+          controller.text = _response.body["data"][0]["hide_account_reason"];
+          controllerDays.text = _response.body["data"][0]["hide_account_days"];
+
+          SVProgressHUD.dismiss();
 
           showModalBottomSheet(
             context: context,
@@ -675,71 +741,124 @@ SizedBox(height: 20,),
               borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
             ),
             builder: (context) {
-              return SafeArea(child: Padding(
-                padding: EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 16),
 
-                      Text(
-                        "Hide Account",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
 
-                      SizedBox(height: 8),
-                      Text("Are you sure you want to Hide Account Temporarily"),
+    return StatefulBuilder(
+    builder: (context, setModalState)
+    {
+      return SafeArea(child: Padding(
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          bottom: MediaQuery
+              .of(context)
+              .viewInsets
+              .bottom,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 16),
 
-                      SizedBox(height: 20),
+              Text(
+                isOn == true ? "Hide Account" : "Unhide Account",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
 
-                      Text("Enter reason to hide"),
-                      TextField(controller: controller),
 
-                      SizedBox(height: 20),
+              SizedBox(height: 8),
+              Switch(
+                value: isOn,
+                onChanged: (value) {
+                  print(value);
 
-                      NumericTextField(
-                        icondata: MdiIcons.eyeOff,
-                        controller: controllerDays,
-                        labelText: "Enter No. of Days To Hide",
-                        enabled: false,
-                      ),
+                  setModalState(() {
+                    isOn = value;
+                  });
+                },
+              ),
 
-                      SizedBox(height: 20),
 
-                      Text("Enter $randomotp below to hide"),
-                      TextField(controller: controllerPassword),
+              SizedBox(height: 8),
+              Text("Are you sure you want to Hide Account Temporarily?"),
 
-                      SizedBox(height: 30),
+              SizedBox(height: 20),
 
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              child: Text("Hide"),
-                            ),
-                          ),
-                          SizedBox(width: 12),
-                          Expanded(
-                            child: OutlinedButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text("CANCEL"),
-                            ),
-                          ),
-                        ],
-                      ),
+              Text("Enter reason to hide"),
+              TextField(controller: controller),
 
-                      SizedBox(height: 20),
-                    ],
+              SizedBox(height: 20),
+
+              NumericTextField(
+                icondata: MdiIcons.eyeOff,
+                controller: controllerDays,
+                labelText: "Enter No. of Days To Hide",
+                enabled: false,
+              ),
+
+              SizedBox(height: 20),
+
+              Text("Enter $randomotp below to hide"),
+              TextField(controller: controllerPassword),
+
+              SizedBox(height: 30),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+
+
+                        if (controllerPassword.text.toString() == randomotp) {
+                          SVProgressHUD.show(status: 'Please wait...');
+
+                          SharedPreferences prefs = await SharedPreferences
+                              .getInstance();
+
+                          final _response = await Provider.of<ApiService>(
+                              context, listen: false).postHideAccount({
+                            "hide_account": isOn == true ? "1" : "0",
+                            "hide_account_reason":isOn == true ? controller.text.toString() : "",
+                            "hide_account_days":isOn == true ? controllerDays.text.toString() : "0",
+                            "userId": prefs.getString(SharedPrefs.userId)
+                          });
+
+                          SVProgressHUD.dismiss();
+
+                          if (_response.body["data"]["affectedRows"] == 1) {
+                            Navigator.pop(context);
+                          }
+                        }
+                      },
+                      child: Text(isOn ? "Hide" : "UnHide"),
+                    ),
                   ),
-                ),
-              ));
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("CANCEL"),
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ));
+
+    });
+
+
+
+
+
+
             },
           );
 

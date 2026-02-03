@@ -78,8 +78,6 @@ class DashboardListStateful extends State<DashboardList> {
           children: [
 
 
-
-
             Positioned(
                 child: Container(
                     key: Key(widget.index.toString()),
@@ -111,7 +109,7 @@ class DashboardListStateful extends State<DashboardList> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20.0),
                     child: Image.network(
-                      widget.user.pic != null && widget.user.verifypic1 == "1"
+                      widget.user.pic != null && ( widget.user.verifypic1 == "1" ||  widget.user.verifypic1 == "0")
                           ? Strings.IMAGE_BASE_URL +
                               "/uploads/" +utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+
                               widget.user.pic.toString()

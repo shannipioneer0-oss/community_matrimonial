@@ -74,7 +74,7 @@ class SearchResultListStateful extends State<SearchResultList> {
         ? Colors.white
         : Colors.pink;
 
-  //  print(widget.fetchmatches.pic+"=====");
+    print(widget.fetchmatches.pic+"()()====");
 
     return Column(children: [
       GestureDetector(
@@ -83,7 +83,7 @@ class SearchResultListStateful extends State<SearchResultList> {
                 args: [widget.fetchmatches.userId, widget.fetchmatches.name , widget.fetchmatches.mobRegToken , widget.fetchmatches.profileId]);
           },
           child: Container(
-              height: 180,
+              height: 205,
               child: Stack(
                 children: [
                   Container(
@@ -95,7 +95,7 @@ class SearchResultListStateful extends State<SearchResultList> {
                         elevation: 4.0,
                         child: Container(
                             width: MediaQuery.of(context).size.width * 0.92,
-                            height: 170,
+                            height: 195,
                             child: Row(
                               children: [
                                 Expanded(
@@ -103,7 +103,7 @@ class SearchResultListStateful extends State<SearchResultList> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(16.0),
                                       child: Image.network(
-                                        widget.fetchmatches.pic != "" && widget.fetchmatches.verifypic1 == "1"
+                                        widget.fetchmatches.pic != "" && (widget.fetchmatches.verifypic1 == "1" || widget.fetchmatches.verifypic1 == "0")
                                             ? Strings.IMAGE_BASE_URL +
                                                 "/uploads/"+utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+
                                                 widget.fetchmatches.pic
@@ -112,7 +112,7 @@ class SearchResultListStateful extends State<SearchResultList> {
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.45,
-                                        height: 170,
+                                        height: 195,
                                         fit: BoxFit.cover,
                                         errorBuilder: (context, error, stackTrace) {
                                           return Container(child: Image.asset("assets/images/user_image.png"),);
@@ -230,7 +230,31 @@ class SearchResultListStateful extends State<SearchResultList> {
                                                 ),
                                               ),
                                             ],
-                                          )
+                                          ),
+                                          SizedBox(height: 4.0),
+                                          Row(children: [
+
+                                            Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                                  0.5,
+                                              child: Text(
+                                                widget
+                                                    .fetchmatches.handicap_detail,
+                                                textAlign: TextAlign.left,
+                                                maxLines: 2,
+                                                style: TextStyle(
+                                                    fontSize: 13.0,
+                                                    fontWeight:
+                                                    FontWeight.w800,
+                                                    color: Colors.red,
+                                                    overflow:
+                                                    TextOverflow.clip),
+                                              ),
+                                            ),
+
+                                          ],)
                                         ],
                                       ),
                                     ))

@@ -105,7 +105,7 @@ class FamilyDetailScreen  extends State<FamilyDetailsStateful>{
     mother_name.text = utils().replaceNull(prefs.getString(SharedPrefs.motherName).toString());
     father_occupation.text = utils().replaceNull(prefs.getString(SharedPrefs.fatherOccupation).toString());
     mother_occupation.text = utils().replaceNull(prefs.getString(SharedPrefs.motherOccupation).toString());
-    family_slogan.text = utils().replaceNull(prefs.getString(SharedPrefs.detailFamily).toString());
+   // family_slogan.text = utils().replaceNull(prefs.getString(SharedPrefs.detailFamily).toString());
 
     shakhController.text = utils().replaceNull(prefs.getString(SharedPrefs.sakh).toString());
     nativeController.text = utils().replaceNull(prefs.getString(SharedPrefs.native).toString());

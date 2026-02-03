@@ -26,9 +26,9 @@ class family extends StatelessWidget {
 
 
 
-        ProfileDetailItemOther(label: TranslationService.translate("family_values") , value: familyinfo.familyValue != null ? familyinfo.familyValue.toString() : ""),
+        /*ProfileDetailItemOther(label: TranslationService.translate("family_values") , value: familyinfo.familyValue != null ? familyinfo.familyValue.toString() : ""),
         ProfileDetailItemOther(label: TranslationService.translate("family_status") , value: familyinfo.familyStatus != null ? familyinfo.familyStatus.toString() : ""),
-        ProfileDetailItemOther(label: TranslationService.translate("family_type") , value:  familyinfo.familyType != null ? familyinfo.familyType.toString() : ""),
+        ProfileDetailItemOther(label: TranslationService.translate("family_type") , value:  familyinfo.familyType != null ? familyinfo.familyType.toString() : ""),*/
         ProfileDetailItemOther(label: TranslationService.translate("no_brother_details") , value: familyinfo.noBrother != null ? familyinfo.noBrother.toString() : ""),
         ProfileDetailItemOther(label: TranslationService.translate("no_sister_details") , value: familyinfo.noSister != null ? familyinfo.noSister.toString() : ""),
         ProfileDetailItemOther(label: TranslationService.translate("no_married_brother") , value:familyinfo.marriedBrother != null ? familyinfo.marriedBrother.toString() : ""),

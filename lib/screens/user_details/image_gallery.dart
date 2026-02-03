@@ -8,8 +8,11 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../app_utils/Dialogs.dart';
+import '../../utils/SharedPrefs.dart';
+import '../../utils/utils.dart';
 
 class ImageGalleryOther extends StatelessWidget {
 
@@ -44,107 +47,130 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
 
   List<Widget> listpics = [];
 
+ late SharedPreferences prefs;
+
+  initprefs() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
   @override
   void initState() {
     super.initState();
 
     _checkConnectivity();
-
-    setState(() {
-
-
-    if(widget.photo[0].pic1 != null && widget.photo[0].pic1!.isNotEmpty && widget.photo[0].pic1 != "null") {
-      listpics.add(Image.network(
-        Strings.IMAGE_BASE_URL + "/uploads/matrimonial_photo/Matrimonial_Photo/" + widget.photo[0].pic1.toString(),
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-
-          return RoundedContainer();
-
-        },
-      ));
-    }
-    if(widget.photo[0].pic2 != null && widget.photo[0].pic2!.isNotEmpty && widget.photo[0].pic2 != "null") {
-      listpics.add(Image.network(
-        Strings.IMAGE_BASE_URL + "/uploads/matrimonial_photo/Matrimonial_Photo/" + widget.photo[0].pic2.toString(),
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-
-          return RoundedContainer();
-
-        },
-      ));
-    }
-
-    if(widget.photo[0].pic3 != null && widget.photo[0].pic3!.isNotEmpty && widget.photo[0].pic3 != "null") {
-      listpics.add(Image.network(
-        Strings.IMAGE_BASE_URL + "/uploads/matrimonial_photo/Matrimonial_Photo/" + widget.photo[0].pic3.toString(),
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-
-          return RoundedContainer();
-
-        },
-      ));
-    }
-
-    if(widget.photo[0].pic4 != null && widget.photo[0].pic4!.isNotEmpty && widget.photo[0].pic4 != "null") {
-      listpics.add(Image.network(
-        Strings.IMAGE_BASE_URL + "/uploads/matrimonial_photo/Matrimonial_Photo/" + widget.photo[0].pic4.toString(),
-        fit: BoxFit.cover,
-      ));
-    }
+    initprefs();
 
 
-    if(widget.photo[0].pic5 != null && widget.photo[0].pic5!.isNotEmpty && widget.photo[0].pic5 != "null") {
-      listpics.add(Image.network(
-        Strings.IMAGE_BASE_URL + "/uploads/matrimonial_photo/Matrimonial_Photo/" + widget.photo[0].pic5.toString(),
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
+    Future.delayed(Duration(milliseconds: 500), ()
+    {
+      setState(() {
+        if (widget.photo[0].pic1 != null && widget.photo[0].pic1!.isNotEmpty &&
+            widget.photo[0].pic1 != "null") {
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].pic1.toString(),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return RoundedContainer();
+            },
+          ));
+        }
+        if (widget.photo[0].pic2 != null && widget.photo[0].pic2!.isNotEmpty &&
+            widget.photo[0].pic2 != "null") {
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].pic2.toString(),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return RoundedContainer();
+            },
+          ));
+        }
 
-          return RoundedContainer();
+        if (widget.photo[0].pic3 != null && widget.photo[0].pic3!.isNotEmpty &&
+            widget.photo[0].pic3 != "null") {
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].pic3.toString(),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return RoundedContainer();
+            },
+          ));
+        }
 
-        },
-      ));
-    }
+        if (widget.photo[0].pic4 != null && widget.photo[0].pic4!.isNotEmpty &&
+            widget.photo[0].pic4 != "null") {
+
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].pic4.toString(),
+            fit: BoxFit.cover,
+          ));
+
+        }
 
 
-    if(widget.photo[0].pic6 != null && widget.photo[0].pic6!.isNotEmpty && widget.photo[0].pic6 != "null") {
-      listpics.add(Image.network(
-        Strings.IMAGE_BASE_URL + "/uploads/matrimonial_photo/Matrimonial_Photo/" + widget.photo[0].pic6.toString(),
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
+        if (widget.photo[0].pic5 != null && widget.photo[0].pic5!.isNotEmpty &&
+            widget.photo[0].pic5 != "null") {
 
-          return RoundedContainer();
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].pic5.toString(),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return RoundedContainer();
+            },
+          ));
 
-        },
-      ));
-    }
+        }
 
 
-    if(widget.photo[0].pic7 != null && widget.photo[0].pic7!.isNotEmpty && widget.photo[0].pic7 != "null") {
-      listpics.add(Image.network(
-        Strings.IMAGE_BASE_URL + "/uploads/matrimonial_photo/Matrimonial_Photo/" + widget.photo[0].pic7.toString(),
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
+        if (widget.photo[0].pic6 != null && widget.photo[0].pic6!.isNotEmpty &&
+            widget.photo[0].pic6 != "null") {
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].pic6.toString(),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return RoundedContainer();
+            },
+          ));
+        }
 
-          return RoundedContainer();
 
-        },
-      ));
-    }
+        if (widget.photo[0].pic7 != null && widget.photo[0].pic7!.isNotEmpty &&
+            widget.photo[0].pic7 != "null") {
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].pic7.toString(),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return RoundedContainer();
+            },
+          ));
+        }
 
-    if(widget.photo[0].pic8 != null && widget.photo[0].pic8!.isNotEmpty && widget.photo[0].pic8 != "null") {
-      listpics.add(Image.network(
-        Strings.IMAGE_BASE_URL + "/uploads/matrimonial_photo/Matrimonial_Photo/" + widget.photo[0].pic8.toString(),
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-
-          return RoundedContainer();
-
-        },
-      ));
-    }
+        if (widget.photo[0].pic8 != null && widget.photo[0].pic8!.isNotEmpty &&
+            widget.photo[0].pic8 != "null") {
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].pic8.toString(),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return RoundedContainer();
+            },
+          ));
+        }
+      });
 
     });
 

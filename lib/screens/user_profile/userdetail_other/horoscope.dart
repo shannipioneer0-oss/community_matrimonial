@@ -423,8 +423,8 @@ class horoscope extends State<HoroscopeStateful>{
         ProfileDetailItemOther(label: TranslationService.translate("birth_time") , value: widget.astroinfo.birthTime.toString()),
         ProfileDetailItemOther(label: TranslationService.translate("birth_place") , value: widget.astroinfo.birthPlace.toString()),
         ProfileDetailItemOther(label: TranslationService.translate("gotra_details") , value: widget.astroinfo.gotra.toString()),
-        ProfileDetailItemOther(label: TranslationService.translate("mangalik") , value: widget.astroinfo.isMangalik.toString() == "0" ? "Non Mangalik" : "Mangalik"),
-        ProfileDetailItemOther(label: TranslationService.translate("believe_in_horoscope") , value: widget.astroinfo.believeHoroscope.toString()),
+        /*ProfileDetailItemOther(label: TranslationService.translate("mangalik") , value: widget.astroinfo.isMangalik.toString() == "0" ? "Non Mangalik" : "Mangalik"),
+        ProfileDetailItemOther(label: TranslationService.translate("believe_in_horoscope") , value: widget.astroinfo.believeHoroscope.toString()),*/
 
         Container(width: MediaQuery.of(context).size.width , margin: EdgeInsets.only(bottom: 10)  ,child:Text("Birth Chart" , textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold , fontSize: 16),),),
         Center(

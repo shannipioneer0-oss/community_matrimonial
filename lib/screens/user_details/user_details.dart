@@ -379,6 +379,8 @@ class UserDetailScreen extends State<UserDetailStateful> {
             communityId: _response.body["data"][7][0]["0"]["communityId"],
             profileId: _response.body["data"][7][0]["0"]["profileId"]);
 
+           print(picinfo.pic1.toString()+"--=====----===");
+
       } else {
 
       }

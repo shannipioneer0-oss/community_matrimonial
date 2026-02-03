@@ -47,6 +47,7 @@ class  MultiSelectDialogWithBottomSheet{
   void showMultiSelect(BuildContext context ,List<MultiSelectItem> items , TextEditingController controller, String title , {required  Function(String newData) callback}) async {
 
     List<MultiSelectItem> item_selected = [];
+    List<dynamic> list_dynamic = [];
 
     await showModalBottomSheet(
       isScrollControlled: true, // required for min/max child size
@@ -54,14 +55,16 @@ class  MultiSelectDialogWithBottomSheet{
       useRootNavigator: true,
       builder: (ctx) {
         return  SafeArea(child: Container(child:MultiSelectBottomSheet(
-          title:Container( padding:EdgeInsets.all(10) , alignment: Alignment.topLeft ,child:Text(title , style: TextStyle(fontSize: 18 ,fontWeight: FontWeight.bold ,color: Colors.purple),),),
-          items: items ,
+          title: Container( padding:EdgeInsets.all(10) , alignment: Alignment.topLeft ,child:Text(title , style: TextStyle(fontSize: 18 ,fontWeight: FontWeight.bold ,color: Colors.purple),),),
+          items: items,
           onConfirm: (values_result) {
 
-            item_selected =  items.where((element) =>  values_result.contains(element.value)).toList();
+           item_selected =  items.where((element) =>  values_result.contains(element.value)).toList();
 
            String label = item_selected.map((e) => e.label).join(",");
            String value = item_selected.map((e) => e.value).join(",");
+
+           print(item_selected);
 
            controller.text = label;
            callback(value);
@@ -76,6 +79,7 @@ class  MultiSelectDialogWithBottomSheet{
       },
     );
   }
+
 
 
   void fetchData(void Function(String) onDataFetched) {

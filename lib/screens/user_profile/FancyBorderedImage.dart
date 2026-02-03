@@ -54,7 +54,18 @@ class FancyBorderedImage extends StatelessWidget {
     );
   }
 
+
+  bool _isValidImageUrl(String url) {
+    return url.toLowerCase().endsWith('.jpg') ||
+        url.toLowerCase().endsWith('.jpeg') ||
+        url.toLowerCase().endsWith('.png') ||
+        url.toLowerCase().endsWith('.webp');
+  }
+
+
   Widget _buildImage() {
+
+    print(imageUrl.toString()+"---=====");
     if (imagePath != null) {
       return Image.file(
         File(imagePath!),
@@ -62,7 +73,10 @@ class FancyBorderedImage extends StatelessWidget {
         height: double.infinity,
         fit: BoxFit.cover,
       );
-    } else if (imageUrl != null) {
+    } else if (imageUrl != null &&
+        imageUrl!.isNotEmpty &&
+        _isValidImageUrl(imageUrl!)) {
+
       return Image.network(
         imageUrl!,
         width: double.infinity,

@@ -1333,6 +1333,37 @@ final class _$ApiService extends ApiService {
   }
 
   @override
+  Future<Response<dynamic>> postHideAccount(
+      Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('profile/hide_account');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+
+  @override
+  Future<Response<dynamic>> getHideAccountSelect(
+      Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('profile/hide_account_select');
+    final $body = requestBody;
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+
+
+  @override
   Future<Response<dynamic>> postCreateOrder(Map<String, dynamic> requestBody) {
     final Uri $url = Uri.parse('payment/createOrder');
     final $body = requestBody;
@@ -1866,6 +1897,18 @@ final class _$ApiService extends ApiService {
   }
 
 
+  @override
+  Future<Response<dynamic>> select_member_list_community(Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('adminpanel/role_community/select_member_list_community');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
 
 
 

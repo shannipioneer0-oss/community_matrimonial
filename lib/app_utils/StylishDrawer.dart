@@ -60,9 +60,10 @@ class _StylishDrawerState extends State<StylishDrawer> {
       percentage = prefs.getString(SharedPrefs.profile_percentage).toString().split(".")[0];
 
       community_name = prefs.getString(SharedPrefs.communityName).toString();
-      mobilenumber = prefs.getString(SharedPrefs.mobileNumber).toString();
+      mobilenumber = "+"+prefs.getString(SharedPrefs.mobileNumber).toString();
 
       percent = int.parse(percentage).toDouble();
+
     });
 
     print(Strings.IMAGE_BASE_URL+"/uploads/matrimonial_photo/"+prefs.getString(SharedPrefs.communityId).toString()+"/"+img1);
@@ -89,7 +90,7 @@ class _StylishDrawerState extends State<StylishDrawer> {
 
                Row(mainAxisAlignment: MainAxisAlignment.start  ,children: [Text(community_name ,textAlign: TextAlign.left , style: TextStyle(color: Colors.white , fontSize:  15 , fontWeight: FontWeight.bold , overflow: TextOverflow.ellipsis),),],),
                SizedBox(height: 10,),
-               Row(children: [ CircleAvatar(radius: 30 ,backgroundImage: NetworkImage(Strings.IMAGE_BASE_URL+"/uploads/matrimonial_photo/"+prefs.getString(SharedPrefs.communityId).toString()+"/"+img1 ), ) , SizedBox(width: 10,),Text(username , style: TextStyle(color: Colors.white , fontSize:  20 , fontWeight: FontWeight.bold),)],),
+               Row(children: [ CircleAvatar(radius: 30 ,backgroundImage: NetworkImage(Strings.IMAGE_BASE_URL+"/uploads/matrimonial_photo/"+prefs.getString(SharedPrefs.communityId).toString()+"/"+img1 ), ) , SizedBox(width: 10,),Container(width: MediaQuery.of(context).size.width*0.45  ,child: Text(username , maxLines: 3 ,overflow: TextOverflow.ellipsis , style: TextStyle(color: Colors.white , fontSize:  20 , fontWeight: FontWeight.bold ,overflow: TextOverflow.ellipsis),))],),
 
                 Container(width:300  ,margin: EdgeInsets.only(top: 25 , bottom: 5 ,left:15) ,child:Text("Your Profile Completion" , textAlign: TextAlign.left , style: TextStyle(color: Colors.white , fontSize:  13 , fontWeight: FontWeight.bold),)),
                 LinearPercentIndicator(
@@ -104,6 +105,7 @@ class _StylishDrawerState extends State<StylishDrawer> {
 
                 Row(mainAxisAlignment: MainAxisAlignment.start  ,children: [Text(mobilenumber ,textAlign: TextAlign.left , style: TextStyle(color: Colors.white , fontSize:  15 , fontWeight: FontWeight.bold , overflow: TextOverflow.ellipsis),),],),
 
+                Text("1.0.1")
 
               ],),
             ),),

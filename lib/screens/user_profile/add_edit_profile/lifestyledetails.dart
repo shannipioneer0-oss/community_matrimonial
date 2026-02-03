@@ -103,14 +103,14 @@ class LifestyleDetailsScreen  extends State<LifestyleDetailsStateful> {
 
     setState(() {
       selectedRadioFitness  =  prefs.getString(SharedPrefs.fitness).toString() == "High" ? 0 : prefs.getString(SharedPrefs.fitness).toString() == "Low" ? 1 : 2;
-      selectedRadio =   prefs.getString(SharedPrefs.isHandicap).toString() == "Yes" ? 0 : 1;
+      selectedRadio =   prefs.getString(SharedPrefs.isHandicap).toString() == "Yes" ? 0 :  prefs.getString(SharedPrefs.isHandicap).toString() == "No" ? 1 : 2;
     });
 
     if(prefs.getString(SharedPrefs.isHandicap).toString() == "No"){
       handicapdetailsController.text = "";
     }
 
-    extradetailsController.text = prefs.getString(SharedPrefs.extra_details_physique).toString();
+    extradetailsController.text = prefs.getString(SharedPrefs.extra_details_physique).toString() == "null" ? "" : prefs.getString(SharedPrefs.extra_details_physique).toString();
 
     height_value = prefs.getString(SharedPrefs.height).toString();
     weight_value = prefs.getString(SharedPrefs.weight).toString();

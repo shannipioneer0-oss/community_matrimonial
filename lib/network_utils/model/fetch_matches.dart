@@ -21,6 +21,9 @@ class User {
   @JsonKey(name: 'fullname')
   String fullname;
 
+  @JsonKey(name: 'handicap_detail')
+  String handicap_detail;
+
   @JsonKey(name: 'profile_id')
   String profileId;
 
@@ -87,7 +90,8 @@ class User {
     required this.isinterstSent,
     required this.pic,
     required this.verifypic1,
-    required this.oldpic1
+    required this.oldpic1,
+    required this.handicap_detail
   });
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

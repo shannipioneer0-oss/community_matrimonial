@@ -46,10 +46,8 @@ class MainScreenContainer extends StatefulWidget {
 }
 
 class MainScreenAppState extends State<MainScreenContainer>{
+
   int currentpage = -1;
-
-
-
 
   @override
   void initState() {

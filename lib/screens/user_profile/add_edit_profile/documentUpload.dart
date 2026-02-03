@@ -155,7 +155,7 @@ class Documentsuploadscreen  extends State<Documentsuploadstateful>{
     },
     ),
       actions: [
-        IconButton(
+        ElevatedButton.icon(
           onPressed: () async {
 
 
@@ -453,12 +453,12 @@ class Documentsuploadscreen  extends State<Documentsuploadstateful>{
         }
       }
     }},
-          icon: const Icon(
-            Icons.add_circle,
+          icon:  Icon(
+            Icons.add,
             color: Colors.pink,
             size: 24.0,
             semanticLabel: 'Text to announce in accessibility modes',
-          ),
+          ), label: Text("Save" , style: TextStyle(color: Colors.black87 , fontWeight: FontWeight.bold),),
         ),
       ],
     ),

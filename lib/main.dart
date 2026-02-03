@@ -10,6 +10,7 @@ import 'package:community_matrimonial/screens/about_us/about_us.dart';
 import 'package:community_matrimonial/screens/about_us/chief_members.dart';
 import 'package:community_matrimonial/screens/about_us/contact_us.dart';
 import 'package:community_matrimonial/screens/about_us/faqs.dart';
+import 'package:community_matrimonial/screens/about_us/member_list_trusteeshree.dart';
 import 'package:community_matrimonial/screens/about_us/privacy_policy..dart';
 import 'package:community_matrimonial/screens/chat/ChatScreen.dart';
 import 'package:community_matrimonial/screens/dashboard/dashboard.dart';
@@ -348,8 +349,8 @@ Future<void> main() async {
 initLoader(){
 
   EasyLoading.instance
-    ..displayDuration =const Duration(milliseconds: 4000)
-    ..loadingStyle =EasyLoadingStyle.custom //This was missing in earlier code
+    ..displayDuration = const Duration(milliseconds: 4000)
+    ..loadingStyle = EasyLoadingStyle.custom //This was missing in earlier code
     ..backgroundColor = Colors.pink
     ..textColor = Colors.white
     ..indicatorColor = Colors.white
@@ -507,6 +508,8 @@ class MyApp extends StatelessWidget {
             return Animations().setAnimation(HobbyDetails());
           case  "/hobbies_edit":
             return Animations().setAnimation(HobbyDetailsEdit(settings.arguments as List));
+          case  "/member_list_trusteeshree":
+            return Animations().setAnimation(HtmlWithFilesScreen(settings.arguments as String,));
 
           default:
             return null;
@@ -589,7 +592,9 @@ class MyScreen extends  State<MainScreen> {
       }
 
       if(message.data["type"] == "interest") {
+
         showFlutterNotification(message);
+
       }else if(message.data["type"] == "video"){
 
         channelname = message.data["channel"];
@@ -635,7 +640,9 @@ class MyScreen extends  State<MainScreen> {
     print(prefs.getString(SharedPrefs.translate).toString()+"-=-=()()");
 
     if(prefs.getString(SharedPrefs.translate) == null){
+
       TranslationService.load("en");
+
     }else{
 
       if(prefs.getString(SharedPrefs.translate).toString() == "en"){

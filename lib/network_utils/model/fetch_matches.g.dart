@@ -28,6 +28,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       whatsapp: json["whatsapp"] != null ? json["whatsapp"] : "",
       verifypic1: json["verifypic1"] != null ? json["verifypic1"] : "",
       oldpic1: json["oldpic1"] != null ? json["oldpic1"] : "",
+      handicap_detail: json["handicap_detail"] != null ? json["handicap_detail"] : ""
 );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{

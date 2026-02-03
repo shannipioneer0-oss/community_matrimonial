@@ -34,6 +34,16 @@ class IntroScreen extends State<IntroAppStateful> {
 
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    SVProgressHUD.dismiss();
+
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(child: Stack(

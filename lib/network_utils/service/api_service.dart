@@ -330,6 +330,12 @@ abstract class ApiService extends ChopperService {
   @Patch(path: 'profile/delete_account')
   Future<Response> postDeleteAccount(@Body() Map<String, dynamic> requestBody);
 
+  @Post(path: 'profile/hide_account')
+  Future<Response> postHideAccount(@Body() Map<String, dynamic> requestBody);
+
+  @Get(path: 'profile/hide_account_select')
+  Future<Response> getHideAccountSelect(@Body() Map<String, dynamic> requestBody);
+
   @Post(path: 'payment/createOrder')
   Future<Response> postCreateOrder(@Body() Map<String, dynamic> requestBody);
 
@@ -413,6 +419,9 @@ abstract class ApiService extends ChopperService {
 
   @Post(path: 'profile/update_family_member_details')
   Future<Response> update_family_member_details(@Body() Map<String, dynamic> requestBody);
+
+  @Post(path: 'adminpanel/role_community/select_member_list_community')
+  Future<Response> select_member_list_community(@Body() Map<String, dynamic> requestBody);
 
 
 }

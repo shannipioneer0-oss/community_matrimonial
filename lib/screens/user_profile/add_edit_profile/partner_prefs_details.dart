@@ -379,7 +379,14 @@ class PartnerDetailScreen  extends State<PartnerDetailStateful>{
              MultiSelectDialogWithBottomSheet().showMultiSelect(
                context, list_state, stateController, "Select State",
                callback: (String newData) {
-                 state_value = newData;
+
+                 setState(() {
+                   state_value = newData;
+                 });
+
+
+                 print(state_value);
+
                },);
 
              EasyLoading.dismiss();
@@ -394,8 +401,8 @@ class PartnerDetailScreen  extends State<PartnerDetailStateful>{
 
 
           },),
-          SizedBox(height: 20,),
-          CustomDropdown(icondata:MdiIcons.googleMaps , controller: cityController , labelText: TranslationService.translate("city_prefs"), onButtonPressed: () async {
+          SizedBox(height: state_value.toLowerCase().contains("any") ? 0 : 20,),
+          state_value.toLowerCase().contains("any") ? Container() : CustomDropdown(icondata:MdiIcons.googleMaps , controller: cityController , labelText: TranslationService.translate("city_prefs"), onButtonPressed: () async {
 
             if(state_value == "" || state_value.isEmpty){
 

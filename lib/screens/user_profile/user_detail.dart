@@ -261,7 +261,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                .split(",")[0] : "";
            handicap = healthDetails['is_handicap'] == "No"
                ? "Normal"
-               : "Physically Disabled";
+               : healthDetails['is_handicap'] == "Yes" ?  "Physically Disabled" : "" ;
            handicap_details = healthDetails['handicap_detail'] ?? "";
            diet_type =
            healthDetails['diet_type'] != null ? healthDetails['diet_type']
@@ -1215,7 +1215,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                       // REFERENCE MEMBERS
                       if (refmembername1.isNotEmpty || refmembername2.isNotEmpty) ...[
                         Text(
-                          "Reference Members",
+                          "Reference Member1",
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
                         ),
 
@@ -1224,6 +1224,12 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                           ProfileDetailItem(label: TranslationService.translate("address"), value: refmemberadd1),
                           ProfileDetailItem(label: TranslationService.translate("mobile"), value: refmembermobile1),
                         ],
+
+
+                        Text(
+                          "Reference Member2",
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+                        ),
 
                         if (refmembername2.isNotEmpty) ...[
                           ProfileDetailItem(label: TranslationService.translate("member_name"), value: refmembername2),
@@ -1261,17 +1267,17 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                       ProfileDetailItem(label: TranslationService.translate("height_range_key"), value: height_range),
                       ProfileDetailItem(label: TranslationService.translate("marital_prefs_key"), value: marital_prefs),
                       ProfileDetailItem(label: TranslationService.translate("caste_prefs_key"), value: caste_prefs),
-                      ProfileDetailItem(label: TranslationService.translate("subcaste_prefs_key"), value: subcaste_prefs),
+                      ProfileDetailItem(label: TranslationService.translate("shakh"), value: subcaste_prefs),
                       ProfileDetailItem(label: TranslationService.translate("skintone_prefs_key"), value: skintone_prefs),
                       ProfileDetailItem(label: TranslationService.translate("state_prefs_key"), value: state_prefs),
                       ProfileDetailItem(label: TranslationService.translate("city_prefs_key"), value:  city_prefs),
                       ProfileDetailItem(label: TranslationService.translate("edu_prefs_key"), value: edu_prefs),
                       ProfileDetailItem(label: TranslationService.translate("ocupation_prefs_key"), value: ocupation_prefs),
                       ProfileDetailItem(label: TranslationService.translate("body_prefs_key"), value: body_prefs),
-                      ProfileDetailItem(label: TranslationService.translate("diet_prefs_key"), value: diet_prefs),
-                      ProfileDetailItem(label: TranslationService.translate("drink_prefs_key"), value: drink_prefs),
-                      ProfileDetailItem(label: TranslationService.translate("smoke_prefs_key"), value: smoke_prefs),
-                      ProfileDetailItem(label: TranslationService.translate("fml_value_key"), value: fml_value),
+                   //   ProfileDetailItem(label: TranslationService.translate("diet_prefs_key"), value: diet_prefs),
+                   //   ProfileDetailItem(label: TranslationService.translate("drink_prefs_key"), value: drink_prefs),
+                   //   ProfileDetailItem(label: TranslationService.translate("smoke_prefs_key"), value: smoke_prefs),
+                   //   ProfileDetailItem(label: TranslationService.translate("fml_value_key"), value: fml_value),
                       ProfileDetailItem(label: TranslationService.translate("annual_income_prefs_key"), value: annual_income_prefs),
                     ],
                   ),

@@ -337,7 +337,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
           created_value, 'Profile Created By');
       String casteError = Validation.validateNotEmpty(caste_value, 'Caste');
       String subCasteError = Validation.validateNotEmpty(
-          subcaste_value, 'Sub Caste');
+          subcasteController.text.toString(), 'Sub Caste');
       String languageError = Validation.validateNotEmpty(
           lang_known_value, 'Language Known');
       String motherTongueError = Validation.validateNotEmpty(
@@ -345,14 +345,14 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
       String maritalStatusError = Validation.validateNotEmpty(
           marital_value, 'Marital Status');
 
+      print(firstNameError+"---"+lastNameError+"----"+dobError+"-----"+profileCreatedError+"---"+casteError+"----"+subCasteError+"---"+maritalStatusError);
+
       if (firstNameError == "null" ||
           lastNameError == "null" ||
           dobError == "null" ||
           profileCreatedError == "null" ||
           casteError == "null" ||
           subCasteError == "null" ||
-          languageError == "null" ||
-          motherTongueError == "null" ||
           maritalStatusError == "null") {
         DialogClass().showDialog2(
             context, "Basic Details Submit Alert!", "All fields are compulsory",

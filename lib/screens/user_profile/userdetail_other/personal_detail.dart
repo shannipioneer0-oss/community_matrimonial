@@ -56,18 +56,18 @@ class personal extends StatelessWidget{
         ProfileDetailItemOther(label: TranslationService.translate("marital") , value: basicinfo.maritalStatus.toString()),
         ProfileDetailItemOther(label: TranslationService.translate("created_by") , value: basicinfo.createdBy.toString()),
         ProfileDetailItemOther(label: TranslationService.translate("caste_detail") , value: basicinfo.caste.toString()),
-        ProfileDetailItemOther(label: TranslationService.translate("subcaste_detail") , value: basicinfo.subcaste.toString()),
-        ProfileDetailItemOther(label: TranslationService.translate("lang_known_detail") , value: basicinfo.languageKnown.toString()),
-        ProfileDetailItemOther(label: TranslationService.translate("mother_tongue_detail") , value: basicinfo.motherTongue.toString()),
+        ProfileDetailItemOther(label: TranslationService.translate("shakh") , value: basicinfo.subcaste.toString()),
+       /* ProfileDetailItemOther(label: TranslationService.translate("lang_known_detail") , value: basicinfo.languageKnown.toString()),
+        ProfileDetailItemOther(label: TranslationService.translate("mother_tongue_detail") , value: basicinfo.motherTongue.toString()),*/
         ProfileDetailItemOther(label: TranslationService.translate("weight_detail") , value: physicalinfo.weight.toString()),
         ProfileDetailItemOther(label: TranslationService.translate("height_detail") , value: physicalinfo.height.toString()),
         ProfileDetailItemOther(label: TranslationService.translate("skintone_detail") , value: physicalinfo.skintone.toString()),
-        ProfileDetailItemOther(label: TranslationService.translate("bgroup_detail") , value: physicalinfo.bloodGroup.toString()),
+/*        ProfileDetailItemOther(label: TranslationService.translate("bgroup_detail") , value: physicalinfo.bloodGroup.toString()),*/
         ProfileDetailItemOther(label: TranslationService.translate("fitness_level_detail") , value: physicalinfo.fitness.toString()),
         ProfileDetailItemOther(label: TranslationService.translate("body_type_detail") , value: physicalinfo.bodyType.toString()),
-        ProfileDetailItemOther(label: TranslationService.translate("diet_type_detail") , value: physicalinfo.dietType.toString()),
+       /* ProfileDetailItemOther(label: TranslationService.translate("diet_type_detail") , value: physicalinfo.dietType.toString()),
         ProfileDetailItemOther(label: TranslationService.translate("drink_type_detail") , value: physicalinfo.drinkType.toString()),
-        ProfileDetailItemOther(label: TranslationService.translate("smoke_type_detail") , value: physicalinfo.smokeType.toString()),
+        ProfileDetailItemOther(label: TranslationService.translate("smoke_type_detail") , value: physicalinfo.smokeType.toString()),*/
         physicalinfo.isHandicap.toString().toLowerCase() == "yes" ? ProfileDetailItemOther(label: TranslationService.translate("is_handicap") , value: physicalinfo.isHandicap.toString()) : Container(child:ProfileDetailItemOther(label: TranslationService.translate("is_handicap") , value: "No")),
         physicalinfo.isHandicap.toString().toLowerCase() == "yes" ? ProfileDetailItemOther(label: TranslationService.translate("handicap_details_key") , value: physicalinfo.handicapDetail.toString()) : Container(),
 
@@ -86,9 +86,9 @@ class personal extends StatelessWidget{
 
           educationinfo.education != null ? ProfileDetailItemOther(label: TranslationService.translate("education") , value: educationinfo.education.toString()) : Container(),
           educationinfo.education != null ? ProfileDetailItemOther(label: TranslationService.translate("educational_details") , value: educationinfo.educationDetail.toString()) : Container(),
-          educationinfo.education != null && educationinfo.isFromAdminService == "1" ? ProfileDetailItemOther(label: "Administrative Service" , value: educationinfo.adminPositionName.toString()) : Container(),
+          /*educationinfo.education != null && educationinfo.isFromAdminService == "1" ? ProfileDetailItemOther(label: "Administrative Service" , value: educationinfo.adminPositionName.toString()) : Container(),
           educationinfo.education != null && educationinfo.isFromIITIIMNIT == "1" ? ProfileDetailItemOther(label: "Reputed University Name" , value: educationinfo.instituteName.toString()) : Container(),
-
+*/
           pccupinfo.occupation != null ? Column(children: [
 
             ProfileDetailItemOther(label: TranslationService.translate("occupation_d") , value: pccupinfo.occupation.toString()),
@@ -112,9 +112,9 @@ class personal extends StatelessWidget{
         Container(color: ColorsPallete.blue_2, width: MediaQuery.of(context).size.width*0.9  , margin: EdgeInsets.only(left: 8 ,right: 8 ,top: 20),padding: EdgeInsets.all(5) , child: Text("User Verification" , textAlign: TextAlign.center, style: TextStyle(color: Colors.white , fontSize: 15),),),
         Container(color: Colors.white ,margin: EdgeInsets.only(left: 8 ,right: 8 , bottom: 20), width: MediaQuery.of(context).size.width*0.9 , padding: EdgeInsets.all(10) ,child:Column(children: [
 
-          ProfileDetailItemOther(label: TranslationService.translate("verify_mobile") , value: verificationInfo.mobileVerify == "0" ? "verification Going on" :verificationInfo.mobileVerify == "1" ? "Verified" : verificationInfo.mobileVerify == "2" ? "Rejected" : ""),
+      /*    ProfileDetailItemOther(label: TranslationService.translate("verify_mobile") , value: verificationInfo.mobileVerify == "0" ? "verification Going on" :verificationInfo.mobileVerify == "1" ? "Verified" : verificationInfo.mobileVerify == "2" ? "Rejected" : ""),
           ProfileDetailItemOther(label: TranslationService.translate("verify_user") , value: verificationInfo.userVerify == "0" ?  "verification Going on" :  verificationInfo.userVerify == "1" ?  "Verified" : verificationInfo.userVerify == "2" ? "Rejected" : "" ),
-          ProfileDetailItemOther(label: TranslationService.translate("verify_email") , value: verificationInfo.emailVerify == "0" ?  "verification Going on" :  verificationInfo.emailVerify == "1" ?  "Verified" : verificationInfo.emailVerify == "2" ? "Rejected" : ""),
+          ProfileDetailItemOther(label: TranslationService.translate("verify_email") , value: verificationInfo.emailVerify == "0" ?  "verification Going on" :  verificationInfo.emailVerify == "1" ?  "Verified" : verificationInfo.emailVerify == "2" ? "Rejected" : ""),*/
           ProfileDetailItemOther(label: TranslationService.translate("verfiy_identity") , value: verificationInfo.isIdVerify == "0" ?  "verification Going on" :  verificationInfo.isIdVerify == "1" ?  "Verified" : verificationInfo.isIdVerify == "2" ? "Rejected" : ""),
           ProfileDetailItemOther(label: TranslationService.translate("verify_education") , value: verificationInfo.isEducationVerify == "0" ?  "verification Going on" :  verificationInfo.isEducationVerify == "1" ?  "Verified" : verificationInfo.isEducationVerify == "2" ? "Rejected" : ""),
           ProfileDetailItemOther(label: TranslationService.translate("verify_income") , value: verificationInfo.incomeProof == "0" ?  "verification Going on" :  verificationInfo.isIncomeVerify == "1" ?  "Verified" :verificationInfo.isIncomeVerify == "2" ? "Rejected" : ""),

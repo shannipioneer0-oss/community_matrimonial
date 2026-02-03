@@ -30,7 +30,7 @@ class _ExpandingPanelState extends State<ExpandingPanel> {
           });
 
 
-           print(widget.photinfo.toString()+"---------------------");
+           print(widget.photinfo.pic1.toString()+"---------------------");
 
            if(widget.photinfo.pic1 != "null" && widget.photinfo.pic1 != "" && widget.photinfo.pic1 != null) {
              navService.pushNamed("/img_gallery_other",
