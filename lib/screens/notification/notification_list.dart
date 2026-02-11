@@ -107,7 +107,7 @@ class Notification extends State<NotificationStateful> {
           backgroundColor: Colors.transparent,
           elevation: 0.0,
           leading: IconButton(
-            icon: Image.asset("assets/images/menu_img.png" , width: 50, height: 40,),
+            icon: Image.asset("assets/images/ic_launcher.png" , width: 50, height: 40,),
             onPressed: () {
 
             },

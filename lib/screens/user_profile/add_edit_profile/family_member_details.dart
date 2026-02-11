@@ -15,6 +15,7 @@ import '../../../app_utils/Values.dart';
 import '../../../locale/TranslationService.dart';
 import '../../../network_utils/service/api_service.dart';
 import '../../../utils/SharedPrefs.dart';
+import '../../../utils/universalback_wrapper.dart';
 import '../../../utils/utils.dart';
 import '../ButtonSubmit.dart';
 import '../CustomDropdown.dart';
@@ -179,7 +180,10 @@ class FamilyMemberDetailScreen  extends State<FamilyDetailsStateful>{
   Widget build(BuildContext context) {
 
 
-    return Scaffold(key: _scaffoldKey7,
+    return UniversalBackWrapper(
+        isRoot: false
+
+        ,child:Scaffold(key: _scaffoldKey7,
 
     appBar: AppBar(
     title: Text('Family Member Details\nRavaldev Matrimony' , style: TextStyle(color: Colors.black87 , fontSize: 18),),
@@ -618,7 +622,7 @@ class FamilyMemberDetailScreen  extends State<FamilyDetailsStateful>{
 
     )),
 
-    );
+    ));
 
 
   }

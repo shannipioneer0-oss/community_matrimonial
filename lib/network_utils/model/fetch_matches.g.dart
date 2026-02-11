@@ -10,10 +10,10 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       name: json['name'] as String,
       mobRegToken: json['mob_reg_token'] != null ? json['mob_reg_token']  as String : "",
       webRegToken: json['web_reg_token'] != null ? json['web_reg_token'] as String : "",
-      fullname: json['fullname'] as String,
-      profileId: json['profile_id'] as String,
-      dob: json['dob'] as String,
-      userId: json['userId'] as String,
+      fullname: json['fullname'] != null ? json['fullname'] as String : "",
+      profileId: json['profile_id'] != null ?  json['profile_id']   as String : "",
+      dob: json['dob'] != null ? json['dob'] as String : "",
+      userId: json['userId'] != null ? json['userId']  as String : "",
       iitNit: json['iit_nit'] != null ? json['iit_nit'] as String : "",
       isAdminService: json['is_admin_service'] != null ? json['is_admin_service'] as String : "" ,
       education: json['education'] != null ? json['education'] as String : "",
@@ -28,7 +28,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       whatsapp: json["whatsapp"] != null ? json["whatsapp"] : "",
       verifypic1: json["verifypic1"] != null ? json["verifypic1"] : "",
       oldpic1: json["oldpic1"] != null ? json["oldpic1"] : "",
-      handicap_detail: json["handicap_detail"] != null ? json["handicap_detail"] : ""
+      handicap_detail: json["handicap_detail"] != null ? json["handicap_detail"] : "",
+      reciept_upload: json["reciept_upload"] != null ? json["reciept_upload"] : "",
+      payment_method: json["payment_method"] != null ? json["payment_method"] : "",
 );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{

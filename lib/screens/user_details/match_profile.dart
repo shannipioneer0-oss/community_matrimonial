@@ -1,8 +1,4 @@
 
-
-
-
-
 import 'package:community_matrimonial/network_utils/model/profile_details_model.dart';
 import 'package:community_matrimonial/screens/filter/CircleWithNumber.dart';
 import 'package:community_matrimonial/screens/user_details/InclinedPhoto.dart';
@@ -13,8 +9,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../app_utils/Dialogs.dart';
+import '../../utils/universalback_wrapper.dart';
+import '../../utils/utils.dart';
 
 class MatchProfile extends StatelessWidget {
 
@@ -48,7 +45,6 @@ class MatchProfileScreen  extends State<MatchProfileStateful>{
     super.initState();
 
     _checkConnectivity();
-
     initMatchProfile();
 
   }
@@ -102,8 +98,10 @@ class MatchProfileScreen  extends State<MatchProfileStateful>{
         name2 = basciinfo.fullname.toString();
         
 
-      pic1 = Strings.IMAGE_BASE_URL+"/uploads/matrimonial_photo/Matrimonial_Photo/"+prefs.getString(SharedPrefs.pic1).toString();
-      pic2 = Strings.IMAGE_BASE_URL+"/uploads/matrimonial_photo/Matrimonial_Photo/"+photoinfo.pic1.toString();
+      pic1 = Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+prefs.getString(SharedPrefs.pic1).toString();
+      pic2 = Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+photoinfo.pic1.toString();
+
+      print(pic1+"===="+pic2);
 
       marital_status = basciinfo.maritalStatus.toString();
       marital_status_prefer = prefs.getString(SharedPrefs.maritalStatus_prefs).toString().split("*")[0];
@@ -234,7 +232,10 @@ class MatchProfileScreen  extends State<MatchProfileStateful>{
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
+    return UniversalBackWrapper(
+        isRoot: false
+
+        ,child: Scaffold(
     appBar: AppBar(
     title: Text('Match Details' , style: TextStyle(color: Colors.black87 , fontSize: 18),),
     toolbarOpacity: 1,
@@ -248,7 +249,7 @@ class MatchProfileScreen  extends State<MatchProfileStateful>{
 
     },
     )),
-    body: SingleChildScrollView(child:Container(constraints: BoxConstraints(maxWidth:double.infinity , maxHeight: double.infinity)   ,color: ColorsPallete.grey_light_2  ,margin: EdgeInsets.only(top: 20),
+    body: SingleChildScrollView(child:SafeArea(child: Container(constraints: BoxConstraints(maxWidth:double.infinity , maxHeight: double.infinity)   ,color: ColorsPallete.grey_light_2  ,margin: EdgeInsets.only(top: 20),
 
       child: Column(children: [
 
@@ -272,7 +273,7 @@ class MatchProfileScreen  extends State<MatchProfileStateful>{
         Container(
           margin: EdgeInsets.only(top: 30),
           width: MediaQuery.of(context).size.width*0.9,
-          height: 50,
+          height: 70,
           decoration: BoxDecoration(
             color: Colors.pinkAccent,
             image: DecorationImage(
@@ -400,7 +401,7 @@ class MatchProfileScreen  extends State<MatchProfileStateful>{
             ],),),
 
             Container(child:Row(children: [ CircleWithNumber(number: "04") , const SizedBox(width: 15,) , Text("Subcaste", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),),
-            Container(margin:const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
+            Container(margin:const EdgeInsets.only(left: 15 , right: 15) , child:Row(mainAxisAlignment: MainAxisAlignment.start ,children: [
 
 
               Image.asset("assets/images/path_two.png" , height: 80,) , SizedBox(width: 30,) ,Container(
@@ -414,7 +415,7 @@ class MatchProfileScreen  extends State<MatchProfileStateful>{
                   Column(
                     children: [
 
-                Container(width: MediaQuery.of(context).size.width*0.5  ,child:Text(subcaste_prefer, style: TextStyle(fontSize: 15),),),
+                Container(width: MediaQuery.of(context).size.width*0.4  ,child:Text(subcaste_prefer, style: TextStyle(fontSize: 15),),),
                       Container(child: Text(" Vs " , style: TextStyle(fontSize: 18 , fontWeight: FontWeight.bold),),),
                       Text(subcaste, style: TextStyle(fontSize: 15),),
 
@@ -792,7 +793,7 @@ class MatchProfileScreen  extends State<MatchProfileStateful>{
 
     )),
 
-    );
+    )));
 
 
   }

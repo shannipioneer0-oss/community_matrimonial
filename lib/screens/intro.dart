@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../locale/TranslationService.dart';
 
 
 class IntroApp extends StatelessWidget {
@@ -38,7 +41,44 @@ class IntroScreen extends State<IntroAppStateful> {
     // TODO: implement initState
     super.initState();
 
+    EasyLoading.dismiss();
     SVProgressHUD.dismiss();
+
+    initUdates();
+
+  }
+
+  initUdates() async {
+
+    final res = await ApiService.create().select_version({});
+
+    print(res.body);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    Future.delayed(Duration(milliseconds: 500) , () async {
+
+
+      if(packageInfo.version.toString().compareTo(res.body["data"][0]["version"].toString()) == 0 || packageInfo.version.toString().compareTo(res.body["data"][0]["version"].toString()) > 0) {
+
+     //   DialogClass().showPremiumInfoDialog(context,  TranslationService.translate("no_need_updates") , TranslationService.translate("no_need_updates_details"), "Ok");
+
+
+      }else if(packageInfo.version.toString().compareTo(res.body["data"][0]["version"].toString()) < 0){
+
+        final res = await  DialogClass().showPremiumInfoDialog(context,  TranslationService.translate("update_app") , TranslationService.translate("update_app_details"), "Ok");
+
+        if(res == true || res == false){
+
+          launchUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.matrimonial.community_matrimonial_latest2.appa&hl=en_IN"));
+
+        }
+
+      }
+
+    });
+
 
   }
 
@@ -146,6 +186,7 @@ class IntroScreen extends State<IntroAppStateful> {
       "translate": ["en"]
     });
 
+   // print(_response2.body["data"][3][0]["0"]["education"].toString()+"-=-=-=-=-=()");
 
 
     double percent = 0.0;
@@ -156,7 +197,7 @@ class IntroScreen extends State<IntroAppStateful> {
 
     if(_response2.body["data"][0][0].toString() != "{}") {
 
-      print(userData["dob"]+"()()===()()");
+      print(userData["subcaste_txt"]+"()()===()()");
 
     await prefs.setString(
     SharedPrefs.basic_details_id, userData["Id"].toString());
@@ -167,8 +208,10 @@ class IntroScreen extends State<IntroAppStateful> {
     await prefs.setString(
     SharedPrefs.maritalStatus, userData["marital_status"] ?? "");
     await prefs.setString(SharedPrefs.caste, userData["caste"] ?? "");
-    await prefs.setString(SharedPrefs.subcaste, userData["subcaste"] ?? "");
-    await prefs.setString(
+   // await prefs.setString(SharedPrefs.subcaste, userData["subcaste"] ?? "");
+      await prefs.setString(SharedPrefs.subcaste_shakh, userData["subcaste_txt"] ?? "");
+
+      await prefs.setString(
     SharedPrefs.languageKnown, userData["language_known"] ?? "");
     await prefs.setString(
     SharedPrefs.motherTongue, userData["mother_tongue"] ?? "");
@@ -181,9 +224,14 @@ class IntroScreen extends State<IntroAppStateful> {
     percent = percent +  10;
     }
 
-    var contactInfo = _response2.body["data"][1][0]["0"];
+
 
     if(_response2.body["data"][1][0].toString() != "{}") {
+
+      var contactInfo = _response2.body["data"][1][0]["0"];
+
+      //
+
     await prefs.setString(
     SharedPrefs.contact_details_id, contactInfo["Id"].toString());
     await prefs.setString(
@@ -205,6 +253,8 @@ class IntroScreen extends State<IntroAppStateful> {
     SharedPrefs.permCountry, contactInfo["perm_country"] ?? "");
     await prefs.setString(SharedPrefs.permState, contactInfo["perm_state"] ?? "");
     await prefs.setString(SharedPrefs.permCity, contactInfo["perm_city"] ?? "");
+      await prefs.setString(
+          SharedPrefs.work_country, contactInfo["work_country"] ?? "");
     await prefs.setString(SharedPrefs.workState, contactInfo["work_state"] ?? "");
     await prefs.setString(SharedPrefs.workCity, contactInfo["work_city"] ?? "");
 
@@ -505,6 +555,7 @@ class IntroScreen extends State<IntroAppStateful> {
       prefs.setString(SharedPrefs.verify_email, email_verify);
       prefs.setString(SharedPrefs.user_verify, user_verify);
       prefs.setString(SharedPrefs.mobile_verify , mobile_verify);
+      prefs.setString(SharedPrefs.role_type , userverify['role'].toString());
 
     }
 
@@ -523,10 +574,86 @@ class IntroScreen extends State<IntroAppStateful> {
 
 
 
+
+
+
     percent = percent +  14;
     }
 
     print(percent.toString()+"-----------");
+
+    if(_response2.body["data"][17][0].toString() != "{}"){
+
+
+      var details1 = _response2.body["data"][17][0]["0"]["member_details1"];
+      var details2 = _response2.body["data"][17][0]["0"]["member_details2"];
+      var details3 = _response2.body["data"][17][0]["0"]["member_details3"];
+      var details4 = _response2.body["data"][17][0]["0"]["member_details4"];
+      var details5 = _response2.body["data"][17][0]["0"]["member_details5"];
+      var details6 = _response2.body["data"][17][0]["0"]["member_details6"];
+
+      var ref_member1 = _response2.body["data"][17][0]["0"]["ref_member_name1"];
+      var ref_add1 = _response2.body["data"][17][0]["0"]["ref_member_add1"];
+      var ref_mobile1 = _response2.body["data"][17][0]["0"]["ref_member_mobile1"];
+      var ref_member2 = _response2.body["data"][17][0]["0"]["ref_member_name2"];
+      var ref_add2 = _response2.body["data"][17][0]["0"]["ref_member_add2"];
+      var ref_mobile2 = _response2.body["data"][17][0]["0"]["ref_member_mobile2"];
+
+
+      await prefs.setString(SharedPrefs.membername1, details1.toString().split(",")[0]);
+      await prefs.setString(SharedPrefs.relation1, details1.toString().split(",")[1]);
+      await prefs.setString(SharedPrefs.marital1, details1.toString().split(",")[2]);
+      await prefs.setString(SharedPrefs.age1, details1.toString().split(",")[3]);
+      await prefs.setString(SharedPrefs.education1, details1.toString().split(",")[4]);
+      await prefs.setString(SharedPrefs.occupation_income1, details1.toString().split(",")[5]);
+
+      await prefs.setString(SharedPrefs.membername2, details2.toString().split(",")[0]);
+      await prefs.setString(SharedPrefs.relation2, details2.toString().split(",")[1]);
+      await prefs.setString(SharedPrefs.marital2, details2.toString().split(",")[2]);
+      await prefs.setString(SharedPrefs.age2, details2.toString().split(",")[3]);
+      await prefs.setString(SharedPrefs.education2, details2.toString().split(",")[4]);
+      await prefs.setString(SharedPrefs.occupation_income2, details2.toString().split(",")[5]);
+
+      await prefs.setString(SharedPrefs.membername3, details3.toString().split(",")[0]);
+      await prefs.setString(SharedPrefs.relation3, details3.toString().split(",")[1]);
+      await prefs.setString(SharedPrefs.marital3, details3.toString().split(",")[2]);
+      await prefs.setString(SharedPrefs.age3, details3.toString().split(",")[3]);
+      await prefs.setString(SharedPrefs.education3, details3.toString().split(",")[4]);
+      await prefs.setString(SharedPrefs.occupation_income3, details3.toString().split(",")[5]);
+
+      await prefs.setString(SharedPrefs.membername4, details4.toString().split(",")[0]);
+      await prefs.setString(SharedPrefs.relation4, details4.toString().split(",")[1]);
+      await prefs.setString(SharedPrefs.marital4, details4.toString().split(",")[2]);
+      await prefs.setString(SharedPrefs.age4, details4.toString().split(",")[3]);
+      await prefs.setString(SharedPrefs.education4, details4.toString().split(",")[4]);
+      await prefs.setString(SharedPrefs.occupation_income4, details4.toString().split(",")[5]);
+
+      await prefs.setString(SharedPrefs.membername5, details5.toString().split(",")[0]);
+      await prefs.setString(SharedPrefs.relation5, details5.toString().split(",")[1]);
+      await prefs.setString(SharedPrefs.marital5, details5.toString().split(",")[2]);
+      await prefs.setString(SharedPrefs.age5, details5.toString().split(",")[3]);
+      await prefs.setString(SharedPrefs.education5, details5.toString().split(",")[4]);
+      await prefs.setString(SharedPrefs.occupation_income5, details5.toString().split(",")[5]);
+
+      await prefs.setString(SharedPrefs.membername6, details6.toString().split(",")[0]);
+      await prefs.setString(SharedPrefs.relation6, details6.toString().split(",")[1]);
+      await prefs.setString(SharedPrefs.marital6, details6.toString().split(",")[2]);
+      await prefs.setString(SharedPrefs.age6, details6.toString().split(",")[3]);
+      await prefs.setString(SharedPrefs.education6, details6.toString().split(",")[4]);
+      await prefs.setString(SharedPrefs.occupation_income6, details6.toString().split(",")[5]);
+
+      await prefs.setString(SharedPrefs.refmembername1, ref_member1);
+      await prefs.setString(SharedPrefs.refmemberadd1, ref_add1);
+      await prefs.setString(SharedPrefs.refmembermobile1, ref_mobile1);
+
+      await prefs.setString(SharedPrefs.refmembername2, ref_member2);
+      await prefs.setString(SharedPrefs.refmemberadd2, ref_add2);
+      await prefs.setString(SharedPrefs.refmembermobile2, ref_mobile2);
+
+
+
+    }
+
 
     await prefs.setString(SharedPrefs.profile_percentage , percent.toString());
 

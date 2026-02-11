@@ -201,27 +201,12 @@ class FamilyDetailScreen  extends State<FamilyDetailsStateful>{
     DialogClass().showDialog2(context, "No Internet", "Sorry Internet is not available", "OK");
     }else {
 
-      if (familyvalueController.text
-          .toString()
-          .length == 0 || familytypeController.text
-          .toString()
-          .length == 0 || family_status.text
-          .toString()
-          .length == 0 || house_owned.text
+      if ( house_owned.text
           .toString()
           .length == 0
           || house_type.text
               .toString()
-              .length == 0 || no_brother.text
-          .toString()
-          .length == 0 || no_sister.text
-          .toString()
-          .length == 0 || no_married_bro.text
-          .toString()
-          .length == 0
-          || no_married_sister.text
-              .toString()
-              .length == 0 || father_name.text
+              .length == 0  || father_name.text
           .toString()
           .length == 0 || mother_name.text
           .toString()

@@ -319,6 +319,47 @@ class LifestyleDetailsScreen  extends State<LifestyleDetailsStateful> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
 
 
+        if (widget.list[0] == "" || widget.list[0] == null) {
+          EasyLoading.show(status: 'Please wait...');
+
+          final _response = await Provider.of<ApiService>(
+              context, listen: false)
+              .postLifeStyleInsert(
+              {
+                "weight": weightController.text.toString(),
+                "height": heightController.text.toString(),
+                "skintone": skintone,
+                "blood_group": "0",
+                "fitness": selectedRadioFitness == 0
+                    ? "High"
+                    : selectedRadioFitness == 1 ? "Low" : "Ok",
+                "body_type": body_type,
+                "is_handicap": selectedRadio == 0 ? "yes" : "No",
+                "handicap_detail": handicapdetailsController.text
+                    .toString(),
+                "diet_type": "",
+                "drink_type": "",
+                "smoke_type": "",
+                "extra_detail_physic": extradetailsController.text
+                    .toString(),
+                "userId": widget.list[18],
+                "communityId": prefs.getString(SharedPrefs.communityId),
+                "profileId": widget.list[19]
+              }
+          );
+
+          if (_response.body["data"]["affectedRows"] == 1) {
+
+
+            EasyLoading.dismiss();
+            navService.goBack();
+
+          } else {
+            DialogClass().showDialog2(
+                context, "Lifestyle Details Submit Alert!",
+                "Some problem occured Please try again", "Ok");
+          }
+        } else {
           EasyLoading.show(status: 'Please wait...');
 
           final _response = await Provider.of<ApiService>(
@@ -347,10 +388,11 @@ class LifestyleDetailsScreen  extends State<LifestyleDetailsStateful> {
 
 
           if (_response.body["success"] == 1) {
-
             EasyLoading.dismiss();
             navService.goBack();
+
           } else {
+
             EasyLoading.dismiss();
 
             DialogClass().showDialog2(
@@ -358,6 +400,7 @@ class LifestyleDetailsScreen  extends State<LifestyleDetailsStateful> {
                 "Some problem occured Please try again", "Ok");
           }
         }
+      }
       }
 
 

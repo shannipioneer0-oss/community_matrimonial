@@ -18,7 +18,7 @@ class SharedPrefs{
   static String user_verify = "user_prefs";
 
   static String email_verify = "email_prefs";
-  static String mobile_verify = "mobile_prefs";
+  static String mobile_verify = "mobile_prefs_verify";
   static String  communityId = "comId";
   static String  communityName = "comName";
   static String delete_account = "dlete_account_prefs";
@@ -33,6 +33,7 @@ class SharedPrefs{
   static const String maritalStatus = "marital_status";
   static const String caste = "caste";
   static const String subcaste = "subcaste";
+  static const String subcaste_shakh = "subcaste_shakh";
   static const String languageKnown = "language_known";
   static const String motherTongue = "mother_tongue";
   static const String profileId = "profile_id";
@@ -274,6 +275,7 @@ class SharedPrefs{
   static const String refmembermobile2 = "refmembermobile2";
 
   static const String fml_details_id = "fml_details_id";
+  static const String joined_days_done = "joined_days_done";
 
 
 

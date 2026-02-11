@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../locale/TranslationService.dart';
+import '../../../utils/universalback_wrapper.dart';
 
 
 
@@ -130,7 +131,10 @@ class HobbyDetailsScreen  extends State<HobbyDetailsStateful>{
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold( appBar: AppBar(
+    return UniversalBackWrapper(
+        isRoot: false
+
+        ,child: Scaffold( appBar: AppBar(
         title: Text('Hobby Details\nRavaldev Matrimony' , style: TextStyle(color: Colors.black87 , fontSize: 18),),
         toolbarOpacity: 1,
         backgroundColor: Colors.transparent,
@@ -223,7 +227,7 @@ class HobbyDetailsScreen  extends State<HobbyDetailsStateful>{
 
       ],)  ,),
 
-    ));
+    )));
 
 
   }

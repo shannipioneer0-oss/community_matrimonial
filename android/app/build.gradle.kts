@@ -22,13 +22,13 @@ android {
     flavorDimensions += "app"
 
     productFlavors {
-        create("AppA") {
+        create("appA") {
             dimension = "app"
             applicationIdSuffix = ".appa"
             resValue("string", "app_name", "RavalDev Matrimony")
         }
 
-        create("AppB") {
+        create("appB") {
             dimension = "app"
             applicationIdSuffix = ".appb"
             resValue("string", "app_name", "BJP Matrimony")
@@ -47,7 +47,7 @@ android {
 
     defaultConfig {
         applicationId = "com.matrimonial.community_matrimonial_latest2"
-        minSdk = 23
+        minSdk = flutter.minSdkVersion
         targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName

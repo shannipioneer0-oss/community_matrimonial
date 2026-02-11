@@ -37,6 +37,9 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slide_switcher/slide_switcher.dart';
 
+import '../../utils/universalback_wrapper.dart';
+import '../user_profile/add_edit_profile/educationaldetails.dart';
+
 
 
 
@@ -236,6 +239,48 @@ class UserDetailScreen extends State<UserDetailStateful> {
       }
 
       if (_response.body["data"][3][0].toString() != "{}") {
+        String first  = "" ,second  ="" , third = "";
+
+        print(_response.body["data"][3][0]["0"]["education"]+"====---");
+
+        List<Course> courses = _response.body["data"][3][0]["0"]["education"] != null ? _response.body["data"][3][0]["0"]["education"].toString()
+        !.split('|')
+            .map((e) => Course.fromString(e))
+            .toList() : [];
+
+        try{
+
+          first = courses[0].label;
+
+        }catch(ex){
+          first =  "";
+        }
+
+        try{
+
+          second = courses[1].label;
+
+        }catch(ex){
+          second =  "";
+        }
+
+        try{
+
+          third = courses[2].label;
+
+        }catch(ex){
+          third =  "";
+        }
+
+        final result = [
+          if (first.isNotEmpty) first ,
+          if (second.isNotEmpty) second,
+          if (third.isNotEmpty) third
+        ];
+
+
+
+
         educationinfo = EducationInfo(
             isFromAdminService: _response.body["data"][3][0]["0"]
             ["is_from_admin_service"],
@@ -244,7 +289,7 @@ class UserDetailScreen extends State<UserDetailStateful> {
             isFromIITIIMNIT: _response.body["data"][3][0]["0"]
             ["is_from_iit_iim_nit"],
             instituteName: _response.body["data"][3][0]["0"]["institute_name"],
-            education: _response.body["data"][3][0]["0"]["education"],
+            education:  result.join(","),
             educationDetail: _response.body["data"][3][0]["0"]
             ["education_detail"]);
       }
@@ -438,7 +483,10 @@ class UserDetailScreen extends State<UserDetailStateful> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return UniversalBackWrapper(
+        isRoot: false
+
+        ,child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
             title: Text(
@@ -461,7 +509,7 @@ class UserDetailScreen extends State<UserDetailStateful> {
               },
             )),
         body: SingleChildScrollView(
-          child: Container(
+          child: SafeArea(child: Container(
               color: ColorsPallete.grey_light_2,
               constraints: BoxConstraints(
                 maxWidth: double.infinity,
@@ -479,7 +527,15 @@ class UserDetailScreen extends State<UserDetailStateful> {
                       alignment: Alignment.topCenter,
                       children: [
                         Positioned(
-                          child: Image.network(
+                          child: GestureDetector(onTap: (){
+
+
+                            if(picinfo.pic1 != "null" && picinfo.pic1 != "" && picinfo.pic1 != null) {
+                              navService.pushNamed("/img_gallery_other",
+                                  args: [picinfo , basicinfo.fullname]);
+                            }
+
+                          }  ,child:Image.network(
                               Strings.IMAGE_BASE_URL +
                                   "/uploads/"+utils().imagePath(communityId)+
                                   picinfo.pic1.toString(),
@@ -487,7 +543,7 @@ class UserDetailScreen extends State<UserDetailStateful> {
 
                                 return Image.asset("assets/images/no_image.png" , fit: BoxFit.fitWidth);
 
-                              },),
+                              },),),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -859,7 +915,7 @@ class UserDetailScreen extends State<UserDetailStateful> {
                                       SizedBox(
                                         width: 3,
                                       ),
-                                    GestureDetector(onTap: () async {
+                                   /* GestureDetector(onTap: () async {
 
                                       SharedPreferences prefs = await SharedPreferences.getInstance();
                                       String msg = Strings.msgvideocall;
@@ -929,7 +985,7 @@ class UserDetailScreen extends State<UserDetailStateful> {
                                                     print(widget.user[0] +
                                                         "____{}{}");
 
-                                                    /*Navigator.push(
+                                                    *//*Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
                                                         builder: (context) =>
@@ -947,7 +1003,7 @@ class UserDetailScreen extends State<UserDetailStateful> {
                                                               widget.user[0]
                                                             ],),
                                                       ),
-                                                    );*/
+                                                    );*//*
 
 
                                                   },
@@ -1062,7 +1118,7 @@ class UserDetailScreen extends State<UserDetailStateful> {
                                                 color: Colors.white,
                                               ))
                                         ],
-                                      ),),
+                                      ),),*/
                                       Expanded(flex: 1, child: Container()),
                                       Stack(
                                         alignment: Alignment.centerRight,
@@ -1199,7 +1255,7 @@ class UserDetailScreen extends State<UserDetailStateful> {
                                       : Container()),
             ],
               )),
-        ));
+        ))));
   }
 
 

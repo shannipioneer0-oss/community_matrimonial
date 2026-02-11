@@ -14,6 +14,7 @@ import 'package:community_matrimonial/screens/inbox/inbox.dart';
 import 'package:community_matrimonial/screens/user_profile/user_detail.dart';
 import 'package:community_matrimonial/utils/Colors.dart';
 import 'package:community_matrimonial/utils/SharedPrefs.dart';
+import 'package:community_matrimonial/utils/universalbackwrapper_custom.dart';
 import 'package:community_matrimonial/utils/utils.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:crypto/crypto.dart';
@@ -34,6 +35,8 @@ import 'package:visibility_detector/visibility_detector.dart';
 import '../utils/Strings.dart';
 import 'package:http/http.dart' as http;
 
+import '../utils/universalback_wrapper.dart';
+
 
 class MainScreenContainer extends StatefulWidget {
 
@@ -45,7 +48,7 @@ class MainScreenContainer extends StatefulWidget {
 
 }
 
-class MainScreenAppState extends State<MainScreenContainer>{
+class MainScreenAppState extends State<MainScreenContainer> {
 
   int currentpage = -1;
 
@@ -55,15 +58,14 @@ class MainScreenAppState extends State<MainScreenContainer>{
 
     _checkConnectivity();
 
-    if(utils().isconnected() == false){
-
-      Future.delayed(Duration(milliseconds: 100) , (){
-        DialogClass().showDialog2(context, "No Internet", "Sorry Internet is not available", "OK");
+    if (utils().isconnected() == false) {
+      Future.delayed(Duration(milliseconds: 100), () {
+        DialogClass().showDialog2(
+            context, "No Internet", "Sorry Internet is not available", "OK");
       });
-
     }
 
-    print(widget.type.toString()+"__++++++++)______");
+    print(widget.type.toString() + "__++++++++)______");
 
     //TranslationService.load("en");
 
@@ -72,13 +74,8 @@ class MainScreenAppState extends State<MainScreenContainer>{
     });
 
 
-
-     initScreen();
-
+    initScreen();
   }
-
-
-
 
 
   @override
@@ -90,16 +87,14 @@ class MainScreenAppState extends State<MainScreenContainer>{
 
 
   initDialogs() async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
 
-    if(prefs.getString(SharedPrefs.reason_date).toString() != "null") {
-
-    DateFormat format = DateFormat("dd/MM/yyyy");
-    DateTime dateTime = format.parse(prefs.getString(SharedPrefs.reason_date).toString());
-    DateTime dateTimenow = DateTime.now();
-
+    if (prefs.getString(SharedPrefs.reason_date).toString() != "null") {
+      DateFormat format = DateFormat("dd/MM/yyyy");
+      DateTime dateTime = format.parse(
+          prefs.getString(SharedPrefs.reason_date).toString());
+      DateTime dateTimenow = DateTime.now();
 
 
       if (prefs.getString(SharedPrefs.reason).toString() != "null") {
@@ -113,31 +108,72 @@ class MainScreenAppState extends State<MainScreenContainer>{
       }
 
 
+      print(prefs.getString(SharedPrefs.remainingDays).toString()+"()()");
+
       if (prefs.getString(SharedPrefs.remainingDays).toString() != "null") {
         if (int.parse(prefs.getString(SharedPrefs.remainingDays).toString()) <=
             0) {
-          DialogClass().showDialog3(context, "Renewal Alert!",
-              "Your Plan has Expired. Please Renew to continue", "Ok");
+          DialogClass().showPremiumInfoDialog(
+              context, TranslationService.translate("renewal_alert"),
+              TranslationService.translate("renewal_alert_desc"), "Ok");
         }
       } else {
 
         if (int.parse(prefs.getString(SharedPrefs.joined_days).toString()) >=
             14) {
-          DialogClass().showDialog3(context, "Trial Period Expired",
-              "Your Trial Period has expired. Please Upgrade to continue",
+          final res = await DialogClass().showPremiumInfoDialog(
+              context, TranslationService.translate("trial_period"),
+              TranslationService.translate("trial_period_desc"),
               "Ok");
-        }
 
+          if (res == false) {
+            navService.pushNamed("/membership");
+            //Navigator.pop(context);
+            // SystemNavigator.pop();
+
+          }
+        } else
+        if (int.parse(prefs.getString(SharedPrefs.joined_days).toString()) >=
+            13) {
+          DialogClass().showPremiumInfoDialog(
+              context, TranslationService.translate("trial_period_1"),
+              TranslationService.translate("trial_period_desc_1"),
+              "Ok");
+        } else
+        if (int.parse(prefs.getString(SharedPrefs.joined_days).toString()) >=
+            12) {
+          DialogClass().showPremiumInfoDialog(
+              context, TranslationService.translate("trial_period_1"),
+              TranslationService.translate("trial_period_desc_2"),
+              "Ok");
+        } else
+        if (int.parse(prefs.getString(SharedPrefs.joined_days).toString()) >=
+            11) {
+          DialogClass().showPremiumInfoDialog(
+              context, TranslationService.translate("trial_period_1"),
+              TranslationService.translate("trial_period_desc_3"),
+              "Ok");
+        } else {
+          if (prefs.getString(SharedPrefs.joined_days_done).toString() != "1") {
+            final res = await DialogClass().showPremiumInfoDialog(
+                context, TranslationService.translate("joined_alert"),
+                TranslationService.translate("joined_alert_desc"), "Ok");
+
+            if (res == false) {
+              prefs.setString(SharedPrefs.joined_days_done, "1");
+            }
+          }
+        }
       }
     }
 
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String version =  prefs.getString(SharedPrefs.version).toString();
+    String version = prefs.getString(SharedPrefs.version).toString();
 
-    print(version+"-----"+packageInfo.version);
+    print(version + "-----" + packageInfo.version);
 
-    if(version.toString() != "null") {
+    if (version.toString() != "null") {
       if (packageInfo.version != version.split("_")[1].replaceAll(".apk", "")) {
         final res = await DialogClass().showDialogBeforesubmit(
             context, "Update Avialable",
@@ -156,7 +192,7 @@ class MainScreenAppState extends State<MainScreenContainer>{
             final checksum = sha256.convert(bytes).toString();
 
 
-           /* try {
+            /* try {
               //LINK CONTAINS APK OF FLUTTER HELLO WORLD FROM FLUTTER SDK EXAMPLES
               OtaUpdate()
                   .execute(
@@ -208,13 +244,10 @@ class MainScreenAppState extends State<MainScreenContainer>{
         }
       }
     }
-
-
-
-
   }
 
   ConnectivityResult _connectivityResult = ConnectivityResult.none;
+
   Future<void> _checkConnectivity() async {
     ConnectivityResult result = await Connectivity().checkConnectivity();
     setState(() {
@@ -226,7 +259,6 @@ class MainScreenAppState extends State<MainScreenContainer>{
   }
 
 
-
   String getSha256Checksum(String input) {
     final bytes = utf8.encode(input); // Convert string to bytes
     final digest = sha256.convert(bytes); // Calculate the SHA-256 hash
@@ -235,60 +267,23 @@ class MainScreenAppState extends State<MainScreenContainer>{
 
 
   initScreen() async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String fullname = prefs.getString(SharedPrefs.fullname) ?? "";
+    int target;
 
-
-
-    if(widget.type == -1) {
-      if (fullname == "" || fullname.isEmpty) {
-        navService.pushNamed("/basic_details", args: "insert");
-
-        setState(() {
-          currentpage = 0;
-        });
-      } else {
-        setState(() {
-          currentpage = 2;
-        });
-      }
-    }else{
-
-      print(widget.type.toString()+"_______+++++++++++++++");
-
-        if(widget.type == 0){
-          setState(() {
-            currentpage = 0;
-          });
-        }else if(widget.type == 1){
-          setState(() {
-            currentpage = 1;
-          });
-        }else if(widget.type == 2){
-          setState(() {
-            currentpage = 2;
-          });
-        }else if(widget.type == 3){
-          setState(() {
-            currentpage = 3;
-          });
-        }else if(widget.type == 4){
-          setState(() {
-            currentpage = 4;
-          });
-        }
-
-
-        print(currentpage.toString()+"{}");
-
-
-
+    if (widget.type == -1) {
+      target = (fullname.isEmpty) ? 0 : 2;
+    } else {
+      target = widget.type;
     }
 
+    // Ensure the UI builds with the new page
+    setState(() {
+      currentpage = target;
+    });
 
+    initDialogs();
   }
-
 
 
   Center? _getpage(int page) {
@@ -306,116 +301,111 @@ class MainScreenAppState extends State<MainScreenContainer>{
           child: DashboardApp(),
         );
       case 3:
-
         return Center(
           child: FilterScreenApp(),
         );
       default:
         Center(
-          child: Container()
+            child: Container()
         );
     }
     return null;
   }
 
+  GlobalKey<FancyBottomNavigationPlusState> _bottomNavKey = GlobalKey();
+
+  @override
   @override
   Widget build(BuildContext context) {
 
-    return VisibilityDetector(
-    key: Key('my-widget-key'),
-    onVisibilityChanged: (visibilityInfo) {
-    num visiblePercentage = visibilityInfo.visibleFraction * 100;
-    if(visiblePercentage >= 50){
-
-      Future.delayed(Duration(milliseconds: 100), () {
-        Userdata().initUserData(context);
-      });
-
-      Future.delayed(Duration(milliseconds: 1000), ()
-      {
-        initDialogs();
-      });
 
 
+    // 1. Prevent building the nav bar until we have a real index
+    if (currentpage == -1) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
 
-    },
-    child:WillPopScope(
-        onWillPop: (){
+    return PopScope(
+      // canPop: false prevents the app from exiting automatically
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
 
-      if(currentpage == 2){
-
-
-        Dialogs.materialDialog(
-            msg: "Are you sure you want to exit?",
-            title: "Exit Screen",
-            color: Colors.white,
-            context: context,
-            onClose: (value) => print("returned value is '$value'"),
-            actions: [
-              IconsOutlineButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                },
-                text: "Yes Exit",
-                iconData: Icons.info,
-                textStyle: TextStyle(color: Colors.green),
-                iconColor: Colors.green,
-              ),
-
-              IconsOutlineButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                text: "Cancel",
-                iconData: Icons.cancel,
-                textStyle: TextStyle(color: Colors.red),
-                iconColor: Colors.red,
-              ),
-
-            ]);
-
-      }else{
-        setState(() {
-          currentpage = currentpage -1;
-          navService.pushNamed("/main_screen" , args:currentpage);
-        });
-
-      }
-
-      print("++++++++++++++++++++++");
+        debugPrint("Back detected on page: $currentpage");
 
 
-      return Future.value(false);
-    },
-    child: MaterialApp(
-      theme: ThemeData(
-          primaryColor: Colors.pinkAccent,
-          iconTheme: const IconThemeData(
-            color: Colors.white,
-          ),
-          textTheme: TextTheme(displayMedium: TextStyle(color: Colors.white))
-      ),
-      home: Scaffold(
-        body: currentpage != -1 ?  _getpage(currentpage) : Container(),
-        bottomNavigationBar: SafeArea(child: FancyBottomNavigationPlus(
-          barBackgroundColor:  ColorsPallete.blue_2,
-          initialSelection: currentpage ,
-          tabs: [
-            TabData(icon: const Icon(Icons.account_circle_outlined), title:TranslationService.translate("profile") ),
-            TabData(icon: const Icon(Icons.mail_outline), title: TranslationService.translate("inbox") ),
-            TabData(icon: const Icon(Icons.home), title: TranslationService.translate("home")),
-            TabData(icon: const Icon(Icons.search), title: TranslationService.translate("search")),
-          ],
-          titleStyle: TextStyle(color: Colors.white),
-          onTabChangedListener: (position) {
+          if(currentpage == 0){
+
+            Dialogs.materialDialog(
+              msg: "Are you sure you want to exit?",
+              title: "Exit Screen",
+              context: context,
+              actions: [
+                IconsOutlineButton(
+                  onPressed: () => SystemNavigator.pop(),
+                  text: "Yes Exit",
+                ),
+                IconsOutlineButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  text: "Cancel",
+                ),
+              ],
+            );
+
+
+          } else {
+
             setState(() {
-              currentpage = position;
+              if (currentpage > 0) {
+                currentpage = currentpage - 1;
+              }
+              _bottomNavKey.currentState?.setPage(currentpage);
             });
-          },
+
+          }
+
+
+      }, child: Theme( // Use Theme instead of MaterialApp to keep the pink accent
+        data: ThemeData(
+            primaryColor: Colors.pinkAccent,
+            iconTheme: const IconThemeData(color: Colors.white),
+            textTheme: const TextTheme(
+                displayMedium: TextStyle(color: Colors.white))
+        ),
+        child: Scaffold(
+          body: _getpage(currentpage),
+          bottomNavigationBar: SafeArea(
+            child: FancyBottomNavigationPlus(
+              key: _bottomNavKey,
+              // This MUST be the GlobalKey defined in your State class
+              barBackgroundColor: ColorsPallete.blue_2,
+              initialSelection: currentpage,
+              tabs: [
+                TabData(icon: const Icon(Icons.account_circle_outlined),
+                    title: TranslationService.translate("profile")),
+                TabData(icon: const Icon(Icons.mail_outline),
+                    title: TranslationService.translate("inbox")),
+                TabData(icon: const Icon(Icons.home),
+                    title: TranslationService.translate("home")),
+                TabData(icon: const Icon(Icons.search),
+                    title: TranslationService.translate("search")),
+              ],
+              titleStyle: const TextStyle(color: Colors.white),
+              onTabChangedListener: (position) {
+
+                  setState(() {
+                    currentpage = position;
+                  });
+
+              },
+            ),
+          ),
         ),
       ),
-    ))));
+    );
   }
+
+
 }

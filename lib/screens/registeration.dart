@@ -66,6 +66,13 @@ class RegisterationState extends State<Registeration>{
       items_year.add(DataFetchParams(label: i.toString(), value: i.toString(), value2: i.toString()));
     }
 
+     Future.delayed(Duration(milliseconds: 500), (){
+
+       DialogClass().showPremiumInfoDialog2(context , "Who Can Register?" , "Only Raval Yogi Samaj Can Regsiter. \n (Father should be from Raval Yogi Samaj)" , "Got It!");
+
+     });
+
+
   }
 
   String month = "";

@@ -51,7 +51,7 @@ class VerifyImageListState  extends State<VerifyImageListStateful>{
   HugeListViewController controller = HugeListViewController(totalItemCount: int.parse(Strings.limit));
   String total_count = "0";
   String communityId = "";
-
+  SharedPreferences? prefs ;
 
   Future<List<Verifyimagelist>> _loadPage(BuildContext context  ,int page, int pageSize) async {
 
@@ -59,13 +59,13 @@ class VerifyImageListState  extends State<VerifyImageListStateful>{
       EasyLoading.show(status: 'Please wait...');
     }
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+     prefs = await SharedPreferences.getInstance();
 
-    communityId  =prefs.getString(SharedPrefs.communityId).toString();
+    communityId  =prefs!.getString(SharedPrefs.communityId).toString();
 
 
 
-    final _response = await Provider.of<ApiService>(context, listen: false).postVerifyImageList({"communityId": prefs.getString(SharedPrefs.communityId) , "limit":int.parse(Strings.limit),
+    final _response = await Provider.of<ApiService>(context, listen: false).postVerifyImageList({"communityId": prefs?.getString(SharedPrefs.communityId) , "limit":int.parse(Strings.limit),
       "offset":page*pageSize});
 
 
@@ -147,7 +147,7 @@ class VerifyImageListState  extends State<VerifyImageListStateful>{
 
         itemBuilder: (context, index, Verifyimagelist entry) {
 
-          return VerifyImageListRow(fetchImages: entry, index: index, communityId: communityId,);
+          return VerifyImageListRow(fetchImages: entry, index: index, communityId: communityId, prefs: prefs!,);
 
         },
         errorBuilder: (context, error) {

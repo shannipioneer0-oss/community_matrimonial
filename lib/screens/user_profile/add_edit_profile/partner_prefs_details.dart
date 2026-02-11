@@ -27,6 +27,8 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../utils/universalback_wrapper.dart';
+
 
 
 class PartnerDetails extends StatelessWidget {
@@ -80,7 +82,9 @@ class PartnerDetailScreen  extends State<PartnerDetailStateful>{
   String from_age = "18" , to_age = "70" , from_height = "4ft 0inch" , to_height = "7ft 5inch";
   String marital_vlaue = "" , caste_vlaue ="" , subcaste_value = "", skintone_value = "" , state_value = "";
   String  city_value = "" , edu_value = "" , occup_value = "" , body_type = "" , diet_type = "" ,drink_type =""  ;
-  String smoke_type = "" ,  family_value = "", annual_income = "";
+  String smoke_type = "" ,  family_value = "", annual_income = "" , caste_value = "";
+
+
 
   List<String> Age =  Lists().generateNumberList(18, 70);
 
@@ -125,6 +129,12 @@ class PartnerDetailScreen  extends State<PartnerDetailStateful>{
     if(prefs.getString(SharedPrefs.maritalStatus_prefs).toString().length > 0) {
       maritalController.text = utils().replaceNull(prefs.getString(SharedPrefs.maritalStatus_prefs).toString().split("*")[0]);
       marital_vlaue =  prefs.getString(SharedPrefs.maritalStatus_prefs).toString().split("*")[1] ?? "";
+    }
+
+    if(prefs.getString(SharedPrefs.caste_prefs).toString().length > 0 && prefs.getString(SharedPrefs.caste_prefs).toString().contains("*")) {
+      casteController.text = utils().replaceNull(
+          prefs.getString(SharedPrefs.caste_prefs).toString().split("*")[0]);
+      caste_value = prefs.getString(SharedPrefs.caste_prefs).toString().split("*")[1];
     }
 
     if(prefs.getString(SharedPrefs.subcaste_prefs).toString().length > 0 && prefs.getString(SharedPrefs.subcaste_prefs).toString().contains("*")) {
@@ -274,7 +284,10 @@ class PartnerDetailScreen  extends State<PartnerDetailStateful>{
 
     print(to_height+"==---");
 
-    return Scaffold(key: _scaffoldKey,
+    return UniversalBackWrapper(
+        isRoot: false
+
+        ,child: Scaffold(key: _scaffoldKey,
         appBar: AppBar(
             title: Text('Partner Preference Details\nRavaldev Matrimony' , style: TextStyle(color: Colors.black87 , fontSize: 18),),
             toolbarOpacity: 1,
@@ -335,6 +348,15 @@ class PartnerDetailScreen  extends State<PartnerDetailStateful>{
              marital_vlaue = newData;
             },);
             EasyLoading.dismiss();
+
+          },),
+          SizedBox(height: 20,),
+          CustomDropdown(icondata: Icons.person  ,controller: casteController , labelText: TranslationService.translate("caste"), onButtonPressed: () async {
+
+            final value = await SingleSelectDialog().showBottomSheet(context, await Values.getValues(context , "caste" , "") , "Select Caste");
+            casteController.text = value.label;
+            caste_value = value.value;
+
 
           },),
           SizedBox(height: 20,),
@@ -574,7 +596,7 @@ class PartnerDetailScreen  extends State<PartnerDetailStateful>{
           "age_range": from_age + "-" + to_age,
           "height_range": from_height + "-" + to_height,
           "marital_status": marital_vlaue,
-          "caste": "",
+          "caste": caste_value,
           "subcaste": subcaste_value,
           "skintone": skintone_value,
           "state": state_value,
@@ -606,7 +628,8 @@ class PartnerDetailScreen  extends State<PartnerDetailStateful>{
           await prefs.setString(
               SharedPrefs.maritalStatus_prefs, maritalController.text
               .toString() + "*" + marital_vlaue ?? '');
-          await prefs.setString(SharedPrefs.caste_prefs, "" ?? '');
+          await prefs.setString(SharedPrefs.caste_prefs, casteController.text
+              .toString() + "*" + caste_value ?? '');
           await prefs.setString(SharedPrefs.subcaste_prefs, subcasteController
               .text.toString() + "*" + subcaste_value ?? '');
           await prefs.setString(SharedPrefs.state_prefs, stateController.text
@@ -685,7 +708,8 @@ class PartnerDetailScreen  extends State<PartnerDetailStateful>{
           await prefs.setString(
               SharedPrefs.maritalStatus_prefs, maritalController.text
               .toString() + "*" + marital_vlaue ?? '');
-          await prefs.setString(SharedPrefs.caste_prefs, "" ?? '');
+          await prefs.setString(SharedPrefs.caste_prefs, casteController.text
+              .toString() + "*" + caste_value ?? '');
           await prefs.setString(SharedPrefs.subcaste_prefs, subcasteController
               .text.toString() + "*" + subcaste_value ?? '');
           await prefs.setString(SharedPrefs.state_prefs, stateController.text
@@ -730,7 +754,7 @@ class PartnerDetailScreen  extends State<PartnerDetailStateful>{
           },)
 
         ],)),
-        )));
+        ))));
 
   }
 

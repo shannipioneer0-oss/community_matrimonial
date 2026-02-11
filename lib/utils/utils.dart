@@ -3,9 +3,16 @@
 import 'dart:math';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/phone_number.dart';
+import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../app_utils/Dialogs.dart';
+import '../locale/TranslationService.dart';
+import 'SharedPrefs.dart';
 
 
 class utils{
@@ -147,21 +154,29 @@ class utils{
      var date1 = inputFormat.parse(marathiDate);
 
      print(date1.toString()+"[][][]");*/
+     String year = "" ,month = "" ,day = "";
 
-     var outputFormat = DateFormat('yyyy-MM-dd');
-     var date2 = outputFormat.parse(marathiDate);
+     try {
+       var outputFormat = DateFormat('yyyy-MM-dd');
+       var date2 = outputFormat.parse(marathiDate);
 
 
-    List<String> parts = date2.toString().split('-');
+       List<String> parts = date2.toString().split('-');
 
 
-    // Convert each part from Marathi digits to English digits
-    String year = _convertMarathiDigitsToEnglish(parts[0]);
-    String month = _convertMarathiDigitsToEnglish(parts[1]);
-    String day = _convertMarathiDigitsToEnglish(parts[2]);
+       // Convert each part from Marathi digits to English digits
+        year = _convertMarathiDigitsToEnglish(parts[0]);
+        month = _convertMarathiDigitsToEnglish(parts[1]);
+        day = _convertMarathiDigitsToEnglish(parts[2]);
+     }catch(ex){
+
+       return '$year-$month-$day';
+
+     }
 
     // Return the formatted English date
-    return '$year-$month-$day';
+
+     return '$year-$month-$day';
   }
 
   String _convertMarathiDigitsToEnglish(String marathiDigits) {
@@ -282,6 +297,88 @@ class utils{
     }
   }
 
+
+
+   Future<bool> validationalerts(BuildContext context) async {
+
+    String fullname = "" , dob = ""  ,createdby = "" , marital = "" , caste = "" , subcaste = "";
+    String height = "" , wieght = "" , skintone = "" ,body_type = "" , handicap ="" , mobile = "" , country = "" ;
+    String perm_state = "" ,perm_city = ""  ,education = "" , occuapation = "" ,father_name = "" , mother_name = "";
+    String father_coccup = "" , mother_occup = ""  , house_owned = "" , house_type = ""  ;
+    String membername1 = "" ,membername2 ="" ,relation1 = "" ,relation2 = "" ,marital1 = "" ,marital2 = "" , age1 = "" ,age2 ="" ;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+     fullname =
+         prefs.getString(SharedPrefs.firstName).toString() + " " +
+             prefs.getString(SharedPrefs.lastname).toString();
+     dob = prefs.getString(SharedPrefs.dob).toString();
+    createdby = prefs.getString(SharedPrefs.createdBy).toString();
+    marital = prefs.getString(SharedPrefs.maritalStatus).toString();
+    caste = prefs.getString(SharedPrefs.caste).toString();
+    subcaste = prefs.getString(SharedPrefs.subcaste_shakh).toString();
+
+    height = prefs.getString(SharedPrefs.height).toString();
+    wieght = prefs.getString(SharedPrefs.weight).toString();
+    skintone = prefs.getString(SharedPrefs.skinTone).toString();
+    body_type = prefs.getString(SharedPrefs.bodyType).toString();
+    handicap = prefs.getString(SharedPrefs.isHandicap).toString();
+
+    mobile = prefs.getString(SharedPrefs.mobileNumber).toString();
+     country = prefs.getString(SharedPrefs.permCountry).toString();
+     perm_state =prefs.getString(SharedPrefs.permState).toString();
+    perm_city =  prefs.getString(SharedPrefs.permCity).toString();
+
+    education = prefs.getString(SharedPrefs.education).toString();
+    occuapation = prefs.getString(SharedPrefs.occupation).toString();
+
+     father_name = prefs.getString(SharedPrefs.fatherName).toString();
+             mother_name = prefs.getString(SharedPrefs.motherName).toString();
+             father_coccup =prefs.getString(SharedPrefs.fatherOccupation).toString();
+             mother_occup = prefs.getString(SharedPrefs.motherOccupation).toString();
+             house_owned = prefs.getString(SharedPrefs.houseOwned).toString();
+             house_type =prefs.getString(SharedPrefs.houseType).toString();
+
+
+  membername1 = prefs.getString(SharedPrefs.membername1).toString();
+  relation1 = prefs.getString(SharedPrefs.relation1).toString();
+  marital1 = prefs.getString(SharedPrefs.marital1).toString();
+   age1 = prefs.getString(SharedPrefs.age1).toString();
+
+    membername2 = prefs.getString(SharedPrefs.membername1).toString();
+    relation2 = prefs.getString(SharedPrefs.relation1).toString();
+    marital2 = prefs.getString(SharedPrefs.marital1).toString();
+     age2 = prefs.getString(SharedPrefs.age1).toString();
+
+
+
+
+    if(fullname.trim() == "null" || dob == "null" || createdby == "null" || marital == "null" || caste == "null" || subcaste == "null" ||
+         height == "null" || wieght == "null" || skintone == "null" || body_type == "null" || handicap == "null" || mobile == "null" || country == "null"
+         || perm_state == "null" || perm_city == "null" || education == "null" || father_name == "null" || mother_name == "null"
+         || father_coccup == "null" || mother_occup == "null" || house_owned == "null" || house_type == "null" || membername1 == "null" || membername2 == "null"
+         || relation1 == "null" || relation2 == "null" || marital1 == "null" || marital2 == "null" || age1 == "null" || age2 == "null"){
+
+       final result =   await DialogClass().showPremiumInfoDialog(context, TranslationService.translate("incomplete_alert_title") , TranslationService.translate("incomplete_alert_message") , TranslationService.translate("ok_button"));
+
+
+       return false;
+
+     }else if(prefs.getString(SharedPrefs.user_verify).toString() == "0") {
+
+      DialogClass().showPremiumInfoDialog(
+          context, TranslationService.translate("verification_alert_title") ,
+          TranslationService.translate("verification_alert_message") ,
+          TranslationService.translate("ok_button"));
+
+      return false;
+    }
+
+
+
+    return true;
+
+   }
 
 
 }

@@ -20,6 +20,7 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../utils/data.dart';
+import '../../../utils/universalback_wrapper.dart';
 
 
 
@@ -126,7 +127,10 @@ class FamilyDetailScreen  extends State<FamilyDetailsStateful>{
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(key: _scaffoldKey7,
+    return UniversalBackWrapper(
+        isRoot: false
+
+        ,child:Scaffold(key: _scaffoldKey7,
         appBar: AppBar(
             title: Text('Family Details\nRavaldev Matrimony' , style: TextStyle(color: Colors.black87 , fontSize: 18),),
             toolbarOpacity: 1,
@@ -169,15 +173,15 @@ class FamilyDetailScreen  extends State<FamilyDetailsStateful>{
           SizedBox(height: 20,),
           CustomTextField(icondata: Icons.family_restroom_sharp, controller: no_married_sister, labelText: TranslationService.translate("no_married_sister"), enabled: false),
           SizedBox(height: 20,),
-          CustomTextField(icondata: Icons.family_restroom_sharp, controller: father_name, labelText: TranslationService.translate("father_name"), enabled: false),
+          CustomTextField(icondata: Icons.family_restroom_sharp, controller: father_name, labelText: "* "+TranslationService.translate("father_name"), enabled: false),
           SizedBox(height: 20,),
-          CustomTextField(icondata: Icons.family_restroom_sharp, controller: mother_name, labelText: TranslationService.translate("mother_name"), enabled: false),
+          CustomTextField(icondata: Icons.family_restroom_sharp, controller: mother_name, labelText: "* "+TranslationService.translate("mother_name"), enabled: false),
           SizedBox(height: 20,),
-          CustomTextField(icondata: Icons.family_restroom_sharp, controller: father_occupation, labelText: TranslationService.translate("father_occuaption"), enabled: false),
+          CustomTextField(icondata: Icons.family_restroom_sharp, controller: father_occupation, labelText: "* "+TranslationService.translate("father_occuaption"), enabled: false),
           SizedBox(height: 20,),
-          CustomTextField(icondata: Icons.family_restroom_sharp, controller: mother_occupation, labelText: TranslationService.translate("mother_occupation"), enabled: false),
+          CustomTextField(icondata: Icons.family_restroom_sharp, controller: mother_occupation, labelText: "* "+TranslationService.translate("mother_occupation"), enabled: false),
           SizedBox(height: 20,),
-          CustomDropdown(icondata: Icons.family_restroom, controller: house_owned, labelText: TranslationService.translate("house_owned"), onButtonPressed: () async {
+          CustomDropdown(icondata: Icons.family_restroom, controller: house_owned, labelText: "* "+TranslationService.translate("house_owned"), onButtonPressed: () async {
 
             final value = await SingleSelectDialog().showBottomSheetSingle(context, Data().getHouseOwned() , TranslationService.translate("house_owned"));
             house_owned.text = value;
@@ -185,7 +189,7 @@ class FamilyDetailScreen  extends State<FamilyDetailsStateful>{
 
           },),
           SizedBox(height: 20,),
-          CustomDropdown(icondata: Icons.family_restroom_sharp, controller: house_type, labelText: TranslationService.translate("house_type"), onButtonPressed: () async {
+          CustomDropdown(icondata: Icons.family_restroom_sharp, controller: house_type, labelText: "* "+TranslationService.translate("house_type"), onButtonPressed: () async {
 
             final value = await SingleSelectDialog().showBottomSheet(context, await Values.getValues(context , "house_type" , "") , "Select House Type");
             house_type.text = value.label;
@@ -228,16 +232,7 @@ class FamilyDetailScreen  extends State<FamilyDetailsStateful>{
           .length == 0
           || house_type.text
               .toString()
-              .length == 0 || no_brother.text
-          .toString()
-          .length == 0 || no_sister.text
-          .toString()
-          .length == 0 || no_married_bro.text
-          .toString()
-          .length == 0
-          || no_married_sister.text
-              .toString()
-              .length == 0 || father_name.text
+              .length == 0  || father_name.text
           .toString()
           .length == 0 || mother_name.text
           .toString()
@@ -416,7 +411,7 @@ class FamilyDetailScreen  extends State<FamilyDetailsStateful>{
             },)
 
         ],)),
-        )));
+        ))));
 
   }
 

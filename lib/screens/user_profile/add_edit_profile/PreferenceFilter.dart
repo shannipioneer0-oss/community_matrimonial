@@ -11,6 +11,8 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../utils/universalback_wrapper.dart';
+
 class PreferenceFilter extends StatefulWidget {
   @override
   PreferenceFilterState createState() => PreferenceFilterState();
@@ -21,7 +23,7 @@ class PreferenceFilterState extends State<PreferenceFilter> {
 
   Map<String, bool> switchValues = {
     'Age': true,
-    'Height': false,
+    'Height': true,
     'MaritalStatus': true,
     'Shakh': false,
     'SkinTone': true,
@@ -80,7 +82,10 @@ class PreferenceFilterState extends State<PreferenceFilter> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return UniversalBackWrapper(
+      isRoot: false
+
+      ,child: Scaffold(
       appBar: AppBar(
           title: Text('Partner Preference Filter\nRavaldev Matrimony' , style: TextStyle(color: Colors.black87 , fontSize: 18),),
           toolbarOpacity: 1,
@@ -159,7 +164,7 @@ class PreferenceFilterState extends State<PreferenceFilter> {
           );
         }).toList(),
       ),),),
-    );
+    ));
   }
 }
 

@@ -17,8 +17,9 @@ class InboxRowData extends StatelessWidget {
 
    UserMatch user;
    int selectedindex;
+   SharedPreferences prefs;
 
-  InboxRowData(this.user , this.selectedindex);
+  InboxRowData(this.user , this.selectedindex ,this.prefs);
 
 
    void _showImageDialog(BuildContext context , String url) {
@@ -75,14 +76,14 @@ class InboxRowData extends StatelessWidget {
                             _showImageDialog(
                               context,
                               Strings.IMAGE_BASE_URL +
-                                  "/uploads/matrimonial_photo/Matrimonial_Photo/" +
+                                  "/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+
                                   user.pic.toString(),
                             );
                           },
                           child: Container(
                             child: Image.network(
                               Strings.IMAGE_BASE_URL +
-                                  "/uploads/matrimonial_photo/Matrimonial_Photo/" +
+                                  "/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+
                                   user.pic.toString(),
                               width: MediaQuery.of(context).size.width * 0.45,
                               height: 150,
@@ -391,7 +392,7 @@ class InboxRowData extends StatelessWidget {
           ),
 
           // Other Button: Chat Here
-          Positioned(
+          /*Positioned(
             bottom: 10,
             left: MediaQuery.of(context).size.width * 0.55,
             child: Row(
@@ -434,7 +435,7 @@ class InboxRowData extends StatelessWidget {
                 ),
               ],
             ),
-          ),
+          ),*/
         ],
       )
       ),

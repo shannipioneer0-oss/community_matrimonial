@@ -1,12 +1,18 @@
 import 'package:community_matrimonial/locale/TranslationService.dart';
+import 'package:community_matrimonial/network_utils/service/api_service.dart';
 import 'package:community_matrimonial/utils/Strings.dart';
 import 'package:flutter/material.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../utils/SharedPrefs.dart';
 import 'Dialogs.dart';
+import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
+
 
 class StylishDrawer extends StatefulWidget {
   @override
@@ -46,13 +52,14 @@ class _StylishDrawerState extends State<StylishDrawer> {
 
 
 
-  String img1 = "" , username = "" , percentage = "";
+  String img1 = "" , username = "" , percentage = "" ,version = "";
     double percent = 0.0;
   late SharedPreferences prefs;
 
   initIntro() async {
 
      prefs = await SharedPreferences.getInstance();
+     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
     setState(() {
       img1 = prefs.getString(SharedPrefs.pic1).toString();
@@ -60,7 +67,8 @@ class _StylishDrawerState extends State<StylishDrawer> {
       percentage = prefs.getString(SharedPrefs.profile_percentage).toString().split(".")[0];
 
       community_name = prefs.getString(SharedPrefs.communityName).toString();
-      mobilenumber = "+"+prefs.getString(SharedPrefs.mobileNumber).toString();
+      mobilenumber = prefs.getString(SharedPrefs.mobile).toString();
+      version = packageInfo.version;
 
       percent = int.parse(percentage).toDouble();
 
@@ -105,7 +113,11 @@ class _StylishDrawerState extends State<StylishDrawer> {
 
                 Row(mainAxisAlignment: MainAxisAlignment.start  ,children: [Text(mobilenumber ,textAlign: TextAlign.left , style: TextStyle(color: Colors.white , fontSize:  15 , fontWeight: FontWeight.bold , overflow: TextOverflow.ellipsis),),],),
 
-                Text("1.0.1")
+                SizedBox(height: 1,),
+
+               Row(mainAxisAlignment: MainAxisAlignment.start  ,children: [Container(child: Text("Version : "+version , style: TextStyle(color: Colors.white , fontWeight: FontWeight.bold),),),])
+
+
 
               ],),
             ),),
@@ -160,13 +172,13 @@ class _StylishDrawerState extends State<StylishDrawer> {
             ),
             DrawerItem(
               icon: Icons.card_membership,
-              title: "Your Membership Details",
+              title: TranslationService.translate("your_member_details"),
               onTap: () => _onItemTap(8),
               isSelected: _selectedItemIndex == 8,
             ),
           role == "admin" ? DrawerItem(
             icon: Icons.verified,
-            title: "Manage Verification",
+            title: TranslationService.translate("manage_verification"),
             onTap: () => _onItemTap(9),
             isSelected: _selectedItemIndex == 9,
           ) : DrawerItem(
@@ -177,25 +189,37 @@ class _StylishDrawerState extends State<StylishDrawer> {
             ),
             DrawerItem(
               icon: Icons.account_circle,
-              title: "Committee Members",
+              title:TranslationService.translate("comittee_members"),
               onTap: () => _onItemTap(11),
               isSelected: _selectedItemIndex == 11,
             ),DrawerItem(
               icon: Icons.account_circle,
-              title: "About Us",
+              title: TranslationService.translate("about_us"),
               onTap: () => _onItemTap(12),
               isSelected: _selectedItemIndex == 12,
             ),DrawerItem(
               icon: Icons.account_circle,
-              title: "Contact Us",
+              title: TranslationService.translate("contact_us"),
               onTap: () => _onItemTap(13),
               isSelected: _selectedItemIndex == 13,
             ),
             DrawerItem(
               icon: Icons.account_circle,
-              title: "Logout",
+              title: TranslationService.translate("update_app"),
               onTap: () => _onItemTap(14),
               isSelected: _selectedItemIndex == 14,
+            ),
+            DrawerItem(
+              icon: Icons.account_circle,
+              title: TranslationService.translate("share_app"),
+              onTap: () => _onItemTap(15),
+              isSelected: _selectedItemIndex == 15,
+            ),
+            DrawerItem(
+              icon: Icons.account_circle,
+              title: TranslationService.translate("logout"),
+              onTap: () => _onItemTap(16),
+              isSelected: _selectedItemIndex == 16,
             ),
             // Add more DrawerItem widgets for additional items
           ],
@@ -206,7 +230,7 @@ class _StylishDrawerState extends State<StylishDrawer> {
 
 
 
-  void showLanguagePopup(BuildContext context) {
+  void showLanguagePopup(BuildContext context2) {
     showDialog(
       context: context,
       builder: (context) {
@@ -224,7 +248,9 @@ class _StylishDrawerState extends State<StylishDrawer> {
 
                 await TranslationService.load('en');
 
-                DialogClass().showDialog2(context, "Translate Alert!", "Translated to English", "Ok");
+              final res = await  DialogClass().showPremiumInfoDialog(context2, "Translate Alert!", "Translate to English", "Ok");
+                navService.pushNamed("/main_screen" ,args: 0);
+
 
               },
               child: Text('English'),
@@ -239,7 +265,9 @@ class _StylishDrawerState extends State<StylishDrawer> {
 
                 await TranslationService.load('gu');
 
-                DialogClass().showDialog2(context, "Translate Alert!", "Translated to Gujarati", "Ok");
+                final res = await  DialogClass().showPremiumInfoDialog(context2, "Translate Alert!", "Translate to Gujarati", "Ok");
+
+                navService.pushNamed("/main_screen" ,args:0);
 
               },
 
@@ -285,6 +313,48 @@ class _StylishDrawerState extends State<StylishDrawer> {
     }else if(index == 13){
       navService.pushNamed("/contact_us");
     }else if(index == 14){
+
+      final res = await ApiService.create().select_version({});
+
+      print(res.body);
+
+      prefs = await SharedPreferences.getInstance();
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      if(packageInfo.version.toString().compareTo(res.body["data"][0]["version"].toString()) == 0 || packageInfo.version.toString().compareTo(res.body["data"][0]["version"].toString()) > 0) {
+
+        DialogClass().showPremiumInfoDialog(context,  TranslationService.translate("no_need_updates") , TranslationService.translate("no_need_updates_details"), "Ok");
+
+
+      }else if(packageInfo.version.toString().compareTo(res.body["data"][0]["version"].toString()) < 0){
+
+       final res = await  DialogClass().showPremiumInfoDialog(context,  TranslationService.translate("update_app") , TranslationService.translate("update_app_details"), "Ok");
+       
+       if(res == true || res == false){
+         
+         launchUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.matrimonial.community_matrimonial_latest2.appa&hl=en_IN"));
+         
+       }
+
+      }
+
+    }else if(index == 15){
+
+
+        final String message = '''
+Install the Raval Dev Matrimony app on Android & iPhone 👇
+
+https://matrimonial.pioerp.com/uploads/shareapp.html
+''';
+
+        Share.share(
+          message,
+          subject: 'Raval Dev Matrimony App',
+        );
+
+
+
+
+    }else if(index == 16){
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.remove(SharedPrefs.isLogin);

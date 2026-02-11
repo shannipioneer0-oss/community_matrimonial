@@ -365,7 +365,7 @@ class Values{
 
       });
 
-      items.add(EduFetchstate(degree_name: "Other", degree_hindi: "", degree_guj: "", degree_marathi: "", degree_tamil: "", degree_urdu: "", Id: "0"));
+      items.insert(0 , EduFetchstate(degree_name: "Other", degree_hindi: "", degree_guj: "", degree_marathi: "", degree_tamil: "", degree_urdu: "", Id: "0"));
 
     });
 

@@ -1,10 +1,8 @@
 
-
-
-
-
 import 'package:community_matrimonial/utils/Colors.dart';
 import 'package:flutter/material.dart';
+
+
 
 class InclinedPhoto extends StatelessWidget {
   final String imagePath;

@@ -23,6 +23,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app_utils/Values.dart';
+import '../../../utils/universalback_wrapper.dart';
 
 
 
@@ -97,7 +98,10 @@ class OccupationalDetailScreen  extends State<OccupationalDetailStateful>{
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(key: _scaffoldKey,
+    return UniversalBackWrapper(
+        isRoot: false
+
+        ,child: Scaffold(key: _scaffoldKey,
     appBar: AppBar(
     title: Text('Occupational Details\nRavaldev Matrimony' , style: TextStyle(color: Colors.black87 , fontSize: 18),),
     toolbarOpacity: 1,
@@ -275,7 +279,7 @@ class OccupationalDetailScreen  extends State<OccupationalDetailStateful>{
     }
 
       },)
-    ]))));
+    ])))));
 
   }
 

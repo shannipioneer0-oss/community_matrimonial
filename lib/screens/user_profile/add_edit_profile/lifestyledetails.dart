@@ -22,6 +22,8 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../utils/universalback_wrapper.dart';
+
 
 
 class LifestyleDetails extends StatelessWidget {
@@ -129,7 +131,10 @@ class LifestyleDetailsScreen  extends State<LifestyleDetailsStateful> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(key: _scaffoldKey,
+    return UniversalBackWrapper(
+        isRoot: false
+
+        ,child: Scaffold(key: _scaffoldKey,
       appBar: AppBar(
           title: Text('Physical & Lifestyle Details\nRavaldev Matrimony' , style: TextStyle(color: Colors.black87 , fontSize: 18),),
           toolbarOpacity: 1,
@@ -469,7 +474,7 @@ class LifestyleDetailsScreen  extends State<LifestyleDetailsStateful> {
 
         },)
       ]))),
-    ));
+    )));
 
   }
 

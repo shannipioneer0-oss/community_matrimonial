@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../app_utils/Dialogs.dart';
 import '../../utils/SharedPrefs.dart';
+import '../../utils/universalback_wrapper.dart';
 import '../../utils/utils.dart';
 
 class ImageGalleryOther extends StatelessWidget {
@@ -190,11 +191,15 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
     }
   }
 
+   int currpage = 1;
 
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
+    return UniversalBackWrapper(
+        isRoot: false
+
+        ,child: Scaffold(
         appBar: AppBar(
         title: Text( listpics.length > 1 ? widget.photo[1]+" photos ("+listpics.length.toString()+")" : widget.photo[1]+" photos" , style: TextStyle(color: Colors.black87 , fontSize: 18),),
     toolbarOpacity: 1,
@@ -208,7 +213,31 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
 
     },
     )),
-    body: listpics.length > 0 ? Container(child: ImageSlideshow(
+    body: listpics.length > 0 ? Column(children: [
+
+      Align(alignment: Alignment.topCenter, child: Container(
+          padding: const EdgeInsets.only(left: 20 ,right: 20 , top: 5 ,bottom: 5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFFEDE7F6), // very light purple
+                Color(0xFFE8F5E9), // very light green
+              ],
+            ),
+          ),
+
+
+      child:Text(currpage.toString()+"/"+listpics.length.toString() , style: TextStyle(color: Colors.purple , fontSize: 25 ,fontWeight: FontWeight.bold),) ,)),
+      SizedBox(height: 5,),
+      Container(child: InteractiveViewer(
+          panEnabled: true,        // allow dragging
+          scaleEnabled: true,      // allow pinch zoom
+          minScale: 0.5,           // zoom out limit
+          maxScale: 4.0,           // zoom in limit
+          child:ImageSlideshow(
 
       /// Width of the [ImageSlideshow].
       width: double.infinity,
@@ -234,6 +263,10 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
       /// Called whenever the page in the center of the viewport changes.
       onPageChanged: (value) {
         print('Page changed: $value');
+
+        setState(() {
+          currpage = (value+1);
+        });
       },
 
       /// Auto scroll interval.
@@ -241,12 +274,12 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
       autoPlayInterval: 20000,
 
       /// Loops back to first slide.
-      isLoop: true,
-    ),
-    ) : Center(child: Text("No Images In Gallery" , style: TextStyle(fontSize: 18 ,fontWeight: FontWeight.bold),),),
+      isLoop: false,
+    )),),
+    ]) : Center(child: Text("No Images In Gallery" , style: TextStyle(fontSize: 18 ,fontWeight: FontWeight.bold),),),
 
 
-    );
+    ));
 
 
   }

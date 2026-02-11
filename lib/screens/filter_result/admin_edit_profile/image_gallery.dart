@@ -174,6 +174,8 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
   void initState() {
     super.initState();
 
+    EasyLoading.dismiss();
+
     initPrefsImages();
     initLoader();
 
@@ -226,8 +228,87 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
             });
     if (_connectivityResult == ConnectivityResult.none) {
     DialogClass().showDialog2(context, "No Internet", "Sorry Internet is not available", "OK");
-    }else {
+    }else
+
+
+
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
+
+
+   SharedPreferences prefs = await SharedPreferences.getInstance();
+   if (path1 == "0" || path1 == "null" || path1 == "" || path1 == null) {
+
+     EasyLoading.show(status: 'Uploading , Please wait...');
+
+     try {
+       // Prepare the request
+       var request = http.MultipartRequest('POST', Uri.parse(
+           Strings.BASE_URL + "profile/insert_photos"));
+
+       // Attach files
+       for (int i = 0; i < listimage.length; i++) {
+         print(listimage[i]);
+
+         if (listimage[i] != "0") {
+           request.fields["pic" + (i + 1).toString()] =
+               widget.list[8] + "_" +
+                   getFileName(File(listimage[i]));
+
+           var file = await http.MultipartFile.fromPath(
+             'sampleFile[]',
+             listimage[i],
+           );
+           request.files.add(file);
+
+           request.fields["isverifypic" + (i + 1).toString()] = "0";
+
+           print(listimage[i] + " - ---   uploads");
+         } else {
+           request.fields["pic" + (i + 1).toString()] =  i == 0 ? path1 : i == 1 ? path2 : i == 2 ? path3 : i == 3 ? path4 : i == 4 ? path5 : i== 5 ? path6 : i == 6 ? path7 : path8 ?? "null";
+
+           request.fields["isverifypic" + (i + 1).toString()] = "-1";
+         }
+
+         request.fields["oldpic" + (i + 1).toString()] =  i == 0 ? path1 : i == 1 ? path2 : i == 2 ? path3 : i == 3 ? path4 : i == 4 ? path5 : i== 5 ? path6 : i == 6 ? path7 : path8 ?? "null";
+       }
+
+       // Attach additional data
+       request.fields["profileId"] =
+           widget.list[8];
+       request.fields["userId"] =
+           widget.list[9];
+       request.fields["communityId"] =
+           prefs.getString(SharedPrefs.communityId).toString();
+       request.fields["imagesubpath"] = utils().imagePath(prefs.getString(SharedPrefs.communityId).toString());
+
+       // Send the request
+       var response = await request.send();
+
+       print(response.stream.bytesToString());
+
+       // Check the response
+       if (response.statusCode == 200) {
+         for (var i = 0; i < listimagesPath.length; i++) {
+           await prefs.setString("pic" + (i + 1).toString(),
+               prefs.getString(SharedPrefs.profileid).toString() + "_" +
+                   getFileName(File(listimagesPath[i])) ?? '');
+         }
+       } else {
+         print(
+             'Failed to upload files. Status Code: ${response.statusCode}');
+       }
+
+       navService.goBack();
+
+       EasyLoading.dismiss();
+     } catch (e) {
+       print('Error uploading files: $e');
+
+       EasyLoading.dismiss();
+     }
+   } else {
+
 
         EasyLoading.show(status: 'Uploading , Please wait...');
 

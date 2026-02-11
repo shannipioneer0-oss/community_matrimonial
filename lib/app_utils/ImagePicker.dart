@@ -19,7 +19,6 @@ class ImagePickerWithCrop{
 
   void selectImage(BuildContext context){
 
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

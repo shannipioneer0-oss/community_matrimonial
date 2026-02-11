@@ -29,6 +29,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../locale/TranslationService.dart';
 import '../../../network_utils/model/country.dart';
 import '../../../utils/PhoneInputField.dart';
+import '../../../utils/universalback_wrapper.dart';
 
 
 
@@ -190,7 +191,10 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(key: _scaffoldKey,
+    return UniversalBackWrapper(
+        isRoot: false
+
+        ,child: Scaffold(key: _scaffoldKey,
         appBar: AppBar(
             title: Text('Contact Details\nRavaldev Matrimony' , style: TextStyle(color: Colors.black87 , fontSize: 18),),
             toolbarOpacity: 1,
@@ -292,13 +296,16 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
           SizedBox(height: 20,),
           CustomDropdown(icondata: MdiIcons.city  , controller: permstateController , labelText: TranslationService.translate("perm_state"), onButtonPressed: () async {
 
-            final value = await SingleSelectDialog().showBottomSheet2(context, await Values.getValuesContactsState(context , "state" , "" , country_value) , "Select State");
+            final res = await Values.getValuesContactsState(context , "state" , "" , country_value);
+
+            final value = await SingleSelectDialog().showBottomSheet2(context, res , "Select State");
             permstateController.text = value.state_name;
             perm_State_value = value.Id;
 
             print(perm_State_value+"====----");
 
             if(value.state_name.toLowerCase() == "other"){
+
 
               String state_name = "";
               DialogClass().showDailogwithTextField(context , "Enter Your Permanent State" , "Submit State" , "Enter State" , Icons.location_city , (p0) async {
@@ -520,7 +527,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
 
                 }
 
-                List<Location> locations = await locationFromAddress(permaddressController.text.toString()+" "+permcityValue+", "+perm_State_value);
+              //  List<Location> locations = await locationFromAddress(permaddressController.text.toString()+" "+permcityValue+", "+perm_State_value);
 
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 if (prefs
@@ -554,7 +561,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
                         "work_country": country_value,
                         "work_state": work_state_value,
                         "work_city": work_city_value,
-                        "location": locations[0].latitude.toString()+","+locations[0].longitude.toString(),
+                        "location": "0,0",
                         "userId": prefs.getString(SharedPrefs.userId),
                         "communityId": prefs.getString(SharedPrefs.communityId),
                         "profileId": prefs.getString(SharedPrefs.profileid)
@@ -615,7 +622,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
                 } else {
                   EasyLoading.show(status: 'Please wait...');
 
-                  print(locations[0].latitude.toString()+",,,,"+locations[0].longitude.toString()+"-----"+mobilemcc2);
+               //   print(locations[0].latitude.toString()+",,,,"+locations[0].longitude.toString()+"-----"+mobilemcc2);
 
                   final _response = await Provider.of<ApiService>(
                       context, listen: false)
@@ -642,7 +649,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
                         "work_country": country_value,
                         "work_state": work_state_value,
                         "work_city": work_city_value,
-                        "location": locations[0].latitude.toString()+","+locations[0].longitude.toString(),
+                        "location": "0,0",
                         "Id": prefs.getString(SharedPrefs.contact_details_id),
                       }
                   );
@@ -697,7 +704,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
                 }
               }
             }},)
-        ])))));
+        ]))))));
 
 
   }

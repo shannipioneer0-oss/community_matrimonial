@@ -56,6 +56,20 @@ final class _$ApiService extends ApiService {
     return client.send<dynamic, dynamic>($request);
   }
 
+
+  @override
+  Future<Response<dynamic>> profile_fetch(Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('fetch_data/profile_fetch');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
   @override
   Future<Response<dynamic>> postBasicDetail(Map<String, dynamic> requestBody) {
     final Uri $url = Uri.parse('profile/basic_detail');
@@ -68,6 +82,35 @@ final class _$ApiService extends ApiService {
     );
     return client.send<dynamic, dynamic>($request);
   }
+
+
+  @override
+  Future<Response<dynamic>> deregister(Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('fetch_data/deregister');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> select_version(Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('adminpanel/role_community/select_version');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+
 
   @override
   Future<Response<dynamic>> postBasicDetailUpdate(
@@ -1910,6 +1953,17 @@ final class _$ApiService extends ApiService {
     return client.send<dynamic, dynamic>($request);
   }
 
-
+  @override
+  Future<Response<dynamic>> verify_payment_admin(Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('adminpanel/user_content/verify_payment_admin');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
 
 }

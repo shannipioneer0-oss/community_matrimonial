@@ -8,6 +8,7 @@ import 'package:community_matrimonial/network_utils/service/api_service.dart';
 import 'package:community_matrimonial/screens/filter_result/SearchResultList.dart';
 import 'package:community_matrimonial/utils/SharedPrefs.dart';
 import 'package:community_matrimonial/utils/Strings.dart';
+import 'package:community_matrimonial/utils/utils.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -16,6 +17,8 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../utils/universalback_wrapper.dart';
 
 
 class SearchResultApp extends StatelessWidget {
@@ -26,10 +29,12 @@ class SearchResultApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return UniversalBackWrapper(
+        isRoot: false,
+        child:MaterialApp(
       home:  SearchResultAppStateful(maps),
       builder: EasyLoading.init(),
-    );
+    ));
   }
 }
 
@@ -61,6 +66,7 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
 
 
   List<User> members = [];
+  List<User> members_final = [];
   int currentPage = 1;
   double totalPages = 1;
   int perPage = 50;
@@ -182,6 +188,7 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
       "income":widget.maps[17],
       "mangalik":widget.maps[18].toString(),
       "is_handicap":widget.maps[19],
+      "completion_wise":widget.maps[21],
 
       "Id":widget.maps[0],
       "communityId":prefs.getString(SharedPrefs.communityId),
@@ -215,6 +222,7 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
         "income": widget.maps[17],
         "mangalik": widget.maps[18].toString(),
         "is_handicap": widget.maps[19],
+        "completion_wise":widget.maps[21],
         "Id": widget.maps[0],
         "communityId": prefs.getString(SharedPrefs.communityId),
         "original": "en",
@@ -225,23 +233,23 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
       });
 
 
-      print(_response.body.toString() + "=====90909090");
+   //   print(_response.body.toString() + "=====90909090");
 
       //print("mangalik---"+_response.body.toString());
 
 
       ResponseData searchResult = ResponseData.fromJson(_response.body);
 
-      print(searchResult.data[0][0].length.toString() + '[[[[[[[[[');
+     // print(searchResult.data[0][0].length.toString() + '[[[[[[[[[');
 
 
       //  print(searchResult.getUsers()[0].name+"++++++");
 
       setState(() {
-        members = searchResult.getUsers();
+        members.addAll(searchResult.getUsers());
+        members_final.addAll(searchResult.getUsers());
 
         total_count = searchResult.getTotalRowCount()[0].totalRowCount.toString();
-
         //current_length = searchResult.data[0][0].length;
         // controller.totalItemCount = searchResult.getTotalRowCount()[0].totalRowCount;
         totalPages =   (searchResult.getTotalRowCount()[0].totalRowCount/ perPage).ceilToDouble() == 0.0 ? 1 : (searchResult.getTotalRowCount()[0].totalRowCount/ perPage).ceilToDouble();
@@ -258,20 +266,22 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
     print("qwerty");// clone to force update
     isLoading = false;
 
-
-
-
-
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
 
    // print(controller.totalItemCount.toString() +"()()()()"+ total_count.toString());
 
-    return Scaffold(
+    return UniversalBackWrapper(
+        isRoot: false
 
-    appBar: AppBar(
+        ,child:Scaffold(
+
+    /*appBar: AppBar(
         title: Text('Search Results ('+total_count+") \nRavaldev Matrimony" , style: TextStyle(color: Colors.black87 , fontSize: 18),),
     toolbarOpacity: 1,
     backgroundColor: Colors.transparent,
@@ -281,14 +291,77 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
     onPressed: () {
       navService.goBack();
     },
-    )),
+    )),*/
     drawer: StylishDrawer(),
-    body: ListView.builder(itemCount: members.length ,controller: _scrollController  ,itemBuilder: (context, index) {
+
+
+        body: SafeArea(child:CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+
+            SliverAppBar(
+              title: Text('Search Results ('+total_count+") \nRavaldev Matrimony" , style: TextStyle(color: Colors.black87 , fontSize: 18),),
+              pinned: true,
+              floating: true,
+              snap: true,
+              expandedHeight: 120,
+
+              /// 🔍 Search bar in bottom
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(60),
+                child: Container(
+                  height: 48,
+                  margin: EdgeInsets.fromLTRB(16, 0, 16, 12),
+                  child: TextField(
+                    onChanged: (value) {
+                      setState(() {
+
+                      members =  members_final.where((element) {
+
+                          return element.fullname.toLowerCase().contains(value.toLowerCase()) || element.education.toLowerCase().contains(value.toLowerCase()) || element.height.toLowerCase().contains(value.toLowerCase())
+                          || element.occupation.toLowerCase().contains(value.toLowerCase()) || element.profileId.toLowerCase() == value.toLowerCase();
+                        },).toList();
+
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Search...",
+                      prefixIcon: Icon(Icons.search),
+                      filled: true,
+                      fillColor: Colors.grey.shade200,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            /// 📃 List
+            SliverList(
+
+              delegate: SliverChildBuilderDelegate(
+                childCount: members.length,
+
+                    (context, index) {
+
+                      return  SearchResultList(fetchmatches: members[index] , index:index , prefs: prefs, type:widget.maps[21]);
+
+
+                    }
+              ),
+            ),
+          ],
+        ),
+
+    /*body: ListView.builder(itemCount: members.length ,controller: _scrollController  ,itemBuilder: (context, index) {
 
 
       return  SearchResultList(fetchmatches: members[index] , index:index , prefs: prefs,);
 
-    },) /*HugeListView<User>(
+    },)*/ /*HugeListView<User>(
       scrollController: scroll,
       listViewController: controller,
       pageSize: PAGE_SIZE,
@@ -343,7 +416,7 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
 
     ),*/
 
-    );
+    )));
 
   }
 

@@ -68,13 +68,15 @@ class Userdata{
             _response.body["data"][1][0]["num_likes"].toString());
         await prefs.setString(SharedPrefs.numVideo,
             _response.body["data"][1][0]["num_video"].toString());
-        await prefs.setString(SharedPrefs.joined_days,
+        await prefs.setString(SharedPrefs.joined_days ,
             _response.body["data"][1][0]["joined_days"].toString());
       }
 
       if (_response.body["data"][2].toString() != "[]") {
+
         await prefs.setString(SharedPrefs.remainingDays,
             _response.body["data"][2][0]["remaining_days"].toString());
+
       }
 
       if (_response.body["data"][3].toString() != "[]") {
@@ -88,7 +90,9 @@ class Userdata{
         await prefs.setString(SharedPrefs.version,
             _response.body["data"][4][0]["apk_name"].toString());
       }
-*/
+   */
+
+
     }
 
   }

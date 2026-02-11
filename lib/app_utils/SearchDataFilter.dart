@@ -25,6 +25,7 @@ class SearchDataFilter with ChangeNotifier{
   String handicap = '0';
   String institute_wise = '0';
   String profile_image = '0';
+  String completionWise = '0';
 
 
   TextEditingController profileidController = new TextEditingController();
@@ -45,7 +46,7 @@ class SearchDataFilter with ChangeNotifier{
 
   TextEditingController raputedController = new TextEditingController();
   TextEditingController profileImageController = new TextEditingController();
-
+  TextEditingController completionwiseController = new TextEditingController();
 
   void clearAllFields() {
 
@@ -62,6 +63,7 @@ class SearchDataFilter with ChangeNotifier{
     Income_controller.text = "";
     raputedController.text = "";
     profileImageController.text = "";
+    completionwiseController.text = "";
 
     age_from = "18";
     age_to = "70";
@@ -83,6 +85,7 @@ class SearchDataFilter with ChangeNotifier{
     handicap = "0";
     institute_wise = "0";
     profile_image = "0";
+    completionWise = "0";
 
 
     notifyListeners();
@@ -111,6 +114,7 @@ class SearchDataFilter with ChangeNotifier{
     handicap = "0";
     institute_wise = "0";
     profile_image = "0";
+    completionWise = "0";
 
     notifyListeners();
 

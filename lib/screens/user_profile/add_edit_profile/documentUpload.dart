@@ -20,6 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../network_utils/service/api_service.dart';
+import '../../../utils/universalback_wrapper.dart';
 
 class DocumentsUpload extends StatelessWidget {
 
@@ -140,7 +141,10 @@ class Documentsuploadscreen  extends State<Documentsuploadstateful>{
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(key: _scaffoldKey,
+    return UniversalBackWrapper(
+        isRoot: false
+
+        ,child:Scaffold(key: _scaffoldKey,
     appBar: AppBar(
     title: Text('Upload Documents\nRavaldev Matrimony' , style: TextStyle(color: Colors.black87 , fontSize: 18),),
     toolbarOpacity: 1,
@@ -559,7 +563,7 @@ class Documentsuploadscreen  extends State<Documentsuploadstateful>{
         ),),
     ],),
 
-    ));
+    )));
 
 
   }

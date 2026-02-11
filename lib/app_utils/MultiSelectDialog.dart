@@ -48,12 +48,36 @@ class  MultiSelectDialogWithBottomSheet{
 
     List<MultiSelectItem> item_selected = [];
     List<dynamic> list_dynamic = [];
+    String selectedValues = "";
+    List<dynamic> initialValues = [];
+
+
+
+
 
     await showModalBottomSheet(
       isScrollControlled: true, // required for min/max child size
       context: context,
       useRootNavigator: true,
       builder: (ctx) {
+
+
+        items.forEach((element) {
+
+
+
+          if(controller.text.toString().contains(element.label)){
+            if(element.label.toLowerCase() != "any") {
+
+              initialValues.add(element.value);
+
+              print(element.value.toString()+"-=-=");
+            }
+          }
+
+        },);
+
+
         return  SafeArea(child: Container(child:MultiSelectBottomSheet(
           title: Container( padding:EdgeInsets.all(10) , alignment: Alignment.topLeft ,child:Text(title , style: TextStyle(fontSize: 18 ,fontWeight: FontWeight.bold ,color: Colors.purple),),),
           items: items,
@@ -64,16 +88,18 @@ class  MultiSelectDialogWithBottomSheet{
            String label = item_selected.map((e) => e.label).join(",");
            String value = item_selected.map((e) => e.value).join(",");
 
-           print(item_selected);
+           print(value+"====");
 
            controller.text = label;
            callback(value);
+
+           selectedValues = value;
 
 
           },
           maxChildSize: 1,
           initialChildSize: 0.85,
-          initialValue: [],
+          initialValue: initialValues,
           searchable: true,
         )));
       },

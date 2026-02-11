@@ -10,6 +10,7 @@ import 'package:community_matrimonial/utils/SharedPrefs.dart';
 import 'package:community_matrimonial/utils/Strings.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_device_imei/flutter_device_imei.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -65,6 +66,8 @@ class LoginScreen extends State<LoginAppStateful> {
   int count = 0;
 
 
+  bool isAccepted = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -89,15 +92,23 @@ class LoginScreen extends State<LoginAppStateful> {
 
                final flavor = FlavorConfig.instance.name;
                String communityId = flavor == "appA" ? "20" : "2";
+               String? imei = await FlutterDeviceImei.instance.getIMEI();
 
                final _response = await Provider.of<ApiService>(context, listen: false).postSendOtpSms(
                    {
                      "mobile": controllermobilenumber.text.toString(),
-                     "communityId":communityId
+                     "communityId":communityId,
+                     "mobile_number":controllermobilenumber.text.toString(),
+                     "imei": imei.toString()
                    }
                );
 
+               print(_response.body.toString());
+
+               print(_response.body["data"][0]["mobile"]+"====");
                if(_response.body != null) {
+
+                 print(_response.body["data"][0]["mobile"]+"======");
 
                  if (_response.body["data"] != "not_exists") {
 
@@ -225,6 +236,39 @@ class LoginScreen extends State<LoginAppStateful> {
               controller: controllermobilenumber,// Replace with your desired icon
             ),
 
+             SizedBox(height: 2,),
+
+              Row(
+                   children: [
+                     Checkbox(value: isAccepted, onChanged: (val){
+
+                       setState(() {
+                         isAccepted = val!;
+                       });
+
+                     }),
+
+                     const Text("I agree to the "),
+                     GestureDetector(
+                       onTap: (){
+
+                         navService.pushNamed("/terms_conditions");
+
+                       },
+                       child: const Text(
+                         "Terms & Conditions",
+                         style: TextStyle(
+                           color: Colors.blue,
+                           decoration: TextDecoration.underline,
+                         ),
+                       ),
+                     ),
+                   ],
+                 ),
+
+
+            SizedBox(height: 15,),
+
             Visibility(visible: false  ,child: TextFieldWithImage(
               hintText: TranslationService.translate("password_hint"),
               icon: Icons.password,
@@ -241,120 +285,125 @@ class LoginScreen extends State<LoginAppStateful> {
             GestureDetector(onTap:() async {
 
 
-             DialogClass().showCustomProgressDialog(context);
+              if(isAccepted == true) {
+                DialogClass().showCustomProgressDialog(context);
 
-             final flavor = FlavorConfig.instance.name;
+                final flavor = FlavorConfig.instance.name;
 
-             print(flavor.toString()+"===---===--===");
-             String communityId = flavor == "appA" ? "20" : "2";
+                print(flavor.toString() + "===---===--===");
+                String communityId = flavor == "appA" ? "20" : "2";
 
-             //DialogClass().showDialog2(context, flavor.toString() , flavor.toString() , "OK");
+                String? imei = await FlutterDeviceImei.instance.getIMEI();
+                //DialogClass().showDialog2(context, flavor.toString() , flavor.toString() , "OK");
 
-              final _response = await Provider.of<ApiService>(context, listen: false).postSendOtpSms(
-                  {
-                    "mobile": controllermobilenumber.text.toString(),
-                    "communityId":communityId
-                  }
-              );
-
-              if(_response.body != null) {
-
-                if (_response.body["data"] != "not_exists") {
-
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
-
-                  await prefs.setString(SharedPrefs.userId, _response.body["data"][0]["Id"].toString());
-                  await prefs.setString(
-                      SharedPrefs.firstName, _response.body["data"][0]["name"]);
-                  await prefs.setString(SharedPrefs.lastname,
-                      _response.body["data"][0]["surname"]);
-                  await prefs.setString(SharedPrefs.emailid,
-                      _response.body["data"][0]["emailid"]);
-                  await prefs.setString(
-                      SharedPrefs.mobile, _response.body["data"][0]["mobile"]);
-                  await prefs.setString(
-                      SharedPrefs.gender, _response.body["data"][0]["gender"]);
-                  await prefs.setString(SharedPrefs.birthdate,
-                      _response.body["data"][0]["birthdate"]);
-                  await prefs.setString(SharedPrefs.communityId,
-                      _response.body["data"][0]["community_id"]);
-                  await prefs.setString(SharedPrefs.communityName,
-                      _response.body["data"][0]["community_name"]);
-                  await prefs.setString(SharedPrefs.user_verify,
-                      _response.body["data"][0]["user_verify"]);
-                  await prefs.setString(SharedPrefs.mobile_verify,
-                      _response.body["data"][0]["mobile_verify"]);
-                  await prefs.setString(SharedPrefs.email_verify,
-                      _response.body["data"][0]["email_verify"]);
-                  await prefs.setString(SharedPrefs.profileid,
-                      _response.body["data"][0]["profile_id"]);
-                  await prefs.setString(SharedPrefs.joined_date,
-                      _response.body["data"][0]["joined_date"]);
-                  await prefs.setString(SharedPrefs.mobile_reg_token,
-                      _response.body["data"][0]["mobile_reg_token"]);
-                  await prefs.setString(SharedPrefs.delete_account,
-                      _response.body["data"][0]["delete_account"]);
-                  await prefs.setString(SharedPrefs.role_type,
-                      _response.body["data"][0]["role"] ??  "");
-
-                  print("sample");
-
-                  if(_response.body["data"][0]["delete_account"].toString() == "0"){
-
-                    final flavor = FlavorConfig.instance.name;
-                    String communityId = flavor == "appA" ? "20" : "2";
-
-                    print(communityId+"------"+_response.body["data"][0]["community_id"]+"-----"+flavor.toString());
-
-                    if(_response.body["data"][0]["community_id"] == communityId) {
-
-                      Navigator.of(context , rootNavigator: true).pop();
-                      navService.pushNamed("/login_verify",
-                          args: [controllermobilenumber.text.toString(), "1"]);
-
-                    }else{
-
-
-                      Navigator.of(context , rootNavigator: true).pop();
-                      DialogClass().showDialog2(context, "Mobile Number Alert!",
-                          "No Such Mobile Number Exists in our Record", "Ok");
-
-
+                final _response = await Provider.of<ApiService>(
+                    context, listen: false).postSendOtpSms(
+                    {
+                      "mobile": controllermobilenumber.text.toString(),
+                      "communityId": communityId,
+                      "mobile_number": controllermobilenumber.text.toString(),
+                      "imei": imei.toString()
                     }
+                );
 
-                  }else{
+                if (_response.body != null) {
+                  if (_response.body["data"] != "not_exists") {
+                    SharedPreferences prefs = await SharedPreferences
+                        .getInstance();
 
+                    await prefs.setString(SharedPrefs.userId,
+                        _response.body["data"][0]["Id"].toString());
+                    await prefs.setString(
+                        SharedPrefs.firstName,
+                        _response.body["data"][0]["name"]);
+                    await prefs.setString(SharedPrefs.lastname,
+                        _response.body["data"][0]["surname"]);
+                    await prefs.setString(SharedPrefs.emailid,
+                        _response.body["data"][0]["emailid"]);
+                    await prefs.setString(
+                        SharedPrefs.mobile,
+                        _response.body["data"][0]["mobile"]);
+                    await prefs.setString(
+                        SharedPrefs.gender,
+                        _response.body["data"][0]["gender"]);
+                    await prefs.setString(SharedPrefs.birthdate,
+                        _response.body["data"][0]["birthdate"]);
+                    await prefs.setString(SharedPrefs.communityId,
+                        _response.body["data"][0]["community_id"]);
+                    await prefs.setString(SharedPrefs.communityName,
+                        _response.body["data"][0]["community_name"]);
+                    await prefs.setString(SharedPrefs.user_verify,
+                        _response.body["data"][0]["user_verify"]);
+                    await prefs.setString(SharedPrefs.mobile_verify,
+                        _response.body["data"][0]["mobile_verify"]);
+                    await prefs.setString(SharedPrefs.email_verify,
+                        _response.body["data"][0]["email_verify"]);
+                    await prefs.setString(SharedPrefs.profileid,
+                        _response.body["data"][0]["profile_id"]);
+                    await prefs.setString(SharedPrefs.joined_date,
+                        _response.body["data"][0]["joined_date"]);
+                    await prefs.setString(SharedPrefs.mobile_reg_token,
+                        _response.body["data"][0]["mobile_reg_token"]);
+                    await prefs.setString(SharedPrefs.delete_account,
+                        _response.body["data"][0]["delete_account"]);
+                    await prefs.setString(SharedPrefs.role_type,
+                        _response.body["data"][0]["role"] ?? "");
+
+                    print("sample");
+
+                    if (_response.body["data"][0]["delete_account"]
+                        .toString() == "0") {
+                      final flavor = FlavorConfig.instance.name;
+                      String communityId = flavor == "appA" ? "20" : "2";
+
+                      print(communityId + "------" +
+                          _response.body["data"][0]["community_id"] + "-----" +
+                          flavor.toString());
+
+                      if (_response.body["data"][0]["community_id"] ==
+                          communityId) {
+                        Navigator.of(context, rootNavigator: true).pop();
+                        navService.pushNamed("/login_verify",
+                            args: [
+                              controllermobilenumber.text.toString(),
+                              "1"
+                            ]);
+                      } else {
+                        Navigator.of(context, rootNavigator: true).pop();
+                        DialogClass().showDialog2(
+                            context, "Mobile Number Alert!",
+                            "No Such Mobile Number Exists in our Record", "Ok");
+                      }
+                    } else {
+                      Navigator.of(context, rootNavigator: true).pop();
+                      showDialog(context: context, builder: (context) {
+                        return AlertDialog(
+                          content: Text(
+                              "Sorry you can't login! your account is deleted. Contact support for any query."),
+                          actions: [ GestureDetector(onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                            child: Text("Ok", style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.purple),),)
+                          ],);
+                      },);
+                    }
+                  } else {
                     Navigator.of(context, rootNavigator: true).pop();
-                    showDialog(context: context, builder: (context) {
-
-                      return AlertDialog(
-                        content: Text("Sorry you can't login! your account is deleted. Contact support for any query."),
-                        actions: [ GestureDetector( onTap: (){
-
-                          Navigator.of(context).pop();
-
-                        } ,child: Text("Ok"  , style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 20 , color: Colors.purple),),) ],);
-
-                    },);
-
+                    DialogClass().showDialog2(context, "Mobile Number Alert!",
+                        "No Such Mobile Number Exists in our Record", "Ok");
                   }
-
-
-
                 } else {
-
                   Navigator.of(context, rootNavigator: true).pop();
-                  DialogClass().showDialog2(context , "Mobile Number Alert!" ,
-                      "No Such Mobile Number Exists in our Record" , "Ok");
-
                 }
 
               }else{
 
-                Navigator.of(context, rootNavigator: true).pop();
+                DialogClass().showPremiumInfoDialog2(context , "Accept Terms" , "Accept Terms & Conditions by Clicking checkbox" , "Got It!");
 
               }
-
 
 
             },child:RoundedContainer(text: TranslationService.translate("login_now"), color: Colors.pink),),

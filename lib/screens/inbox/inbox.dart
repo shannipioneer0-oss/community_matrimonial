@@ -15,6 +15,7 @@ import 'package:community_matrimonial/utils/SharedPrefs.dart';
 import 'package:community_matrimonial/utils/Strings.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_device_imei/flutter_device_imei.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:huge_listview/huge_listview.dart';
@@ -26,6 +27,8 @@ import 'package:slide_switcher/slide_switcher.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../network_utils/service/api_service.dart';
+import '../../utils/universalback_wrapper.dart';
+import '../../utils/utils.dart';
 
 
 class Inbox extends StatelessWidget {
@@ -55,6 +58,7 @@ class InboxScreen extends State<InboxStateful>{
 
   static const int PAGE_SIZE = 16;
   final scroll = ItemScrollController();
+  SharedPreferences? prefs;
 
   HugeListViewController controller = HugeListViewController(totalItemCount: 8);
   HugeListViewController controller2 = HugeListViewController(totalItemCount: 8);
@@ -64,20 +68,43 @@ class InboxScreen extends State<InboxStateful>{
 
     print(page.toString()+"-----"+pageSize.toString()+"-----"+selecteindex.toString()+"----");
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+     prefs = await SharedPreferences.getInstance();
+
+
+
 
     EasyLoading.show(status: 'Please wait...');
+
+    String? imei = await FlutterDeviceImei.instance.getIMEI();
+
+    print({ "mobile_number": prefs?.getString(SharedPrefs.mobile),
+      "imei": imei.toString()});
+    final res  =  await Provider.of<ApiService>(context, listen: false).deregister({ "mobile_number": prefs?.getString(SharedPrefs.mobile),
+      "imei": imei.toString()});
+
+    print(res.body);
+
+    if(res.body["data"][0]["count"] == 0){
+
+      prefs?.remove(SharedPrefs.isLogin);
+      prefs?.clear();
+
+      navService.pushNamedAndRemoveUntil("/intro");
+
+      return [];
+    }
+
     late Response<dynamic> _response;
 
     if(selectedIndex == 0){
 
       _response = await Provider.of<ApiService>(context, listen: false).postInterestSentRecieved(
           {
-            "userId":prefs.getString(SharedPrefs.userId),
+            "userId":prefs?.getString(SharedPrefs.userId),
             "type":"i",
-            "Id":prefs.getString(SharedPrefs.userId),
-            "gender":prefs.getString(SharedPrefs.gender),
-            "communityId": prefs.getString(SharedPrefs.communityId),
+            "Id":prefs?.getString(SharedPrefs.userId),
+            "gender":prefs?.getString(SharedPrefs.gender),
+            "communityId": prefs?.getString(SharedPrefs.communityId),
             "original": "en",
             "translate": ["en"],
             "limit":Strings.limit,
@@ -91,11 +118,11 @@ class InboxScreen extends State<InboxStateful>{
 
       _response = await Provider.of<ApiService>(context, listen: false).postInterestSentRecieved(
           {
-            "userId":prefs.getString(SharedPrefs.userId),
+            "userId":prefs?.getString(SharedPrefs.userId),
             "type":"other",
-            "Id":prefs.getString(SharedPrefs.userId),
-            "gender":prefs.getString(SharedPrefs.gender),
-            "communityId": prefs.getString(SharedPrefs.communityId),
+            "Id":prefs?.getString(SharedPrefs.userId),
+            "gender":prefs?.getString(SharedPrefs.gender),
+            "communityId": prefs?.getString(SharedPrefs.communityId),
             "original": "en",
             "translate": ["en"],
             "limit":Strings.limit,
@@ -107,6 +134,8 @@ class InboxScreen extends State<InboxStateful>{
 
 
     }
+
+
 
 
 
@@ -165,7 +194,7 @@ class InboxScreen extends State<InboxStateful>{
       pageFuture: (page) =>  _loadPage(context,  page , PAGE_SIZE, selectedIndex),
       itemBuilder: (context, index, UserMatch entry) {
 
-          return InboxRowData(entry , selectedIndex);
+          return InboxRowData(entry , selectedIndex ,  prefs!);
 
       },
       errorBuilder: (context, error) {
@@ -205,7 +234,8 @@ class InboxScreen extends State<InboxStateful>{
       velocityThreshold: 8,
       pageFuture: (page) =>  _loadPage(context,  page , PAGE_SIZE, selectedIndex),
       itemBuilder: (context, index, UserMatch entry) {
-        return InboxRowData(entry ,selectedIndex);
+        return InboxRowData(entry ,selectedIndex , prefs!);
+
       },
       errorBuilder: (context, error) {
         return Center(child: Text("No Data Available"),);
@@ -224,11 +254,28 @@ class InboxScreen extends State<InboxStateful>{
   final Connectivity _connectivity = Connectivity();
   late Stream<ConnectivityResult> _connectionStream;
 
+  bool isvalid = false;
+
+  Future<void> checkValidation(BuildContext context) async {
+    final result = await utils().validationalerts(context);
+    setState(() {
+      isvalid = result;
+    });
+
+    if(isvalid == false){
+      navService.pushNamed("/main_screen" ,args: 0);
+    }
+
+  }
+
+
   @override
   void initState() {
     super.initState();
 
     _checkConnectivity();
+
+    checkValidation(context);
 
   }
 
@@ -284,13 +331,10 @@ class InboxScreen extends State<InboxStateful>{
   Widget build(BuildContext context) {
 
 
-    return WillPopScope(onWillPop: (){
+    return UniversalBackWrapper(
+        isRoot: false
 
-      print("+_+_+");
-      navService.pushNamed("/main_screen" , args:0);
-
-      return Future.value(false);
-    }, child:Scaffold(key: _scaffoldKey,
+        ,child:  Scaffold(key: _scaffoldKey,
 
       appBar: AppBar(
           title: Text('Inbox' , style: TextStyle(color: Colors.black87 , fontSize: 18),),
@@ -298,13 +342,13 @@ class InboxScreen extends State<InboxStateful>{
           backgroundColor: Colors.transparent,
           elevation: 0.0,
           leading: IconButton(
-            icon: Image.asset("assets/images/menu_img.png" , width: 50, height: 40,),
+            icon: Image.asset("assets/images/ic_launcher.png" , width: 50, height: 40,),
             onPressed: () {
               _scaffoldKey.currentState?.openDrawer();
             },
           )),
       drawer: StylishDrawer(),
-      body:Column(children: [
+      body: Column(children: [
 
         Container(margin: EdgeInsets.only(top: 0 ,bottom: 0) , child:SlideSwitcher(
 
@@ -328,7 +372,7 @@ class InboxScreen extends State<InboxStateful>{
 
         ),),
 
-        Container(height:MediaQuery.of(context).size.height*0.65 ,margin: EdgeInsets.only(top: 15 ,bottom: 0 ) , child: selectedIndex == 0 ? setLists(123) :
+        isvalid == false ? Container()  : Container(height:MediaQuery.of(context).size.height*0.65 ,margin: EdgeInsets.only(top: 15 ,bottom: 0 ) , child: selectedIndex == 0 ? setLists(123) :
         selectedIndex == 1 ? setLists2(345) : Container(),
 
         )

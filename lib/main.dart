@@ -12,6 +12,7 @@ import 'package:community_matrimonial/screens/about_us/contact_us.dart';
 import 'package:community_matrimonial/screens/about_us/faqs.dart';
 import 'package:community_matrimonial/screens/about_us/member_list_trusteeshree.dart';
 import 'package:community_matrimonial/screens/about_us/privacy_policy..dart';
+import 'package:community_matrimonial/screens/about_us/terms_condition.dart';
 import 'package:community_matrimonial/screens/chat/ChatScreen.dart';
 import 'package:community_matrimonial/screens/dashboard/dashboard.dart';
 import 'package:community_matrimonial/screens/filter/filter_screen.dart';
@@ -74,6 +75,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/intro.dart';
+import 'package:flutter/services.dart';
 
 
 
@@ -379,17 +381,31 @@ class MyApp extends StatelessWidget {
         builder: (context, child) {
           final mq = MediaQuery.of(context);
 
-          return MediaQuery(
-            data: mq.copyWith(
-              textScaleFactor: 1.0,      // FIX: Stops distorted text
-              boldText: false,           // Avoid OEM forcing bold fonts
-            ),
-            child: Directionality(       // FIX: Avoid shaping issues on some phones
-              textDirection: TextDirection.ltr,
-              child: RepaintBoundary(   // <-- Added RepaintBoundary
-                child: child!,
-              ),
-            ),
+          return  PopScope(
+            canPop: false, // Prevents Android from killing the app immediately
+            onPopInvokedWithResult: (didPop, result) {
+              // IF THIS PRINTS, FLUTTER IS IN CONTROL
+              debugPrint("BACK BUTTON PRESSED - FLUTTER DETECTED");
+
+
+              showDialog(
+                context: NavigationService.navigationKey.currentContext!,
+                builder: (context) => AlertDialog(title: Text("Back Pressed!")),
+              );
+
+              if (didPop) return;
+
+              final NavigatorState? navigator = NavigationService.navigationKey.currentState;
+
+              if (navigator != null && navigator.canPop()) {
+                debugPrint("Navigator: Popping internal route");
+                navigator.pop();
+              } else {
+                debugPrint("Navigator: At root, exiting app");
+                SystemNavigator.pop();
+              }
+            },
+            child: child!,
           );
         },
 
@@ -397,6 +413,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           fontFamily: null,              // Ensure system default is used
         ),
+
 
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
@@ -474,6 +491,8 @@ class MyApp extends StatelessWidget {
             return Animations().setAnimation(FaqsScreen());
           case '/privacy_policy':
             return Animations().setAnimation(PrivacyPolicy());
+          case '/terms_conditions':
+            return Animations().setAnimation(TermsConditions());
           case '/saved_search':
             return Animations().setAnimation(SavedSearch());
           case '/signup':
@@ -534,6 +553,15 @@ class MyScreen extends  State<MainScreen> {
    @override
   void initState() {
     super.initState();
+
+
+      SystemChannels.platform.setMethodCallHandler((call) async {
+        if (call.method == 'SystemNavigator.pop') {
+          print("Back button pressed on Android");
+          // Handle your custom logic here
+        }
+      });
+
 
     _checkConnectivity();
 
@@ -741,10 +769,12 @@ class MyScreen extends  State<MainScreen> {
   }
 
 
+  DateTime? lastPressed;
+
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
+    return  Scaffold(
       body: SafeArea(child: Container(color: Colors.pinkAccent ,child:Stack(
         fit: StackFit.expand,
         children: [

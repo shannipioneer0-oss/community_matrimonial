@@ -20,6 +20,8 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../user_profile/add_edit_profile/educationaldetails.dart';
+
 class UserDetailOtherEdit extends StatelessWidget {
 
    final String userId;
@@ -96,8 +98,9 @@ class UserDetailScreen  extends State<UserDetailStateful>{
   String communityName = "" , hobbies = "";
   String communityId = "";
   bool isload =  false;
+  List result =[];
 
-  late SharedPreferences prefs;
+  SharedPreferences? prefs;
 
    initdata() async {
 
@@ -111,7 +114,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
 
     print({
       "userId": widget.userId,
-      "communityId": prefs.getString(SharedPrefs.communityId),
+      "communityId": prefs?.getString(SharedPrefs.communityId),
       "myuserId": widget.userId,
       "Id": widget.userId ,
       "original": "en",
@@ -122,7 +125,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
            .postProfileDetailsFetchValuelabel(
            {
              "userId": widget.userId,
-             "communityId": prefs.getString(SharedPrefs.communityId),
+             "communityId": prefs?.getString(SharedPrefs.communityId),
              "myuserId": widget.userId,
              "Id": widget.userId ,
              "original": "en",
@@ -132,9 +135,10 @@ class UserDetailScreen  extends State<UserDetailStateful>{
 
        setState(() {
 
-       communityName = prefs.getString(SharedPrefs.communityName).toString();
+       communityName = prefs!.getString(SharedPrefs.communityName).toString();
 
        var userData = _response.body["data"][0][0]["0"];
+
 
         fullname =  userData["fullname"] ?? "";
         dob = userData["dob"] ?? "";
@@ -142,45 +146,60 @@ class UserDetailScreen  extends State<UserDetailStateful>{
         age =  utils().calculateAge(userData["dob"]).toString();
         marital = userData["marital_status"].split(",")[0];
         caste = userData["caste"] != null ? userData["caste"].split(",")[0] : "";
-        subcaste = userData["subcaste"] != null ?  userData["subcaste"].split(",")[0] : "";
-        lang_known   = userData["language_known"].split("*")[0];
-        mother_tongue =  userData["mother_tongue"].split(",")[0];
-        isnri = userData["isnri"] ?? "";
-        nri_details = userData["nri_detail"] ?? "";
+        subcaste = userData["subcaste_txt"] != null ?  userData["subcaste_txt"] : "";
+
         profileId = userData["profileId"];
         basic_details_id = userData["Id"].toString();
 
         createdby_id = userData["created_by"] != null ?  userData["created_by"].split(",")[1] : "";
         marital_id = userData["marital_status"].split(",")[1];
         caste_id = userData["caste"] != null ? userData["caste"].split(",")[1] : "";
-        subcaste_id  = userData["subcaste"] != null ?  userData["subcaste"].split(",")[1] : "";
-        lang_known_id = userData["language_known"].split("*")[1];
-        mother_tonuge_id = userData["mother_tongue"].split(",")[1];
+       // subcaste_id  = userData["subcaste"] != null ?  userData["subcaste"].split(",")[1] : "";
+        //lang_known_id = userData["language_known"].split("*")[1];
+        //mother_tonuge_id = userData["mother_tongue"].split(",")[1];
 
 
 
        var contactInfo = _response.body["data"][1][0]["0"];
 
        // Setting values in shared preferences
-       mobile = contactInfo["mobile_number"];
-       perm_address  = contactInfo["permanent_adddress"];
-       email = contactInfo["emailid"] ?? "";
-       alt_mobile =  contactInfo["alternate_mobile"] ?? "";
-       alt_email = contactInfo["alternate_email"] ?? "";
-       work_address  =  contactInfo["working_address"] ?? "";
-       contact_time = contactInfo["contact_time"] ?? "";
-       country = contactInfo["perm_country"].split(",")[0];
-       perm_state = contactInfo["perm_state"] != null ? contactInfo["perm_state"].split(",")[0] : "";
-       perm_city =  contactInfo["perm_city"] != null ? contactInfo["perm_city"].split(",")[0] : "";
-       work_state  = contactInfo["work_state"] != null ? contactInfo["work_state"].split(",")[0] : "";
-       work_city=  contactInfo["work_city"] != null ? contactInfo["work_city"].split(",")[0] : "";
+       if(contactInfo != null) {
+         mobile = contactInfo["mobile_number"] ?? "";
+         perm_address = contactInfo["permanent_adddress"];
+         email = contactInfo["emailid"] ?? "";
+         alt_mobile = contactInfo["alternate_mobile"] ?? "";
+         alt_email = contactInfo["alternate_email"] ?? "";
+         work_address = contactInfo["working_address"] ?? "";
+         contact_time = contactInfo["contact_time"] ?? "";
+         country = contactInfo["perm_country"].split(",")[0];
+         perm_state =
+         contactInfo["perm_state"] != null ? contactInfo["perm_state"].split(
+             ",")[0] : "";
+         perm_city =
+         contactInfo["perm_city"] != null ? contactInfo["perm_city"].split(
+             ",")[0] : "";
+         work_state =
+         contactInfo["work_state"] != null ? contactInfo["work_state"].split(
+             ",")[0] : "";
+         work_city =
+         contactInfo["work_city"] != null ? contactInfo["work_city"].split(
+             ",")[0] : "";
 
          country_id = contactInfo["perm_country"].split(",")[1];
-         perm_state_id = contactInfo["perm_state"] != null ? contactInfo["perm_state"].split(",")[1] : "";
-         perm_city_id =  contactInfo["perm_city"] != null ? contactInfo["perm_city"].split(",")[1] : "";
-         work_state_id  = contactInfo["work_state"] != null ? contactInfo["work_state"].split(",")[1] : "";
-         work_city_id =  contactInfo["work_city"] != null ? contactInfo["work_city"].split(",")[1] : "";
+         perm_state_id =
+         contactInfo["perm_state"] != null ? contactInfo["perm_state"].split(
+             ",")[1] : "";
+         perm_city_id =
+         contactInfo["perm_city"] != null ? contactInfo["perm_city"].split(
+             ",")[1] : "";
+         work_state_id =
+         contactInfo["work_state"] != null ? contactInfo["work_state"].split(
+             ",")[1] : "";
+         work_city_id =
+         contactInfo["work_city"] != null ? contactInfo["work_city"].split(
+             ",")[1] : "";
          contact_details_id = contactInfo["Id"].toString();
+       }
 
        var healthDetails = _response.body["data"][2][0]["0"];
 
@@ -241,11 +260,50 @@ class UserDetailScreen  extends State<UserDetailStateful>{
              ? adminServiceDetails['institute_name'].split(",")[0] ?? ""
              : "";
          education = adminServiceDetails['education'] != null
-             ? adminServiceDetails['education'].split(",")[0]
+             ? adminServiceDetails['education']
              : "";
          edu_details = adminServiceDetails['education_detail'] != null
              ? adminServiceDetails['education_detail']
              : "";
+
+
+         String first  = "" ,second  ="" , third = "";
+
+         List<Course> courses = adminServiceDetails['education'] != null ?  adminServiceDetails['education'].toString()
+             .split('|')
+             .map((e) => Course.fromString(e))
+             .toList() : [];
+
+         try{
+
+           first = courses[0].label;
+
+         }catch(ex){
+           first =  "";
+         }
+
+         try{
+
+           second = courses[1].label;
+
+         }catch(ex){
+           second =  "";
+         }
+
+         try{
+
+           third = courses[2].label;
+
+         }catch(ex){
+           third =  "";
+         }
+
+          result = [
+           if (first.isNotEmpty) first ,
+           if (second.isNotEmpty) second,
+           if (third.isNotEmpty) third
+         ];
+
 
          institute_name_id = adminServiceDetails['institute_name'] != null
              ? adminServiceDetails['institute_name'].split(",")[1] ?? ""
@@ -481,18 +539,32 @@ class UserDetailScreen  extends State<UserDetailStateful>{
     return Scaffold(
       key: _scaffoldKeyglobal,
       appBar: AppBar(
-          title: Column(crossAxisAlignment: CrossAxisAlignment.start  ,children: [  Text('Profile of '+fullname , style: TextStyle(color: Colors.black87 , fontSize: 14),),   Text(communityName , style: TextStyle(color: Colors.black54 , fontSize: 14),)],),
-          toolbarOpacity: 1,
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
-          leading: IconButton(
-            icon: Image.asset("assets/images/menu_img.png" , width: 50, height: 40,),
-            onPressed: () {
-              _scaffoldKeyglobal.currentState?.openDrawer();
-            },
-          )),
-      drawer: StylishDrawer(),
-      body: SafeArea(child: SingleChildScrollView(child:Container( margin: EdgeInsets.only(bottom: 20)  ,child:Column(children: [
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black87),
+          onPressed: () {
+            navService.goBack(); // Go back to previous screen
+          },
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Profile of $fullname',
+              style: TextStyle(color: Colors.black87, fontSize: 14),
+            ),
+            Text(
+              communityName,
+              style: TextStyle(color: Colors.black54, fontSize: 14),
+            ),
+          ],
+        ),
+        toolbarOpacity: 1,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
+
+
+        body: prefs == null ? Container() : SafeArea(child: SingleChildScrollView(child:Container( margin: EdgeInsets.only(bottom: 20)  ,child:Column(children: [
 
         Center(
           child: Column(
@@ -515,7 +587,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                 ),
                 child: ClipOval(
                   child: Image.network(
-                    Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+pic1,
+                    Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs!.getString(SharedPrefs.communityId).toString())+pic1,
                     width: 150.0,
                     height: 150.0,
                     fit: BoxFit.contain,
@@ -552,37 +624,78 @@ class UserDetailScreen  extends State<UserDetailStateful>{
               SizedBox(height: 10.0),
               ElevatedButton(onPressed: () async {
 
+                SharedPreferences prefs = await SharedPreferences
+                    .getInstance();
+
                 if(user_verify != "1"){
 
                 final res = await DialogClass().showDialogBeforesubmit(context, "Verify User", "Have seen the user details watchfully if yes then verify this user", "Ok" , "1");
 
-                if(res == "1"){
-
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    final _response = await Provider.of<ApiService>(context, listen: false)
-        .postUpdateVerifyUser(
-        {
-          "userId": widget.userId,
-          "communityId": prefs.getString(SharedPrefs.communityId),
-        });
+                if(res == "1") {
 
 
-                  if (_response.body["data"]["affectedRows"] == 1) {
+                  if (fullname.trim() == "null" || dob == "null" ||
+                      createdby == "null" || marital == "null" ||
+                      caste == "null" || subcaste == "null" ||
+                      height == "null" || wieght == "null" ||
+                      skintone == "null" || body_type == "null" ||
+                      handicap == "null" || mobile == "null" ||
+                      country == "null"
+                      || perm_state == "null" || perm_city == "null" ||
+                      education == "null" || occuapation == "null" ||
+                      father_name == "null" || mother_name == "null"
+                      || father_coccup == "null" || mother_occup == "null" ||
+                      house_owned == "null" || house_type == "null") {
+                    final result = await DialogClass().showPremiumInfoDialog(
+                        context,
+                        TranslationService.translate("incomplete_alert_title"),
+                        TranslationService.translate(
+                            "incomplete_alert_message"),
+                        TranslationService.translate("ok_button"));
+                  } else {
+
+                    final _response = await Provider.of<ApiService>(
+                        context, listen: false)
+                        .postUpdateVerifyUser(
+                        {
+                          "userId": widget.userId,
+                          "communityId": prefs.getString(
+                              SharedPrefs.communityId),
+                          "isflag":"1"
+                        });
 
 
-                    setState(() {
-                      user_verify = "1";
-                    });
-
-
+                    if (_response.body["data"]["affectedRows"] == 1) {
+                      setState(() {
+                        user_verify = "1";
+                      });
+                    }
                   }
-
 
                 }
 
                 }else{
 
+                  final res = await DialogClass().showDialogBeforesubmit(context, "Unerify User", "Have seen the user details watchfully if yes then Unverify this user", "Ok" , "1");
+
+                  if(res ==  "1") {
+                    final _response = await Provider.of<ApiService>(
+                        context, listen: false)
+                        .postUpdateVerifyUser(
+                        {
+                          "userId": widget.userId,
+                          "communityId": prefs.getString(
+                              SharedPrefs.communityId),
+                          "isflag": "0"
+                        });
+
+
+                    if (_response.body["data"]["affectedRows"] == 1) {
+                      setState(() {
+                        user_verify = "0";
+                      });
+                    }
+                  }
 
                 }
 
@@ -629,7 +742,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                   mother_tongue ,
                 createdby_id,
                 marital_id ,caste_id ,subcaste_id , lang_known_id , mother_tonuge_id,
-                basic_details_id ,isnri ,nri_details]);
+                basic_details_id ,isnri ,nri_details ,widget.userId ,profileId]);
 
               initdata();
 
@@ -642,13 +755,13 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ProfileDetailItem(label: TranslationService.translate("full_name_key"), value: fullname),
-                      ProfileDetailItem(label: TranslationService.translate("dob_key"), value: dob),
+                      ProfileDetailItem(label: TranslationService.translate("full_name_key"), value: fullname , isrequired : "1"),
+                      ProfileDetailItem(label: TranslationService.translate("dob_key"), value: dob, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("age_key"), value: age),
-                      ProfileDetailItem(label: TranslationService.translate("created_by_key"), value: createdby),
-                      ProfileDetailItem(label: TranslationService.translate("marital_status_key"), value: marital),
-                      ProfileDetailItem(label: TranslationService.translate("caste_key"), value: caste),
-                      ProfileDetailItem(label: TranslationService.translate("subcaste_key"), value: subcaste),
+                      ProfileDetailItem(label: TranslationService.translate("created_by_key"), value: createdby, isrequired : "1"),
+                      ProfileDetailItem(label: TranslationService.translate("marital_status_key"), value: marital, isrequired : "1"),
+                      ProfileDetailItem(label: TranslationService.translate("caste_key"), value: caste, isrequired : "1"),
+                      ProfileDetailItem(label: TranslationService.translate("subcaste_key"), value: subcaste, isrequired : "1"),
                       ProfileDetailItem(label:TranslationService.translate("language_known_key"), value: lang_known),
                       ProfileDetailItem(label: TranslationService.translate("mother_tongue_key"), value: mother_tongue),
                       ProfileDetailItem(label: TranslationService.translate("is_nri") , value: isnri == "1" ? "Yes"  : "No"),
@@ -661,7 +774,9 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                 isOpen: false,
                 leftIcon: GestureDetector(onTap: () async {
 
-                  final res =  await navService.pushNamed("/lifestyle_details_edit" , args:[height , wieght , skintone , bld_group , body_type , diet_type ,  handicap ,handicap_details , fitness ,drink_type ,smoke_type , overall_health_details , skintone_id ,body_type_id , diet_type_id ,drink_type_id ,smoke_type_id ,lifestyles_id]);
+                  final res =  await navService.pushNamed("/lifestyle_details_edit" , args:[height , wieght , skintone , bld_group , body_type , diet_type ,
+                    handicap ,handicap_details , fitness ,drink_type ,smoke_type , overall_health_details , skintone_id ,body_type_id , diet_type_id
+                    ,drink_type_id ,smoke_type_id ,lifestyles_id , widget.userId ,profileId]);
                   initdata();
 
                 } , child: Icon(Icons.edit, color: Colors.white),),
@@ -673,16 +788,16 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ProfileDetailItem(label: TranslationService.translate("height_key"), value: height),
-                      ProfileDetailItem(label: TranslationService.translate("weight_key"), value: wieght),
-                      ProfileDetailItem(label: TranslationService.translate("skintone_key"), value: skintone),
+                      ProfileDetailItem(label: TranslationService.translate("height_key"), value: height, isrequired : "1"),
+                      ProfileDetailItem(label: TranslationService.translate("weight_key"), value: wieght, isrequired : "1"),
+                      ProfileDetailItem(label: TranslationService.translate("skintone_key"), value: skintone, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("bld_group_key"), value: bld_group),
-                      ProfileDetailItem(label: TranslationService.translate("body_type_key"), value: body_type),
+                      ProfileDetailItem(label: TranslationService.translate("body_type_key"), value: body_type, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("diet_type_key"), value: diet_type),
                       ProfileDetailItem(label: TranslationService.translate("fitness_key"), value: fitness),
                       ProfileDetailItem(label: TranslationService.translate("drink_type_key"), value: drink_type),
                       ProfileDetailItem(label: TranslationService.translate("smoke_type_key"), value: smoke_type),
-                      ProfileDetailItem(label: TranslationService.translate("handicap_key"), value: handicap),
+                      ProfileDetailItem(label: TranslationService.translate("handicap_key"), value: handicap, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("handicap_details_key"), value: handicap_details),
                       ProfileDetailItem(label: TranslationService.translate("overall_health_details_key"), value: overall_health_details),
                     ],
@@ -693,7 +808,10 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                 isOpen: false,
                 leftIcon: GestureDetector( onTap: () async {
 
-                  final res =  await navService.pushNamed("/contact_details_edit" , args: [mobile , alt_mobile ,email ,alt_email ,country , perm_state ,perm_city , work_state ,work_city ,perm_address ,work_address ,contact_time , country_id ,perm_state_id ,perm_city_id ,work_state_id ,work_city_id ,contact_details_id]);
+                  final res =  await navService.pushNamed("/contact_details_edit" , args: [mobile , alt_mobile ,email ,
+                    alt_email ,country , perm_state ,perm_city , work_state ,work_city ,perm_address ,
+                    work_address ,contact_time , country_id ,perm_state_id ,perm_city_id ,work_state_id ,
+                    work_city_id ,contact_details_id ,widget.userId ,profileId]);
                   initdata();
 
                 } ,child: Icon(Icons.edit, color: Colors.white),),
@@ -705,13 +823,13 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ProfileDetailItem(label: TranslationService.translate("mobile_key"), value: mobile),
+                      ProfileDetailItem(label: TranslationService.translate("mobile_key"), value: mobile, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("alt_mobile_key"), value: alt_mobile),
                       ProfileDetailItem(label: TranslationService.translate("email_key"), value: email ,verify_email:  email_verify),
                       ProfileDetailItem(label: TranslationService.translate("alt_email_key") , value: alt_email),
-                      ProfileDetailItem(label: TranslationService.translate("country_key"), value: country),
-                      ProfileDetailItem(label: TranslationService.translate("perm_state_key"), value: perm_state),
-                      ProfileDetailItem(label: TranslationService.translate("perm_city_key"), value: perm_city),
+                      ProfileDetailItem(label: TranslationService.translate("country_key"), value: country, isrequired : "1"),
+                      ProfileDetailItem(label: TranslationService.translate("perm_state_key"), value: perm_state, isrequired : "1"),
+                      ProfileDetailItem(label: TranslationService.translate("perm_city_key"), value: perm_city, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("perm_address_key"), value: perm_address),
                       ProfileDetailItem(label: TranslationService.translate("work_state_key"), value: work_state),
                       ProfileDetailItem(label: TranslationService.translate("work_city_key"), value: work_city),
@@ -724,7 +842,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                 isOpen: false,
                 leftIcon: GestureDetector(onTap: () async {
 
-                  final res =  await navService.pushNamed("/education_details_edit" ,args:[is_administrative , admin_position , is_reputed , institute_name , education ,edu_details , institute_name_id , highest_education_id , education_id]);
+                  final res =  await navService.pushNamed("/education_details_edit" ,args:[is_administrative , admin_position , is_reputed , institute_name , education ,edu_details , institute_name_id , highest_education_id , education_id ,widget.userId , profileId] );
                   initdata();
 
 
@@ -737,7 +855,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ProfileDetailItem(label: TranslationService.translate("education_key"), value: education),
+                      ProfileDetailItem(label: TranslationService.translate("education_key"), value: result.join(", "), isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("edu_details_key"), value: edu_details),
                       ProfileDetailItem(label: TranslationService.translate("is_reputed_key"), value: is_reputed == "0" ? "No" : "Yes"),
                       ProfileDetailItem(label: TranslationService.translate("institute_name_key"), value: institute_name),
@@ -763,7 +881,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ProfileDetailItem(label: TranslationService.translate("occupation_key"), value: occuapation),
+                      ProfileDetailItem(label: TranslationService.translate("occupation_key"), value: occuapation, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("occupation_details_key"), value: occupation_details),
                       ProfileDetailItem(label: TranslationService.translate("annual_income_key"), value: annual_income),
                       ProfileDetailItem(label: TranslationService.translate("employment_type_key"), value: employment_type),
@@ -842,13 +960,13 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                       ProfileDetailItem(label: TranslationService.translate("num_sister_key"), value: num_sister),
                       ProfileDetailItem(label: TranslationService.translate("num_married_bro_key"), value: num_married_bro),
                       ProfileDetailItem(label: TranslationService.translate("num_married_sister_key"), value: num_married_sister),
-                      ProfileDetailItem(label: TranslationService.translate("father_name_key"), value: father_name),
-                      ProfileDetailItem(label: TranslationService.translate("mother_name_key"), value: mother_name),
-                      ProfileDetailItem(label: TranslationService.translate("father_coccup_key"), value: father_coccup),
-                      ProfileDetailItem(label: TranslationService.translate("mother_occup_key"), value: mother_occup),
-                      ProfileDetailItem(label: TranslationService.translate("house_owned_key"), value: house_owned),
+                      ProfileDetailItem(label: TranslationService.translate("father_name_key"), value: father_name, isrequired : "1"),
+                      ProfileDetailItem(label: TranslationService.translate("mother_name_key"), value: mother_name, isrequired : "1"),
+                      ProfileDetailItem(label: TranslationService.translate("father_coccup_key"), value: father_coccup, isrequired : "1"),
+                      ProfileDetailItem(label: TranslationService.translate("mother_occup_key"), value: mother_occup, isrequired : "1"),
+                      ProfileDetailItem(label: TranslationService.translate("house_owned_key"), value: house_owned, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("fml_status_key"), value: fml_status),
-                      ProfileDetailItem(label: TranslationService.translate("house_type_key"), value: house_type),
+                      ProfileDetailItem(label: TranslationService.translate("house_type_key"), value: house_type, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("family_slogan_key"), value: family_slogan),
                     ],
                   ),

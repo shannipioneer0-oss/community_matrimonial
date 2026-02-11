@@ -39,9 +39,9 @@ class family extends StatelessWidget {
         ProfileDetailItemOther(label: TranslationService.translate("mother_occupation") , value: familyinfo.motherOccupation != null ?  familyinfo.motherOccupation.toString() : ""),
         ProfileDetailItemOther(label: TranslationService.translate("house_owned_details") , value: familyinfo.houseOwned != null ?  familyinfo.houseOwned.toString() : ""),
         ProfileDetailItemOther(label: TranslationService.translate("house_type_details") , value:familyinfo.houseType != null ?  familyinfo.houseType.toString() : ""),
-        ProfileDetailItemOther(label: TranslationService.translate("will_stay_or_not") , value: familyinfo.parentsStayOptions != null ? familyinfo.parentsStayOptions.toString() : ""),
+       /* ProfileDetailItemOther(label: TranslationService.translate("will_stay_or_not") , value: familyinfo.parentsStayOptions != null ? familyinfo.parentsStayOptions.toString() : ""),
         ProfileDetailItemOther(label: TranslationService.translate("family_slogan_details") , value: familyinfo.detailFamily != null ?  familyinfo.detailFamily.toString() : ""),
-
+*/
 
       ]))
 

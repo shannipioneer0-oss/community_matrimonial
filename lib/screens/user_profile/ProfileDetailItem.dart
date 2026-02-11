@@ -21,8 +21,9 @@ class ProfileDetailItem extends StatelessWidget {
   final String label;
   final String value;
   String? verify_email;
+  String? isrequired;
 
-  ProfileDetailItem({required this.label, required this.value , this.verify_email});
+  ProfileDetailItem({required this.label, required this.value , this.verify_email ,this.isrequired});
 
 
 
@@ -57,6 +58,7 @@ class ProfileDetailItem extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            isrequired == "1" ? Text("* " ,style: TextStyle(color: Colors.red , fontWeight: FontWeight.bold),): Container(),
             Container(
               width: MediaQuery.of(context).size.width*0.4,
               child: label != TranslationService.translate("email_key") ? Text(

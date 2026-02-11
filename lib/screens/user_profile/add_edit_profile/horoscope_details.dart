@@ -26,6 +26,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../app_utils/SingleSelectDialog.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../utils/universalback_wrapper.dart';
+
 
 class HoroscopeDetail extends StatelessWidget {
 
@@ -180,7 +182,10 @@ class HoroscopeDetailScreen  extends State<HoroscopeDetailStateful> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(key: _scaffoldKey,
+    return UniversalBackWrapper(
+        isRoot: false
+
+        ,child: Scaffold(key: _scaffoldKey,
         appBar: AppBar(
             title: Text('Horoscope Details\nRavaldev Matrimony',
               style: TextStyle(color: Colors.black87, fontSize: 18),),
@@ -537,7 +542,7 @@ class HoroscopeDetailScreen  extends State<HoroscopeDetailStateful> {
       }
     }
               },)
-            ]))));
+            ])))));
   }
 
 }

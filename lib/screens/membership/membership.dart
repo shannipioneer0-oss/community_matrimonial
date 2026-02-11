@@ -13,6 +13,7 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../app_utils/Dialogs.dart';
 import '../../network_utils/service/api_service.dart';
@@ -328,30 +329,16 @@ class MembershipCard extends State<MembershipCardStateful> {
 
               }else{
 
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-
-                final _response = await Provider.of<ApiService>(context, listen: false).postCreateOrder({
-                  "amount": int.parse(widget.membership_model.planPrice)*100,
-                  "reciept": utils().getRandomString(12)
-                });
-
-                print(_response.body.toString());
-
-                orderid = _response.body["data"]["id"];
 
 
-                var options = {
-                  'key': 'rzp_test_9zJJjKW535arlG',
-                  'amount': int.parse(widget.membership_model.planPrice)*100 , //in the smallest currency sub-unit.
-                  'name': "Community Matrimonial",
-                  'order_id': orderid, // Generate order_id using Orders API
-                  'description': "Person is subscribing to the package "+widget.membership_model.planName+" with valididty "+widget.membership_model.validityDays,
-                  'timeout': 120, // in seconds
-                  'prefill': {
-                    'contact': prefs.getString(SharedPrefs.mobile),
-                    'email': prefs.getString(SharedPrefs.emailid)
-                  }
-                };
+                SharedPreferences prefs2 = await SharedPreferences.getInstance();
+
+
+
+                String userId = prefs2.getString(SharedPrefs.userId).toString();
+                String communityId = prefs2.getString(SharedPrefs.communityId).toString();
+
+                launchUrl(Uri.parse("https://matrimonial.pioerp.com/payment_options?userId="+userId+"&communityId="+communityId+"&admin=0"));
 
                 // _razorpay.open(options);
 

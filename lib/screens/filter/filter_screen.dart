@@ -28,6 +28,7 @@ import 'package:community_matrimonial/utils/lists.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_device_imei/flutter_device_imei.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
@@ -37,8 +38,11 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../app_utils/MultiSelectDialog.dart';
+import '../../utils/universalback_wrapper.dart';
+import '../../utils/utils.dart';
 
 class FilterScreenApp extends StatelessWidget {
+
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +97,28 @@ class FilterScreen extends State<FilterScreenAppStateful> {
   }
 
 
+  void onTabReselected() {
 
+
+
+  }
+
+
+
+
+  bool isvalid = false;
+
+  Future<void> checkValidation(BuildContext context) async {
+    final result = await utils().validationalerts(context);
+    setState(() {
+      isvalid = result;
+    });
+
+    if(isvalid == false){
+      navService.pushNamed("/main_screen" ,args: 0);
+    }
+
+  }
 
 
   final Connectivity _connectivity = Connectivity();
@@ -112,7 +137,7 @@ class FilterScreen extends State<FilterScreenAppStateful> {
     context.read<SearchDataFilter>().height_from = "4ft 0inch";
     context.read<SearchDataFilter>().height_to = "7ft 5inch";
 
-
+    checkValidation(context);
 
     setUI();
   }
@@ -123,6 +148,30 @@ class FilterScreen extends State<FilterScreenAppStateful> {
 
   ConnectivityResult _connectivityResult = ConnectivityResult.none;
   Future<void> _checkConnectivity() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? imei = await FlutterDeviceImei.instance.getIMEI();
+
+    print({ "mobile_number": prefs.getString(SharedPrefs.mobile),
+      "imei": imei.toString()});
+    final res  =  await Provider.of<ApiService>(context, listen: false).deregister({ "mobile_number": prefs.getString(SharedPrefs.mobile),
+      "imei": imei.toString()});
+
+    print(res.body);
+
+    if(res.body["data"][0]["count"] == 0){
+
+      prefs.remove(SharedPrefs.isLogin);
+      prefs.clear();
+
+      navService.pushNamedAndRemoveUntil("/intro");
+
+      return;
+    }
+
+
+
     ConnectivityResult result = await Connectivity().checkConnectivity();
     setState(() {
       _connectivityResult = result;
@@ -290,6 +339,8 @@ class FilterScreen extends State<FilterScreenAppStateful> {
                       context1
                           .read<SearchDataFilter>()
                           .institute_wise,
+                      context1
+                          .read<SearchDataFilter>().completionWise
                     ]);
 
 
@@ -356,7 +407,10 @@ class FilterScreen extends State<FilterScreenAppStateful> {
   Widget build(BuildContext context) {
 
 
-    return Scaffold(
+    return UniversalBackWrapper(
+        isRoot: false
+
+        ,child:Scaffold(
 
       key: _scaffoldKey,
       appBar: PreferredSize(
@@ -366,7 +420,7 @@ class FilterScreen extends State<FilterScreenAppStateful> {
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         leading: IconButton(
-          icon: Image.asset("assets/images/menu_img.png" , width: 50, height: 40,),
+          icon: Image.asset("assets/images/ic_launcher.png" , width: 50, height: 40,),
           onPressed: () {
 
             _scaffoldKey.currentState!.openDrawer();
@@ -558,6 +612,8 @@ class FilterScreen extends State<FilterScreenAppStateful> {
                     .handicap,
                 context.read<SearchDataFilter>()
                     .institute_wise,
+                context.read<SearchDataFilter>().
+                completionWise
               ]);
             }else{
 
@@ -570,7 +626,7 @@ class FilterScreen extends State<FilterScreenAppStateful> {
         ],
       ),),
       drawer: StylishDrawer(),
-      body: SingleChildScrollView(child:Container( margin: EdgeInsets.only(left: 10 , top: 10)  ,child:  Column(children: parts)))) ;
+      body: SingleChildScrollView(child:Container( margin: EdgeInsets.only(left: 10 , top: 10)  ,child:  Column(children: parts)))) );
 
   }
 
@@ -1198,10 +1254,15 @@ class part2stateful extends StatefulWidget {
 
   }
 
+    String role = "";
 
   initFromSavedSearch() async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      role = prefs.getString(SharedPrefs.role_type).toString();
+    });
 
 
 
@@ -1356,7 +1417,38 @@ class part2stateful extends StatefulWidget {
         ),
       ],),),
 
-     SizedBox(height: 30,),
+
+
+     role == "admin" ? Container(child:Row(children: [ CircleWithNumber(number: "13") , const SizedBox(width: 15,) , Text("Search by Completion", style: TextStyle(fontFamily: "Roboto-Medium" , fontSize: 16 , color: Colors.black87 , fontWeight: FontWeight.w200 ),)],),) : Container(),
+     role == "admin" ? Container(margin: const EdgeInsets.only(left: 15 , right: 15) , child:Row(children: [
+
+
+        Image.asset("assets/images/path.png" , height: 60,) , SizedBox(width: 30,) ,
+        Expanded(child: CustomDropdown(icondata: MdiIcons.heart  ,controller: context.read<SearchDataFilter>().completionwiseController , labelText: "Search By Completion", onButtonPressed: () async {
+
+          EasyLoading.show(status: 'Please wait...');
+          List<DataFetch> listitem =  [];
+
+          listitem.add(DataFetch(label: "Incompleted Profiles", value: "in"));
+          listitem.add(DataFetch(label: "Unverified Profiles", value: "uve"));
+          listitem.add(DataFetch(label: "Verified Profiles", value: "ve"));
+          listitem.add(DataFetch(label: "Unpaid Profiles", value: "unpaid"));
+          listitem.add(DataFetch(label: "Payment Unverified Profiles", value: "paid_uve"));
+          listitem.add(DataFetch(label: "Payment Verified Profiles", value: "paid_ve"));
+
+
+          EasyLoading.dismiss();
+
+          final value = await SingleSelectDialog().showBottomSheet(context, listitem , "Select Completionwise");
+          context.read<SearchDataFilter>().completionwiseController.text = value.label;
+          context.read<SearchDataFilter>().completionWise = value.value;
+
+
+        },),),
+
+      ],)) : Container(),
+
+       SizedBox(height: 30,),
 
 
       Container(height: 50 ,width: MediaQuery.of(context).size.width*0.6  ,child:ElevatedButton.icon(style: ElevatedButton.styleFrom(backgroundColor: Colors.pink, // Background color
@@ -1500,6 +1592,8 @@ class part2stateful extends StatefulWidget {
                 .handicap,
             context.read<SearchDataFilter>()
                 .institute_wise,
+            context.read<SearchDataFilter>().
+            completionWise
           ]);
         }else{
 

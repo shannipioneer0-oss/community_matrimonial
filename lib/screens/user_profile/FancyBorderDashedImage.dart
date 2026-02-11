@@ -45,7 +45,7 @@ class FancyBorderDashedImage extends StatelessWidget {
           File(imagePath!),
           width: double.infinity,
           height: double.infinity,
-          fit: BoxFit.contain,
+          fit: BoxFit.fitHeight,
         ),
       );
     } else if (imageUrl != null) {
@@ -55,7 +55,7 @@ class FancyBorderDashedImage extends StatelessWidget {
           imageUrl!,
           width: double.infinity,
           height: double.infinity,
-          fit: BoxFit.cover,
+          fit: BoxFit.fitHeight,
           errorBuilder: (context, error, stackTrace) {
 
             return Align(alignment: Alignment.center  ,child:Image.asset("assets/images/user_image.png"));

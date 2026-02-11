@@ -30,6 +30,12 @@ abstract class ApiService extends ChopperService {
   @Post(path: 'fetch_data/pictures_fetch')
   Future<Response> fetch_pictures(@Body() Map<String , dynamic> requestBody);
 
+  @Post(path: 'fetch_data/profile_fetch')
+  Future<Response> profile_fetch(@Body() Map<String , dynamic> requestBody);
+
+  @Post(path: 'fetch_data/deregister')
+  Future<Response> deregister(@Body() Map<String , dynamic> requestBody);
+
   @Post(path: 'profile/basic_detail')
   Future<Response> postBasicDetail(@Body() Map<String, dynamic> requestBody);
 
@@ -422,6 +428,13 @@ abstract class ApiService extends ChopperService {
 
   @Post(path: 'adminpanel/role_community/select_member_list_community')
   Future<Response> select_member_list_community(@Body() Map<String, dynamic> requestBody);
+
+  @Post(path: 'adminpanel/role_community/select_version')
+  Future<Response> select_version(@Body() Map<String, dynamic> requestBody);
+
+  @Post(path: 'adminpanel/user_content/verify_payment_admin')
+  Future<Response> verify_payment_admin(@Body() Map<String, dynamic> requestBody);
+
 
 
 }

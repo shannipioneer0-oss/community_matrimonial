@@ -26,6 +26,7 @@ import 'package:provider/provider.dart';
 import 'package:select_dialog/select_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../network_utils/model/DataFetch.dart';
+import '../../../utils/universalback_wrapper.dart';
 
 
 
@@ -112,7 +113,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
 
     profilecreatedController.text =  utils().replaceNull(prefs.getString(SharedPrefs.createdBy).toString().split(",")[0]);
     casteController.text =   utils().replaceNull(prefs.getString(SharedPrefs.caste).toString().split(",")[0]);
-    subcasteController.text =  utils().replaceNull(prefs.getString(SharedPrefs.subcaste).toString().split(",")[0]);
+    subcasteController.text =  utils().replaceNull(prefs.getString(SharedPrefs.subcaste_shakh).toString().split(",")[0]);
     langController.text  =   utils().replaceNull(prefs.getString(SharedPrefs.languageKnown).toString().split("*")[0]);
     mothertongueController.text =   utils().replaceNull(prefs.getString(SharedPrefs.motherTongue).toString().split(",")[0]);
     maritalController.text = utils().replaceNull(prefs.getString(SharedPrefs.maritalStatus).toString().split(",")[0]);
@@ -123,7 +124,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
     created_value = prefs.getString(SharedPrefs.createdBy).toString().split(",")[1];
     marital_value = prefs.getString(SharedPrefs.maritalStatus).toString().split(",")[1];
     caste_value  = prefs.getString(SharedPrefs.caste).toString().split(",")[1];
-    subcaste_value  = prefs.getString(SharedPrefs.subcaste).toString().split(",")[1];
+    subcaste_value  = prefs.getString(SharedPrefs.subcaste_shakh).toString();
     lang_known_value = prefs.getString(SharedPrefs.languageKnown).toString().split("*")[1];
     mother_tongue_value = prefs.getString(SharedPrefs.motherTongue).toString().split(",")[1];
 
@@ -150,7 +151,10 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(key: _scaffoldKey,
+    return UniversalBackWrapper(
+        isRoot: false
+
+        ,child:Scaffold(key: _scaffoldKey,
       appBar: AppBar(
           title: Text('Basic Details\nRavaldev Matrimony' , style: TextStyle(color: Colors.black87 , fontSize: 18),),
           toolbarOpacity: 1,
@@ -373,12 +377,12 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                 "fullname": firstnameController.text.toString() + " " +
                     lastnameController.text.toString(),
                 "created_by": created_value,
-                "dob": dobController.text,
+                "dob": passdate,
                 "age": calculateAge(DateTime(int.parse(passdate.toString().split("-")[0]) , int.parse(passdate.toString().split("-")[1]) , int.parse(passdate.toString().split("-")[2]))).toString(),
                 "marital_status": marital_value,
                 "religion": "Hindu",
                 "caste": caste_value,
-                "subcaste": subcaste_value,
+                "subcaste": subcasteController.text.toString(),
                 "language_known": lang_known_value,
                 "mother_tongue": mother_tongue_value,
                 "isnri" : isnri == false ? "0" : "1" ,
@@ -408,8 +412,8 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                 .toString() + "," + marital_value);
             await prefs.setString(SharedPrefs.caste, casteController.text
                 .toString() + "," + caste_value);
-            await prefs.setString(SharedPrefs.subcaste, subcasteController
-                .text.toString() + "," + subcaste_value);
+            await prefs.setString(SharedPrefs.subcaste_shakh, subcasteController
+                .text.toString());
             await prefs.setString(SharedPrefs.languageKnown, langController
                 .text.toString() + "*" + lang_known_value);
             await prefs.setString(
@@ -447,7 +451,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                 "marital_status": marital_value,
                 "religion": "Hindu",
                 "caste": caste_value,
-                "subcaste": subcaste_value,
+                "subcaste": subcasteController.text.toString(),
                 "isnri" : isnri == false ? "0" : "1" ,
                 "nri_detail" : nriController.text.toString(),
                 "language_known": lang_known_value,
@@ -477,8 +481,8 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                 .toString() + "," + marital_value);
             await prefs.setString(SharedPrefs.caste, casteController.text
                 .toString() + "," + caste_value);
-            await prefs.setString(SharedPrefs.subcaste, subcasteController
-                .text.toString() + "," + subcaste_value);
+            await prefs.setString(SharedPrefs.subcaste_shakh, subcasteController
+                .text.toString());
             await prefs.setString(SharedPrefs.languageKnown, langController
                 .text.toString() + "*" + lang_known_value);
             await prefs.setString(
@@ -504,7 +508,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
         },)
 
       ],)),
-    )));
+    ))));
 
   }
 

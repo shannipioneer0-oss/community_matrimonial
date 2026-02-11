@@ -16,6 +16,7 @@ import 'package:community_matrimonial/utils/Strings.dart';
 import 'package:community_matrimonial/utils/utils.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_device_imei/flutter_device_imei.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:huge_listview/huge_listview.dart';
@@ -24,6 +25,8 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../utils/universalback_wrapper.dart';
 
 
 
@@ -76,6 +79,21 @@ class DashboardScreen extends State<DashboardAppStateful> {
   String total_count = "0" , pic1 = "";
  late SharedPreferences prefs;
 
+ bool isvalid = false;
+
+
+ Future<void> _checkValidation(BuildContext context) async {
+   final result = await utils().validationalerts(context);
+   setState(() {
+    isvalid = result;
+   });
+
+   if(isvalid == false){
+     navService.pushNamed("/main_screen" , args: 0);
+   }
+
+
+ }
 
 
   @override
@@ -87,8 +105,8 @@ class DashboardScreen extends State<DashboardAppStateful> {
 
     setState(() {
 
-      listTabs.add(Item(text: TranslationService.translate("matches"), count: ""));
       listTabs.add(Item(text: TranslationService.translate("new_joined"), count: ""));
+      listTabs.add(Item(text: TranslationService.translate("matches"), count: ""));
      // listTabs.add(Item(text: TranslationService.translate("recently_viewed") , count: ""));
       listTabs.add(Item(text: TranslationService.translate("my_shortlists") , count: ""));
       listTabs.add(Item(text: TranslationService.translate("others_shortlist_me") , count: ""));
@@ -100,6 +118,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
 
     });
 
+    _checkValidation(context);
 
 
   }
@@ -109,6 +128,27 @@ class DashboardScreen extends State<DashboardAppStateful> {
   initprefs() async {
 
     prefs = await SharedPreferences.getInstance();
+
+    String? imei = await FlutterDeviceImei.instance.getIMEI();
+
+    print({ "mobile_number": prefs.getString(SharedPrefs.mobile),
+      "imei": imei.toString()});
+    final res  =  await Provider.of<ApiService>(context, listen: false).deregister({ "mobile_number": prefs.getString(SharedPrefs.mobile),
+      "imei": imei.toString()});
+
+    print(res.body);
+
+    if(res.body["data"][0]["count"] == 0){
+
+      prefs.remove(SharedPrefs.isLogin);
+      prefs.clear();
+
+      navService.pushNamedAndRemoveUntil("/intro");
+
+      return;
+    }
+
+
 
     setState(() {
       communityname = prefs.getString(SharedPrefs.communityName).toString();
@@ -120,6 +160,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
 
  ConnectivityResult _connectivityResult = ConnectivityResult.none;
  Future<void> _checkConnectivity() async {
+
    ConnectivityResult result = await Connectivity().checkConnectivity();
    setState(() {
      _connectivityResult = result;
@@ -145,7 +186,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
 
     var _response;
 
-    if(selectedIndex == 0) {
+    if(selectedIndex == 1) {
 
       if(prefs.getString(SharedPrefs.ageRange) == null || prefs.getString(SharedPrefs.heightRange) == null || prefs.getString(SharedPrefs.maritalStatus_prefs) == null){
 
@@ -341,7 +382,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
       }
 
 
-    }else if(selectedIndex == 1){
+    }else if(selectedIndex == 0){
 
       DateTime currentDate = DateTime.now();
 
@@ -532,7 +573,10 @@ class DashboardScreen extends State<DashboardAppStateful> {
 
 
           if (selectedIndex == 0) {
-            listTabs[0].count = total_count;
+            setState(() {
+              listTabs[0].count = total_count;
+            });
+
           }
           if (selectedIndex == 1) {
             setState(() {
@@ -610,24 +654,24 @@ class DashboardScreen extends State<DashboardAppStateful> {
 
 
 
-  HugeListView setLists(int index){
+  HugeListView setLists2(int index){
 
 
 
       return HugeListView<UserMatch>(
           key: Key(index.toString()),
           scrollController: scroll,
-          listViewController: controller,
+          listViewController: controller2,
           pageSize: PAGE_SIZE,
           startIndex: 0,
           velocityThreshold: 10,
           firstShown: (item) => {
 
 
-            if( item >= controller.totalItemCount - 12 &&  controller.totalItemCount <= int.parse(total_count)){
+            if( item >= controller2.totalItemCount - 12 &&  controller2.totalItemCount <= int.parse(total_count)){
 
-            controller.totalItemCount = controller.totalItemCount + int.parse(Strings.limit) ,
-            loadPage(  (controller.totalItemCount / int.parse(Strings.limit)).toInt() - 1  , PAGE_SIZE, selectedIndex),
+            controller2.totalItemCount = controller2.totalItemCount + int.parse(Strings.limit) ,
+            loadPage(  (controller2.totalItemCount / int.parse(Strings.limit)).toInt() - 1  , PAGE_SIZE, selectedIndex),
 
               print(item),
 
@@ -671,18 +715,18 @@ class DashboardScreen extends State<DashboardAppStateful> {
 
 
 
-  HugeListView setLists2(int index){
+  HugeListView setLists(int index){
     return HugeListView<UserMatch>(
         key: Key((index).toString()),
         scrollController: scroll,
         listViewController: controller2,
         pageSize: PAGE_SIZE,
         startIndex: 0,
-        firstShown: (item) => {  if( item >= controller2.totalItemCount - 12 &&  controller2.totalItemCount <= int.parse(total_count)){
+        firstShown: (item) => {  if( item >= controller.totalItemCount - 12 &&  controller.totalItemCount <= int.parse(total_count)){
 
-          controller2.totalItemCount = controller2.totalItemCount + int.parse(Strings.limit) ,
+          controller.totalItemCount = controller.totalItemCount + int.parse(Strings.limit) ,
 
-          loadPage( (controller2.totalItemCount / int.parse(Strings.limit)).toInt() - 1  , PAGE_SIZE, selectedIndex),
+          loadPage( (controller.totalItemCount / int.parse(Strings.limit)).toInt() - 1  , PAGE_SIZE, selectedIndex),
 
           print(item),
 
@@ -1097,7 +1141,11 @@ class DashboardScreen extends State<DashboardAppStateful> {
 
 
 
-    return Scaffold(
+
+    return UniversalBackWrapper(
+        isRoot: false
+
+        ,child: Scaffold(
 
       key: _scaffoldKey,
       extendBodyBehindAppBar: true,
@@ -1107,7 +1155,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         leading: IconButton(
-          icon: Image.asset("assets/images/menu_img.png" , width: 50, height: 40,),
+          icon: Image.asset("assets/images/ic_launcher.png" , width: 50, height: 40,),
           onPressed: () {
             _scaffoldKey.currentState?.openDrawer();
           },
@@ -1130,7 +1178,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
 
       ),
       drawer: StylishDrawer(),
-      body:Container(constraints: BoxConstraints(minHeight: double.infinity)  ,margin: EdgeInsets.only(top: 70)  ,child:Column( children: [
+      body: Container(constraints: BoxConstraints(minHeight: double.infinity)  ,margin: EdgeInsets.only(top: 70)  ,child:Column( children: [
 
         Container(
           height: 50,
@@ -1140,6 +1188,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
             controller: _scrollController,
             scrollDirection: Axis.horizontal,
             itemCount: listTabs.length,
+            physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return GestureDetector( onTap: (){
 
@@ -1160,7 +1209,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
           ),
         ),
 
-          GestureDetector(
+        isvalid == false ? Container()   : GestureDetector(
             onHorizontalDragEnd: (details) {
               if (details.velocity.pixelsPerSecond.dx > 0) {
                 setState(() {
@@ -1189,13 +1238,13 @@ class DashboardScreen extends State<DashboardAppStateful> {
                 });
               }
             },
-            child:Container(height:MediaQuery.of(context).size.height*0.68 ,margin: EdgeInsets.only(top: 15 , left: type == 1 ? 3 : 20 ) , child: selectedIndex == 0 ? setLists(123) :
+            child:SingleChildScrollView(child:Container(height:MediaQuery.of(context).size.height*0.68 ,margin: EdgeInsets.only(top: 15 , left: type == 1 ? 3 : 20 ) , child: selectedIndex == 0 ? setLists(123) :
        selectedIndex == 1 ? setLists2(345) : selectedIndex == 2 ? setLists3(456) : selectedIndex == 3 ? setLists4(567) : selectedIndex == 100 ? setLists5(678) : selectedIndex == 4 ?
        setLists5(789) : selectedIndex == 6 ? setLists6(890) : selectedIndex == 7 ? setLists7(900) : selectedIndex == 8 ? setLists8(901)
          :selectedIndex == 9 ? setLists9(902) : Container(),
 
-       ))],  )
-    ));
+       )))],  )
+    )));
 
   }
 

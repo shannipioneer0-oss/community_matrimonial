@@ -63,8 +63,14 @@ class User {
   @JsonKey(name: 'verifypic1')
   String verifypic1;
 
+  @JsonKey(name: 'reciept_upload')
+  String reciept_upload;
+
   @JsonKey(name: 'oldpic1')
   String oldpic1;
+
+  @JsonKey(name: 'payment_method')
+  String payment_method;
 
   bool isshortlist = false;
   bool isinterstSent = false;
@@ -91,7 +97,9 @@ class User {
     required this.pic,
     required this.verifypic1,
     required this.oldpic1,
-    required this.handicap_detail
+    required this.handicap_detail,
+    required this.reciept_upload,
+    required this.payment_method
   });
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

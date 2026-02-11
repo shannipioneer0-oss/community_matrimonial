@@ -12,6 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../network_utils/service/api_service.dart';
+import '../../../utils/SharedPrefs.dart';
+import '../../../utils/utils.dart';
 
 class VerifyDocListClass{
 
@@ -34,8 +36,9 @@ class VerifyDocListRow extends StatefulWidget {
   final Verifydoclist fetchImages;
   final int index;
   final String communityId;
+  final SharedPreferences prefs;
 
-  VerifyDocListRow({required this.fetchImages , required this.index, required this.communityId});
+  VerifyDocListRow({required this.fetchImages , required this.index, required this.communityId, required this.prefs});
 
   @override
   VerifyDocListRowStateful createState() => VerifyDocListRowStateful();
@@ -52,8 +55,8 @@ class VerifyDocListRowStateful extends State<VerifyDocListRow> {
   @override
   void initState() {
     super.initState();
+    if(widget.fetchImages.idProofs.toString() != "null"  && widget.fetchImages.idProofs != "" && widget.fetchImages.idProofs != "0" && (widget.fetchImages.isIdVerify == "0" || widget.fetchImages.isIdVerify == null || widget.fetchImages.isIdVerify == "2") ) {
 
-    if(widget.fetchImages.idProofs.toString() != "null"  && widget.fetchImages.idProofs != "" && widget.fetchImages.idProofs != "0" && (widget.fetchImages.isIdVerify == "0" || widget.fetchImages.isIdVerify == null) ) {
       imagelist.add(ImageList(widget.fetchImages.idProofs.toString() ,widget.fetchImages.idProofOld.toString() , widget.fetchImages.isIdVerify.toString() , 0 , 1));
     }
     if(widget.fetchImages.educationProof.toString() != "null"  && widget.fetchImages.educationProof != "" && widget.fetchImages.educationProof != "0" && (widget.fetchImages.isEducationVerify == "0" || widget.fetchImages.isEducationVerify == null)) {
@@ -86,13 +89,16 @@ class VerifyDocListRowStateful extends State<VerifyDocListRow> {
 
         return Column(children: [  Container(child:Row(children: [
 
+
           Container( decoration: BoxDecoration(
             border: Border.all(
               color: Colors.pink, // Border color
               width: 2.0, // Border width
             ),
             borderRadius: BorderRadius.circular(12), // Optional: Rounded corners
-          ), child:Column(children: [ Text( e.indexlist == 1 ? "New Image\n (Identity)" : e.indexlist == 2 ? "New Image\n (Education)" : "New Image\n (Income)"  , textAlign: TextAlign.center,) ,SizedBox(height: 5,)  ,Image.network(Strings.IMAGE_BASE_URL+"/uploads/matrimonial_photo/Matrimonial_Photo/"+e.newImage ,width: MediaQuery.of(context).size.width*0.25, height: 150,),],)),
+          ), child:Column(children: [ Text( e.indexlist == 1 ? "New Image\n (Identity)" : e.indexlist == 2 ? "New Image\n (Education)" : "New Image\n (Income)"  , textAlign: TextAlign.center,) ,SizedBox(height: 5,)  ,Image.network(Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+e.newImage ,width: MediaQuery.of(context).size.width*0.25, height: 150, errorBuilder: (context, error, stackTrace) {
+            return Image.asset("assets/images/no_image.png" ,width: 30, height: 60,);
+          },),],)),
           SizedBox(width: 10,),
           Container( decoration: BoxDecoration(
             border: Border.all(
@@ -100,7 +106,7 @@ class VerifyDocListRowStateful extends State<VerifyDocListRow> {
               width: 2.0, // Border width
             ),
             borderRadius: BorderRadius.circular(12), // Optional: Rounded corners
-          ),child:Column(children: [ Text(e.indexlist == 1 ? "old Image\n (Identity)" : e.indexlist == 2 ? "Old Image\n (Education)" : "Old Image\n (Income)" , textAlign: TextAlign.center,) ,SizedBox(height: 5,)  ,Image.network(Strings.IMAGE_BASE_URL+"/uploads/matrimonial_photo/Matrimonial_Photo/"+e.oldImage ,width: MediaQuery.of(context).size.width*0.25, height: 150, errorBuilder: (context, error, stackTrace) {
+          ),child:Column(children: [ Text(e.indexlist == 1 ? "old Image\n (Identity)" : e.indexlist == 2 ? "Old Image\n (Education)" : "Old Image\n (Income)" , textAlign: TextAlign.center,) ,SizedBox(height: 5,)  ,Image.network(Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+e.oldImage ,width: MediaQuery.of(context).size.width*0.25, height: 150, errorBuilder: (context, error, stackTrace) {
 
             return Image.asset("assets/images/user_image.png" , width: MediaQuery.of(context).size.width*0.25, height: 150 , color: Colors.black54,);
           },),
@@ -149,7 +155,7 @@ class VerifyDocListRowStateful extends State<VerifyDocListRow> {
 
                 print(_response.body);
 
-        if (_response.body["data"]["affectedRows"] == 1) {
+        if (_response.body["data"]["affectedRows"] >= 1) {
 
           DialogClass().showDialog2(context, "Verification Success" , "Verification Process of Documents done For "+widget.fetchImages.name.toString()+" "+widget.fetchImages.surname.toString(), "Ok");
 

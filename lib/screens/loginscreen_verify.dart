@@ -253,6 +253,7 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
                      }
                  );
 
+
                  print(_response.body.toString()+"-=-="+otp_value);
 
                  if(_response.body["data"] == "success"){
@@ -281,15 +282,19 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
 
 
                    print(_response2.body);
-
+                   print(_response2.body["data"][17][0].toString()+"-=-=-()()");
 
                    double percent = 0.0;
 
-                   var userData = _response2.body["data"][0][0]["0"];
+
 
                    await prefs.setString(SharedPrefs.translate, "en");
 
     if(_response2.body["data"][0][0].toString() != "{}") {
+
+      var userData = _response2.body["data"][0][0]["0"];
+
+
       await prefs.setString(
           SharedPrefs.basic_details_id, userData["Id"].toString());
       await prefs.setString(SharedPrefs.fullname, userData["fullname"]);
@@ -299,7 +304,8 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
       await prefs.setString(
           SharedPrefs.maritalStatus, userData["marital_status"] ?? "");
       await prefs.setString(SharedPrefs.caste, userData["caste"] ?? '');
-      await prefs.setString(SharedPrefs.subcaste, userData["subcaste"] ?? "");
+    //  await prefs.setString(SharedPrefs.subcaste, userData["subcaste"] ?? "");
+      await prefs.setString(SharedPrefs.subcaste_shakh, userData["subcaste_txt"] ?? "");
       await prefs.setString(SharedPrefs.isnri, userData["isnri"] ?? "");
       await prefs.setString(SharedPrefs.nri_details, userData["nri_detail"] ?? "");
       await prefs.setString(
@@ -312,9 +318,12 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
       percent = percent +  10;
     }
 
-                   var contactInfo = _response2.body["data"][1][0]["0"];
+
 
     if(_response2.body["data"][1][0].toString() != "{}") {
+
+      var contactInfo = _response2.body["data"][1][0]["0"];
+
       await prefs.setString(
           SharedPrefs.contact_details_id, contactInfo["Id"].toString());
       await prefs.setString(
@@ -336,15 +345,20 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
           SharedPrefs.permCountry, contactInfo["perm_country"] ?? "");
       await prefs.setString(SharedPrefs.permState, contactInfo["perm_state"] ?? "");
       await prefs.setString(SharedPrefs.permCity, contactInfo["perm_city"] ?? "");
+      await prefs.setString(
+          SharedPrefs.work_country, contactInfo["work_country"] ?? "");
       await prefs.setString(SharedPrefs.workState, contactInfo["work_state"] ?? "");
       await prefs.setString(SharedPrefs.workCity, contactInfo["work_city"] ?? "");
 
       percent = percent +  15.5;
     }
 
-                   var healthDetails = _response2.body["data"][2][0]["0"];
+
 
     if(_response2.body["data"][2][0].toString() != "{}") {
+
+      var healthDetails = _response2.body["data"][2][0]["0"];
+
       await prefs.setString(
           SharedPrefs.lifestyle_details_id, healthDetails["Id"].toString());
       await prefs.setString(SharedPrefs.weight, healthDetails['weight'] ?? "");
@@ -366,9 +380,13 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
 
     }
 
-                   var adminServiceDetails = _response2.body["data"][3][0]["0"];
+
 
     if(_response2.body["data"][3][0].toString() != "{}") {
+
+      var adminServiceDetails = _response2.body["data"][3][0]["0"];
+
+
       await prefs.setString(
           SharedPrefs.education_id, adminServiceDetails["Id"].toString());
       await prefs.setString(SharedPrefs.isFromAdminService,
@@ -388,9 +406,12 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
 
     }
 
-                   var occupationDetails = _response2.body["data"][4][0]["0"];
+
 
     if(_response2.body["data"][4][0].toString() != "{}") {
+
+      var occupationDetails = _response2.body["data"][4][0]["0"];
+
       await prefs.setString(
           SharedPrefs.occupation_id, occupationDetails["Id"].toString());
       await prefs.setString(
@@ -408,9 +429,12 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
 
     }
 
-                   var familyDetails = _response2.body["data"][5][0]["0"];
+
 
     if(_response2.body["data"][5][0].toString() != "{}") {
+
+      var familyDetails = _response2.body["data"][5][0]["0"];
+
       await prefs.setString(
           SharedPrefs.family_id, familyDetails["Id"].toString());
       await prefs.setString(
@@ -445,9 +469,13 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
     }
 
 
-                   var astroDetails = _response2.body["data"][6][0]["0"];
 
     if(_response2.body["data"][6][0].toString() != "{}") {
+
+      var astroDetails = _response2.body["data"][6][0]["0"];
+
+
+
       await prefs.setString(
           SharedPrefs.horoscope_id, astroDetails["Id"].toString());
      // await prefs.setString(
@@ -527,11 +555,13 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
 
                    }
 
-                   var userproofs = _response2.body["data"][9][0]["0"];
+
 
                  //  print(userproofs+"=================");
 
                    if(_response2.body["data"][9][0].toString() != "{}"){
+
+                     var userproofs = _response2.body["data"][9][0]["0"];
 
                      await prefs.setString(SharedPrefs.id_proof, userproofs['id_proofs'].toString() ?? '');
                      await prefs.setString(SharedPrefs.education_proof, userproofs['education_proof'].toString() ?? '');
@@ -541,9 +571,13 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
 
                    }
 
-                   var userDetails = _response2.body["data"][10][0]["0"];
+
 
     if(_response2.body["data"][10][0].toString() != "{}") {
+
+      var userDetails = _response2.body["data"][10][0]["0"];
+
+
       await prefs.setString(
           SharedPrefs.partner_prefs_id, userDetails['Id'].toString() ?? '');
       await prefs.setString(
@@ -594,22 +628,27 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
       prefs.setString(SharedPrefs.verify_email, email_verify);
       prefs.setString(SharedPrefs.user_verify, user_verify);
       prefs.setString(SharedPrefs.mobile_verify , mobile_verify);
+      prefs.setString(SharedPrefs.role_type , userverify['role'].toString());
 
       }
 
 
 
 
-      var hobbyverify = _response2.body["data"][16][0]["0"];
 
-      print(hobbyverify.toString());
 
       if(_response2.body["data"][16][0].toString() != "{}"){
+
+        var hobbyverify = _response2.body["data"][16][0]["0"];
 
         String  hobbies =  hobbyverify['hobbies'].toString() ?? '';
         prefs.setString(SharedPrefs.hobbies , hobbies);
 
       }
+
+      print("sample+-----()()");
+
+
 
 
       String from_age = "" , to_age = "" , from_height = "" , to_height = "";
@@ -631,6 +670,81 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
 
       percent = percent +  14;
     }
+
+
+                   if(_response2.body["data"][17][0].toString() != "{}"){
+
+                     print("sample+-----()");
+
+                     var details1 = _response2.body["data"][17][0]["0"]["member_details1"];
+                     var details2 = _response2.body["data"][17][0]["0"]["member_details2"];
+                     var details3 = _response2.body["data"][17][0]["0"]["member_details3"];
+                     var details4 = _response2.body["data"][17][0]["0"]["member_details4"];
+                     var details5 = _response2.body["data"][17][0]["0"]["member_details5"];
+                     var details6 = _response2.body["data"][17][0]["0"]["member_details6"];
+
+                     var ref_member1 = _response2.body["data"][17][0]["0"]["ref_member_name1"];
+                     var ref_add1 = _response2.body["data"][17][0]["0"]["ref_member_add1"];
+                     var ref_mobile1 = _response2.body["data"][17][0]["0"]["ref_member_mobile1"];
+                     var ref_member2 = _response2.body["data"][17][0]["0"]["ref_member_name2"];
+                     var ref_add2 = _response2.body["data"][17][0]["0"]["ref_member_add2"];
+                     var ref_mobile2 = _response2.body["data"][17][0]["0"]["ref_member_mobile2"];
+
+
+                     await prefs.setString(SharedPrefs.membername1, details1.toString().split(",")[0]);
+                     await prefs.setString(SharedPrefs.relation1, details1.toString().split(",")[1]);
+                     await prefs.setString(SharedPrefs.marital1, details1.toString().split(",")[2]);
+                     await prefs.setString(SharedPrefs.age1, details1.toString().split(",")[3]);
+                     await prefs.setString(SharedPrefs.education1, details1.toString().split(",")[4]);
+                     await prefs.setString(SharedPrefs.occupation_income1, details1.toString().split(",")[5]);
+
+                     await prefs.setString(SharedPrefs.membername2, details2.toString().split(",")[0]);
+                     await prefs.setString(SharedPrefs.relation2, details2.toString().split(",")[1]);
+                     await prefs.setString(SharedPrefs.marital2, details2.toString().split(",")[2]);
+                     await prefs.setString(SharedPrefs.age2, details2.toString().split(",")[3]);
+                     await prefs.setString(SharedPrefs.education2, details2.toString().split(",")[4]);
+                     await prefs.setString(SharedPrefs.occupation_income2, details2.toString().split(",")[5]);
+
+                     await prefs.setString(SharedPrefs.membername3, details3.toString().split(",")[0]);
+                     await prefs.setString(SharedPrefs.relation3, details3.toString().split(",")[1]);
+                     await prefs.setString(SharedPrefs.marital3, details3.toString().split(",")[2]);
+                     await prefs.setString(SharedPrefs.age3, details3.toString().split(",")[3]);
+                     await prefs.setString(SharedPrefs.education3, details3.toString().split(",")[4]);
+                     await prefs.setString(SharedPrefs.occupation_income3, details3.toString().split(",")[5]);
+
+                     await prefs.setString(SharedPrefs.membername4, details4.toString().split(",")[0]);
+                     await prefs.setString(SharedPrefs.relation4, details4.toString().split(",")[1]);
+                     await prefs.setString(SharedPrefs.marital4, details4.toString().split(",")[2]);
+                     await prefs.setString(SharedPrefs.age4, details4.toString().split(",")[3]);
+                     await prefs.setString(SharedPrefs.education4, details4.toString().split(",")[4]);
+                     await prefs.setString(SharedPrefs.occupation_income4, details4.toString().split(",")[5]);
+
+                     await prefs.setString(SharedPrefs.membername5, details5.toString().split(",")[0]);
+                     await prefs.setString(SharedPrefs.relation5, details5.toString().split(",")[1]);
+                     await prefs.setString(SharedPrefs.marital5, details5.toString().split(",")[2]);
+                     await prefs.setString(SharedPrefs.age5, details5.toString().split(",")[3]);
+                     await prefs.setString(SharedPrefs.education5, details5.toString().split(",")[4]);
+                     await prefs.setString(SharedPrefs.occupation_income5, details5.toString().split(",")[5]);
+
+                     await prefs.setString(SharedPrefs.membername6, details6.toString().split(",")[0]);
+                     await prefs.setString(SharedPrefs.relation6, details6.toString().split(",")[1]);
+                     await prefs.setString(SharedPrefs.marital6, details6.toString().split(",")[2]);
+                     await prefs.setString(SharedPrefs.age6, details6.toString().split(",")[3]);
+                     await prefs.setString(SharedPrefs.education6, details6.toString().split(",")[4]);
+                     await prefs.setString(SharedPrefs.occupation_income6, details6.toString().split(",")[5]);
+
+                     await prefs.setString(SharedPrefs.refmembername1, ref_member1);
+                     await prefs.setString(SharedPrefs.refmemberadd1, ref_add1);
+                     await prefs.setString(SharedPrefs.refmembermobile1, ref_mobile1);
+
+                     await prefs.setString(SharedPrefs.refmembername2, ref_member2);
+                     await prefs.setString(SharedPrefs.refmemberadd2, ref_add2);
+                     await prefs.setString(SharedPrefs.refmembermobile2, ref_mobile2);
+
+
+
+                   }
+
 
     print(percent.toString()+"-----------");
 

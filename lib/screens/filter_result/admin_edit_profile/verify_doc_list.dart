@@ -53,7 +53,7 @@ class VerifydocListState  extends State<VerifydocListStateful>{
   HugeListViewController controller = HugeListViewController(totalItemCount: int.parse(Strings.limit));
   String total_count = "0";
   String communityId = "";
-
+  SharedPreferences? prefs;
 
   Future<List<Verifydoclist>> _loadPage(BuildContext context  ,int page, int pageSize) async {
 
@@ -61,13 +61,13 @@ class VerifydocListState  extends State<VerifydocListStateful>{
       EasyLoading.show(status: 'Please wait...');
     }
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
 
-    communityId  =prefs.getString(SharedPrefs.communityId).toString();
+    communityId  =prefs!.getString(SharedPrefs.communityId).toString();
 
 
 
-    final _response = await Provider.of<ApiService>(context, listen: false).postVerifyDocList({"communityId": prefs.getString(SharedPrefs.communityId) , "limit":int.parse(Strings.limit),
+    final _response = await Provider.of<ApiService>(context, listen: false).postVerifyDocList({"communityId": prefs!.getString(SharedPrefs.communityId) , "limit":int.parse(Strings.limit),
       "offset":page*pageSize});
 
 
@@ -149,7 +149,7 @@ class VerifydocListState  extends State<VerifydocListStateful>{
 
         itemBuilder: (context, index, Verifydoclist entry) {
 
-          return VerifyDocListRow(fetchImages: entry, index: index, communityId: communityId,);
+          return VerifyDocListRow(fetchImages: entry, index: index, communityId: communityId, prefs: prefs!, );
 
         },
         errorBuilder: (context, error) {

@@ -1,6 +1,8 @@
 import 'package:community_matrimonial/app_utils/Dialogs.dart';
 import 'package:community_matrimonial/network_utils/model/fetch_matches.dart';
 import 'package:community_matrimonial/network_utils/model/fetch_matches_match.dart';
+import 'package:community_matrimonial/network_utils/model/profile_details_model.dart';
+import 'package:community_matrimonial/screens/filter_result/verify_payment.dart';
 import 'package:community_matrimonial/utils/Colors.dart';
 import 'package:community_matrimonial/utils/SharedPrefs.dart';
 import 'package:community_matrimonial/utils/Strings.dart';
@@ -9,7 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../app_utils/SearchDataFilter.dart';
 import '../../app_utils/SendNotification.dart';
 import '../../network_utils/service/api_service.dart';
 
@@ -17,8 +21,9 @@ class SearchResultList extends StatefulWidget {
   final User fetchmatches;
   final int index;
   final SharedPreferences prefs;
+  final String type;
 
-  SearchResultList({required this.fetchmatches , required this.index, required this.prefs});
+  SearchResultList({required this.fetchmatches , required this.index, required this.prefs, required this.type});
 
   @override
   SearchResultListStateful createState() => SearchResultListStateful();
@@ -59,7 +64,7 @@ class SearchResultListStateful extends State<SearchResultList> {
     });
 
 
-    print(role);
+    print(role+"===---");
 
   }
 
@@ -78,6 +83,7 @@ class SearchResultListStateful extends State<SearchResultList> {
 
     return Column(children: [
       GestureDetector(
+           behavior: HitTestBehavior.deferToChild,
           onTap: () {
             navService.pushNamed("/user_detail",
                 args: [widget.fetchmatches.userId, widget.fetchmatches.name , widget.fetchmatches.mobRegToken , widget.fetchmatches.profileId]);
@@ -100,7 +106,24 @@ class SearchResultListStateful extends State<SearchResultList> {
                               children: [
                                 Expanded(
                                     flex: 2,
-                                    child: ClipRRect(
+                                    child: GestureDetector(onTap: () async {
+
+
+                                      print({"type":"pictures" , "userId": widget.fetchmatches.userId , "communityId": widget.prefs.getString(SharedPrefs.communityId)});
+                                      final res = await ApiService.create().profile_fetch({"type":"pictures" , "userId": widget.fetchmatches.userId , "communityId": widget.prefs.getString(SharedPrefs.communityId) , "translate":["en"]});
+                                      print(res.body);
+
+                                       PhotoInfo photinfo =  PhotoInfo.fromJson(res.body["data"][0][0]);
+
+                                      if(photinfo.pic1 != "null" && photinfo.pic1 != "" && photinfo.pic1 != null) {
+                                        navService.pushNamed("/img_gallery_other",
+                                            args: [photinfo, widget.fetchmatches.fullname]);
+                                      }
+
+
+
+
+                                    }  ,child:ClipRRect(
                                       borderRadius: BorderRadius.circular(16.0),
                                       child: Image.network(
                                         widget.fetchmatches.pic != "" && (widget.fetchmatches.verifypic1 == "1" || widget.fetchmatches.verifypic1 == "0")
@@ -118,7 +141,7 @@ class SearchResultListStateful extends State<SearchResultList> {
                                           return Container(child: Image.asset("assets/images/user_image.png"),);
                                         },
                                       ),
-                                    )),
+                                    ))),
                                 Expanded(
                                     flex: 4,
                                     child: Container(
@@ -594,7 +617,7 @@ class SearchResultListStateful extends State<SearchResultList> {
                           SizedBox(
                             width: 2,
                           ),
-                          Stack(
+                        /*  Stack(
                             alignment: Alignment.center,
                             children: [
                               Image.asset(
@@ -614,7 +637,7 @@ class SearchResultListStateful extends State<SearchResultList> {
                           ),
                           SizedBox(
                             width: 3,
-                          ),
+                          ),*/
                           Stack(alignment: Alignment.center, children: [
                             Image.asset(
                               "assets/images/rounded_white.png",
@@ -649,6 +672,37 @@ class SearchResultListStateful extends State<SearchResultList> {
                       backgroundColor, // Set the background color as needed
                     ),
                     child: Image.asset("assets/images/edit.png" ,color: Colors.white, width: 20, height: 20,),),
+                  )) : Container(),
+
+
+                  role == "admin" && ( widget.type == "unpaid" || widget.type == "paid_uve") ? Positioned( bottom: 6 ,right: 14 ,child: GestureDetector(onTap: () async {
+
+                    if(widget.type == "unpaid") {
+                      SharedPreferences prefs2 = await SharedPreferences
+                          .getInstance();
+                      String communityId = prefs2.getString(SharedPrefs
+                          .communityId).toString();
+                      launchUrl(Uri.parse(
+                          "https://matrimonial.pioerp.com/payment_options?userId=" +
+                              widget.fetchmatches.userId + "&communityId=" +
+                              communityId+"&admin=1"));
+                    }else if(widget.type == "paid_uve"){
+
+                     new  ImageApprovalCard().showImageApprovalDialog(context, Strings.IMAGE_BASE_URL +
+                          "/uploads/"+utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+widget.fetchmatches.reciept_upload, widget.fetchmatches.payment_method ,widget.fetchmatches.userId);
+
+                    }
+
+                  }  ,child:Container(
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(16.0),
+                      ),
+                      color:
+                      Colors.pinkAccent, // Set the background color as needed
+                    ),
+                    child: Image.asset("assets/images/rupee.png" ,color: Colors.white, width: 20, height: 20,),),
                   )) : Container()
                 ],
               ))),
@@ -693,13 +747,14 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
         : Colors.pink;
 
     return Column(children: [
-      GestureDetector(
+      InkWell(
+
           onTap: () {
             navService.pushNamed("/user_detail",
                 args: [widget.fetchmatches.userId, widget.fetchmatches.name , widget.fetchmatches.mobRegToken , widget.fetchmatches.profileId]);
           },
           child: Container(
-              height: 160,
+              height: 200,
               child: Stack(
                 children: [
                   Container(
@@ -711,15 +766,31 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                         elevation: 4.0,
                         child: Container(
                             width: MediaQuery.of(context).size.width * 0.92,
-                            height: 150,
+                            height: 190,
                             child: Row(
                               children: [
                                 Expanded(
                                     flex: 2,
-                                    child: ClipRRect(
+                                    child: InkWell(
+
+                                        onTap: () async {
+
+                                          final res = await ApiService.create().profile_fetch({"type":"pictures" , "userId": widget.fetchmatches.userId , "communityId": widget.prefs.getString(SharedPrefs.communityId) , "translate":["en"]});
+                                          print(res.body);
+
+                                          PhotoInfo photinfo =  PhotoInfo.fromJson(res.body["data"][0][0]);
+
+                                          if(photinfo.pic1 != "null" && photinfo.pic1 != "" && photinfo.pic1 != null) {
+                                            navService.pushNamed("/img_gallery_other",
+                                                args: [photinfo, widget.fetchmatches.fullname]);
+                                          }
+
+
+
+                                    }  ,child:ClipRRect(
                                       borderRadius: BorderRadius.circular(16.0),
                                       child: Image.network(
-                                          widget.fetchmatches.pic != null && widget.fetchmatches.verifypic1 == "1"
+                                          widget.fetchmatches.pic != null && ( widget.fetchmatches.verifypic1 == "1" || widget.fetchmatches.verifypic1 == "0")
                                               ? Strings.IMAGE_BASE_URL +
                                               "/uploads/" +utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+
                                               widget.fetchmatches.pic.toString()
@@ -734,7 +805,7 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                                           return Image.asset("assets/images/no_image.png" , fit: BoxFit.fitHeight,);
                                         },
                                       ),
-                                    )),
+                                    ))),
                                 Expanded(
                                     flex: 4,
                                     child: Container(
@@ -855,7 +926,7 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                       )),
                   Positioned(
                     left: 13,
-                    top: 4,
+                    top: 5,
                     child: GestureDetector(
                       onTap: () async {
                         SharedPreferences prefs =
@@ -1175,7 +1246,7 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                           SizedBox(
                             width: 2,
                           ),
-                          Stack(
+                         /* Stack(
                             alignment: Alignment.center,
                             children: [
                               Image.asset(
@@ -1195,7 +1266,7 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                           ),
                           SizedBox(
                             width: 3,
-                          ),
+                          ),*/
                           Stack(alignment: Alignment.center, children: [
                             Image.asset(
                               "assets/images/rounded_white.png",
@@ -1204,7 +1275,7 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                               color: ColorsPallete.Pink,
                             ),
                             Positioned(
-                                top: 10,
+                                top:5,
                                 child: Text(
                                   widget.fetchmatches.profileId.toString(),
                                   style: TextStyle(
@@ -1360,7 +1431,7 @@ class SearchResultListPlaceholder extends StatelessWidget {
                         SizedBox(
                           width: 2,
                         ),
-                        Stack(
+                       /* Stack(
                           alignment: Alignment.center,
                           children: [
                             Image.asset(
@@ -1380,7 +1451,7 @@ class SearchResultListPlaceholder extends StatelessWidget {
                         ),
                         SizedBox(
                           width: 3,
-                        ),
+                        ),*/
                         Stack(alignment: Alignment.center, children: [
                           Image.asset(
                             "assets/images/rounded_white.png",
