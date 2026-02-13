@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "371992800955",
+    "project_id": "ravaldev-matrimony",
+    "storage_bucket": "ravaldev-matrimony.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371992800955:android:46ec48ec5f8d881d4ac39e",
+        "android_client_info": {
+          "package_name": "com.matrimonial.community_matrimonial_latest2.appa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcyIwNHXPBTiCGECmyHuyeHMk2Ldd9S9g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

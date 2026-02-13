@@ -17,7 +17,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.matrimonial.community_matrimonial_latest2"
     compileSdk = 36
-    ndkVersion = "29.0.14206865"
+    ndkVersion = "26.1.10909125"
 
     flavorDimensions += "app"
 
@@ -82,14 +82,16 @@ android {
     packaging {
         jniLibs {
             useLegacyPackaging = false
+            keepDebugSymbols += listOf("**/*.so")
         }
     }
+
 }
 
-dependencies {
+ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
-}
+ }
 
-flutter {
+ flutter {
     source = "../.."
-}
+ }

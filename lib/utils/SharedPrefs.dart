@@ -276,6 +276,7 @@ class SharedPrefs{
 
   static const String fml_details_id = "fml_details_id";
   static const String joined_days_done = "joined_days_done";
+  static const String token_id = "token_id";
 
 
 

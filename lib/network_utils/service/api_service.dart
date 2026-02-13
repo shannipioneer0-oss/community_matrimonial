@@ -18,6 +18,12 @@ abstract class ApiService extends ChopperService {
     return _$ApiService(client);
   }
 
+  @Post(path: 'fetch_data/select_launch')
+  Future<Response> select_launch(@Body() Map<String , dynamic> requestBody);
+
+  @Post(path: 'fetch_data/update_launch')
+  Future<Response> update_launch(@Body() Map<String , dynamic> requestBody);
+
   @Post(path: 'fetch_data/send_otp_sms')
   Future<Response> postSendOtpSms(@Body() Map<String , dynamic> requestBody);
 

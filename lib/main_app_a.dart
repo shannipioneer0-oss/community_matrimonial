@@ -63,6 +63,7 @@ import 'package:community_matrimonial/screens/user_profile/add_edit_profile/occu
 import 'package:community_matrimonial/screens/user_profile/add_edit_profile/partner_prefs_details.dart';
 import 'package:community_matrimonial/screens/user_profile/user_detail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'app_utils/DefaultFirebaseOptions.dart';
 import 'locale/TranslationService.dart';
 import 'main.dart';
 import 'network_utils/service/api_service.dart';
@@ -72,6 +73,9 @@ import 'network_utils/service/api_service.dart';
 
 Future<void> main() async {
 
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FlavorConfig(
     name: "appA",

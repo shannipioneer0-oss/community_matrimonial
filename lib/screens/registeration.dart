@@ -68,7 +68,7 @@ class RegisterationState extends State<Registeration>{
 
      Future.delayed(Duration(milliseconds: 500), (){
 
-       DialogClass().showPremiumInfoDialog2(context , "Who Can Register?" , "Only Raval Yogi Samaj Can Regsiter. \n (Father should be from Raval Yogi Samaj)" , "Got It!");
+       DialogClass().showPremiumInfoDialog2(context , "Who Can Register?" , "Only Members of Raval Yogi Samaj Can Register. \n (Father should be from Raval Yogi Samaj)" , "Got It!");
 
      });
 

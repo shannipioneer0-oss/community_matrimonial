@@ -114,7 +114,8 @@ class FilterScreen extends State<FilterScreenAppStateful> {
       isvalid = result;
     });
 
-    if(isvalid == false){
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if(isvalid == false || prefs.getString(SharedPrefs.user_verify).toString() == "0"){
       navService.pushNamed("/main_screen" ,args: 0);
     }
 

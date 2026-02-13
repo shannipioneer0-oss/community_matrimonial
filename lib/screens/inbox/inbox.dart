@@ -22,6 +22,7 @@ import 'package:huge_listview/huge_listview.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slide_switcher/slide_switcher.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -77,8 +78,8 @@ class InboxScreen extends State<InboxStateful>{
 
     String? imei = await FlutterDeviceImei.instance.getIMEI();
 
-    print({ "mobile_number": prefs?.getString(SharedPrefs.mobile),
-      "imei": imei.toString()});
+    print({ "mobile_number": prefs?.getString(SharedPrefs.mobile), "imei": imei.toString()});
+
     final res  =  await Provider.of<ApiService>(context, listen: false).deregister({ "mobile_number": prefs?.getString(SharedPrefs.mobile),
       "imei": imei.toString()});
 
@@ -257,12 +258,15 @@ class InboxScreen extends State<InboxStateful>{
   bool isvalid = false;
 
   Future<void> checkValidation(BuildContext context) async {
+
     final result = await utils().validationalerts(context);
     setState(() {
       isvalid = result;
     });
 
-    if(isvalid == false){
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if(isvalid == false || prefs.getString(SharedPrefs.user_verify).toString() == "0"){
       navService.pushNamed("/main_screen" ,args: 0);
     }
 

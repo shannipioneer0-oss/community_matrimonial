@@ -33,6 +33,7 @@ import 'package:community_matrimonial/screens/filter_result/admin_edit_profile/v
 import 'package:community_matrimonial/screens/filter_result/saved_search.dart';
 import 'package:community_matrimonial/screens/filter_result/search_result.dart';
 import 'package:community_matrimonial/screens/inbox/inbox.dart';
+import 'package:community_matrimonial/screens/launch_code.dart';
 import 'package:community_matrimonial/screens/loginscreen.dart';
 import 'package:community_matrimonial/screens/loginscreen_verify.dart';
 import 'package:community_matrimonial/screens/membership/membership.dart';
@@ -74,6 +75,7 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'app_utils/DefaultFirebaseOptions.dart';
 import 'screens/intro.dart';
 import 'package:flutter/services.dart';
 
@@ -82,37 +84,7 @@ import 'package:flutter/services.dart';
 
 
 String channelname = "" , message_type = "";
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  await setupFlutterNotifications();
-
-  message_type = message.data["type"];
-
-  if(message.data["type"] == "interest") {
-
-    showFlutterNotification(message);
-
-  }else if(message.data["type"] == "video"){
-    print(message.data["channel"]);
-
-    _showNotification();
- //   VideoCalls().displayIncomingCall(message.data["uuid"], message.data["caller"] , message.data["avatar"] , message.data["channel"] , message.data["mobile"] ,  message.data["token"]);
-
-  }else if(message.data["type"] == "missed"){
-
-    Future.delayed(Duration(milliseconds: 100) ,(){
-        print("missed ___ misssed");
-    });
-
-
-  }else if(message.data["type"] == "decline"){
-
-    Future.delayed(Duration(milliseconds: 100) ,(){
-      print("decline ___ decline");
-    });
-
-  }
-
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 
 
@@ -132,6 +104,7 @@ late AndroidNotificationChannel channel;
 bool isFlutterLocalNotificationsInitialized = false;
 
 Future<void> setupFlutterNotifications() async {
+
   if (isFlutterLocalNotificationsInitialized) {
     return;
   }
@@ -333,6 +306,12 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
 
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   debugDefaultTargetPlatformOverride = TargetPlatform.android;
 
   // Set the background messaging handler early on, as a named top-level function
@@ -375,8 +354,7 @@ class MyApp extends StatelessWidget {
         Provider<ApiService>(
         create: (_) => ApiService.create(),
           dispose: (_, ApiService service) => service.client.dispose(),
-    ),
-    ],child:MaterialApp(
+    ),],child:MaterialApp(
       navigatorKey: NavigationService.navigationKey,
         builder: (context, child) {
           final mq = MediaQuery.of(context);
@@ -529,6 +507,8 @@ class MyApp extends StatelessWidget {
             return Animations().setAnimation(HobbyDetailsEdit(settings.arguments as List));
           case  "/member_list_trusteeshree":
             return Animations().setAnimation(HtmlWithFilesScreen(settings.arguments as String,));
+          case  "/launch_code":
+            return Animations().setAnimation(LaunchCodeScreen());
 
           default:
             return null;
@@ -550,17 +530,19 @@ class MyScreen extends  State<MainScreen> {
 
   ///final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-   @override
+  @override
   void initState() {
     super.initState();
 
 
-      SystemChannels.platform.setMethodCallHandler((call) async {
+  SystemChannels.platform.setMethodCallHandler((call) async {
+
         if (call.method == 'SystemNavigator.pop') {
           print("Back button pressed on Android");
           // Handle your custom logic here
         }
-      });
+
+  });
 
 
     _checkConnectivity();
@@ -608,39 +590,9 @@ class MyScreen extends  State<MainScreen> {
     });*/
 
 
-
-
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // print foreground message here.
       //print('Handling a foreground message ${message.messageId}');
-      print('Notification Message: ${message.data}');
-
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-      }
-
-      if(message.data["type"] == "interest") {
-
-        showFlutterNotification(message);
-
-      }else if(message.data["type"] == "video"){
-
-        channelname = message.data["channel"];
-        //_showNotification();
-      //  VideoCalls().displayIncomingCall(message.data["uuid"], message.data["caller"]  , message.data["avatar"] , message.data["channel"] , message.data["mobile"], message.data["token"]);
-
-      }else if(message.data["type"] == "missed"){
-
-        _showNotificationMissedDeclined(message ,"missed");
-
-
-      }else if(message.data["type"] == "decline"){
-
-        _showNotificationMissedDeclined(message ,"decline");
-
-      }
-
-
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -648,14 +600,29 @@ class MyScreen extends  State<MainScreen> {
 
     });
 
+    initNextScreen();
 
 
-
-    Future.delayed(const Duration(milliseconds: 3500), () {
-      navService.pushNamedAndRemoveUntil("/intro");
-    });
+  }
 
 
+  initNextScreen() async {
+
+    final res = await ApiService.create().select_launch({});
+
+    if(res.body["data"][0]["start"].toString() == "0"){
+
+      Future.delayed(const Duration(milliseconds: 100), () {
+        navService.pushNamedAndRemoveUntil("/launch_code");
+      });
+
+    }else{
+
+      Future.delayed(const Duration(milliseconds: 3500), () {
+        navService.pushNamedAndRemoveUntil("/intro");
+      });
+
+    }
 
 
   }
@@ -665,7 +632,8 @@ class MyScreen extends  State<MainScreen> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    print(prefs.getString(SharedPrefs.translate).toString()+"-=-=()()");
+    String? token = await FirebaseMessaging.instance.getToken();
+    prefs.setString(SharedPrefs.token_id , token.toString());
 
     if(prefs.getString(SharedPrefs.translate) == null){
 

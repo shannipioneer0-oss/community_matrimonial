@@ -761,11 +761,10 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                       ProfileDetailItem(label: TranslationService.translate("created_by_key"), value: createdby, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("marital_status_key"), value: marital, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("caste_key"), value: caste, isrequired : "1"),
-                      ProfileDetailItem(label: TranslationService.translate("subcaste_key"), value: subcaste, isrequired : "1"),
-                      ProfileDetailItem(label:TranslationService.translate("language_known_key"), value: lang_known),
-                      ProfileDetailItem(label: TranslationService.translate("mother_tongue_key"), value: mother_tongue),
-                      ProfileDetailItem(label: TranslationService.translate("is_nri") , value: isnri == "1" ? "Yes"  : "No"),
+                      ProfileDetailItem(label: TranslationService.translate("shakh"), value: subcaste, isrequired : "1"),
+/*
                       isnri == "1" ? ProfileDetailItem(label: TranslationService.translate("nri_details"), value: nri_details) : Container(),
+*/
                     ],
                   ),
                 ),),
@@ -791,12 +790,12 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                       ProfileDetailItem(label: TranslationService.translate("height_key"), value: height, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("weight_key"), value: wieght, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("skintone_key"), value: skintone, isrequired : "1"),
-                      ProfileDetailItem(label: TranslationService.translate("bld_group_key"), value: bld_group),
+                   //   ProfileDetailItem(label: TranslationService.translate("bld_group_key"), value: bld_group),
                       ProfileDetailItem(label: TranslationService.translate("body_type_key"), value: body_type, isrequired : "1"),
-                      ProfileDetailItem(label: TranslationService.translate("diet_type_key"), value: diet_type),
+                   //   ProfileDetailItem(label: TranslationService.translate("diet_type_key"), value: diet_type),
                       ProfileDetailItem(label: TranslationService.translate("fitness_key"), value: fitness),
-                      ProfileDetailItem(label: TranslationService.translate("drink_type_key"), value: drink_type),
-                      ProfileDetailItem(label: TranslationService.translate("smoke_type_key"), value: smoke_type),
+               //       ProfileDetailItem(label: TranslationService.translate("drink_type_key"), value: drink_type),
+                //      ProfileDetailItem(label: TranslationService.translate("smoke_type_key"), value: smoke_type),
                       ProfileDetailItem(label: TranslationService.translate("handicap_key"), value: handicap, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("handicap_details_key"), value: handicap_details),
                       ProfileDetailItem(label: TranslationService.translate("overall_health_details_key"), value: overall_health_details),
@@ -826,7 +825,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                       ProfileDetailItem(label: TranslationService.translate("mobile_key"), value: mobile, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("alt_mobile_key"), value: alt_mobile),
                       ProfileDetailItem(label: TranslationService.translate("email_key"), value: email ,verify_email:  email_verify),
-                      ProfileDetailItem(label: TranslationService.translate("alt_email_key") , value: alt_email),
+                   //   ProfileDetailItem(label: TranslationService.translate("alt_email_key") , value: alt_email),
                       ProfileDetailItem(label: TranslationService.translate("country_key"), value: country, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("perm_state_key"), value: perm_state, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("perm_city_key"), value: perm_city, isrequired : "1"),
@@ -857,10 +856,10 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                     children: [
                       ProfileDetailItem(label: TranslationService.translate("education_key"), value: result.join(", "), isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("edu_details_key"), value: edu_details),
-                      ProfileDetailItem(label: TranslationService.translate("is_reputed_key"), value: is_reputed == "0" ? "No" : "Yes"),
+                     /* ProfileDetailItem(label: TranslationService.translate("is_reputed_key"), value: is_reputed == "0" ? "No" : "Yes"),
                       ProfileDetailItem(label: TranslationService.translate("institute_name_key"), value: institute_name),
                       ProfileDetailItem(label: TranslationService.translate("is_administrative_key") , value: is_administrative == "0" ? "No" : "Yes"),
-                      ProfileDetailItem(label: TranslationService.translate("admin_position_key"), value: admin_position),
+                      ProfileDetailItem(label: TranslationService.translate("admin_position_key"), value: admin_position),*/
                     ],
                   ),
                 ),),
@@ -908,14 +907,14 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                     children: [
                       ProfileDetailItem(label: TranslationService.translate("rashi_key"), value: rashi),
                       ProfileDetailItem(label: TranslationService.translate("birth_star_key"), value: birth_star),
-                      ProfileDetailItem(label: TranslationService.translate("gotra_key"), value: gotra),
+                     // ProfileDetailItem(label: TranslationService.translate("gotra_key"), value: gotra),
                       ProfileDetailItem(label: TranslationService.translate("bdate_key"), value: bdate),
                       ProfileDetailItem(label: TranslationService.translate("bcity_key"), value: bcity),
                       ProfileDetailItem(label: TranslationService.translate("btime_key"), value: btime),
-                      ProfileDetailItem(label: TranslationService.translate("mangalik_key"), value: magalik),
-                      ProfileDetailItem(label: TranslationService.translate("believe_horoscope_key"), value: belive_horoscope),
-                      ProfileDetailItem(label: TranslationService.translate("location_coords_key"), value: location_coords),
-                      ElevatedButton(
+                    //  ProfileDetailItem(label: TranslationService.translate("mangalik_key"), value: magalik),
+                    //  ProfileDetailItem(label: TranslationService.translate("believe_horoscope_key"), value: belive_horoscope),
+                    //  ProfileDetailItem(label: TranslationService.translate("location_coords_key"), value: location_coords),
+                     /* ElevatedButton(
                         onPressed: () {
 
                         },
@@ -931,7 +930,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                             style: TextStyle(fontSize: 16.0),
                           ),
                         ),
-                      ),
+                      ),*/
                     ],
                   ),
                 ),),
@@ -954,8 +953,8 @@ class UserDetailScreen  extends State<UserDetailStateful>{
 
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ProfileDetailItem(label: TranslationService.translate("fml_value_key"), value: fml_value),
-                      ProfileDetailItem(label: TranslationService.translate("fml_type_key"), value: fml_type),
+                      /*ProfileDetailItem(label: TranslationService.translate("fml_value_key"), value: fml_value),
+                      ProfileDetailItem(label: TranslationService.translate("fml_type_key"), value: fml_type),*/
                       ProfileDetailItem(label: TranslationService.translate("num_brother_key"), value: num_brother),
                       ProfileDetailItem(label: TranslationService.translate("num_sister_key"), value: num_sister),
                       ProfileDetailItem(label: TranslationService.translate("num_married_bro_key"), value: num_married_bro),
@@ -965,9 +964,9 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                       ProfileDetailItem(label: TranslationService.translate("father_coccup_key"), value: father_coccup, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("mother_occup_key"), value: mother_occup, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("house_owned_key"), value: house_owned, isrequired : "1"),
-                      ProfileDetailItem(label: TranslationService.translate("fml_status_key"), value: fml_status),
+                     // ProfileDetailItem(label: TranslationService.translate("fml_status_key"), value: fml_status),
                       ProfileDetailItem(label: TranslationService.translate("house_type_key"), value: house_type, isrequired : "1"),
-                      ProfileDetailItem(label: TranslationService.translate("family_slogan_key"), value: family_slogan),
+                    //  ProfileDetailItem(label: TranslationService.translate("family_slogan_key"), value: family_slogan),
                     ],
                   ),
                 ),),

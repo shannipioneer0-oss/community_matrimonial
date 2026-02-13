@@ -1966,4 +1966,33 @@ final class _$ApiService extends ApiService {
     return client.send<dynamic, dynamic>($request);
   }
 
+
+  @override
+  Future<Response<dynamic>> select_launch(Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('fetch_data/select_launch');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> update_launch(Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('fetch_data/update_launch');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+
+
 }

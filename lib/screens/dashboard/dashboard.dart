@@ -88,7 +88,9 @@ class DashboardScreen extends State<DashboardAppStateful> {
     isvalid = result;
    });
 
-   if(isvalid == false){
+   SharedPreferences prefs2 = await SharedPreferences.getInstance();
+
+   if(isvalid == false || prefs2.getString(SharedPrefs.user_verify).toString() == "0"){
      navService.pushNamed("/main_screen" , args: 0);
    }
 
@@ -716,6 +718,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
 
 
   HugeListView setLists(int index){
+
     return HugeListView<UserMatch>(
         key: Key((index).toString()),
         scrollController: scroll,
@@ -755,6 +758,8 @@ class DashboardScreen extends State<DashboardAppStateful> {
         },
 
       );
+
+
   }
 
   HugeListView setLists3(int index){
@@ -1188,7 +1193,6 @@ class DashboardScreen extends State<DashboardAppStateful> {
             controller: _scrollController,
             scrollDirection: Axis.horizontal,
             itemCount: listTabs.length,
-            physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return GestureDetector( onTap: (){
 
@@ -1238,12 +1242,12 @@ class DashboardScreen extends State<DashboardAppStateful> {
                 });
               }
             },
-            child:SingleChildScrollView(child:Container(height:MediaQuery.of(context).size.height*0.68 ,margin: EdgeInsets.only(top: 15 , left: type == 1 ? 3 : 20 ) , child: selectedIndex == 0 ? setLists(123) :
-       selectedIndex == 1 ? setLists2(345) : selectedIndex == 2 ? setLists3(456) : selectedIndex == 3 ? setLists4(567) : selectedIndex == 100 ? setLists5(678) : selectedIndex == 4 ?
-       setLists5(789) : selectedIndex == 6 ? setLists6(890) : selectedIndex == 7 ? setLists7(900) : selectedIndex == 8 ? setLists8(901)
+            child:Container(height:MediaQuery.of(context).size.height*0.68 ,margin: EdgeInsets.only(top: 15 , left: type == 1 ? 3 : 20 ) , child: selectedIndex == 0 ? setLists(123) :
+       selectedIndex == 1 ? setLists2(345) : selectedIndex == 2 ? setLists3(456) : selectedIndex == 3 ? setLists4(567) :  selectedIndex == 4 ?
+       setLists4(789) : selectedIndex == 5 ? setLists5(678) : selectedIndex == 6 ? setLists6(890) : selectedIndex == 7 ? setLists7(900) : selectedIndex == 8 ? setLists8(901)
          :selectedIndex == 9 ? setLists9(902) : Container(),
 
-       )))],  )
+       ))],  )
     )));
 
   }

@@ -363,7 +363,6 @@ class utils{
 
 
        return false;
-
      }else if(prefs.getString(SharedPrefs.user_verify).toString() == "0") {
 
       DialogClass().showPremiumInfoDialog(

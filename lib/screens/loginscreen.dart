@@ -15,6 +15,7 @@ import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import '../network_utils/service/api_service.dart';
@@ -94,12 +95,16 @@ class LoginScreen extends State<LoginAppStateful> {
                String communityId = flavor == "appA" ? "20" : "2";
                String? imei = await FlutterDeviceImei.instance.getIMEI();
 
+               SharedPreferences pref = await SharedPreferences.getInstance();
+
+
                final _response = await Provider.of<ApiService>(context, listen: false).postSendOtpSms(
                    {
                      "mobile": controllermobilenumber.text.toString(),
                      "communityId":communityId,
                      "mobile_number":controllermobilenumber.text.toString(),
-                     "imei": imei.toString()
+                     "imei": imei.toString(),
+                     "token_id": pref.getString(SharedPrefs.token_id)
                    }
                );
 
@@ -295,6 +300,7 @@ class LoginScreen extends State<LoginAppStateful> {
 
                 String? imei = await FlutterDeviceImei.instance.getIMEI();
                 //DialogClass().showDialog2(context, flavor.toString() , flavor.toString() , "OK");
+                SharedPreferences pref = await SharedPreferences.getInstance();
 
                 final _response = await Provider.of<ApiService>(
                     context, listen: false).postSendOtpSms(
@@ -302,7 +308,8 @@ class LoginScreen extends State<LoginAppStateful> {
                       "mobile": controllermobilenumber.text.toString(),
                       "communityId": communityId,
                       "mobile_number": controllermobilenumber.text.toString(),
-                      "imei": imei.toString()
+                      "imei": imei.toString(),
+                      "token_id": pref.getString(SharedPrefs.token_id)
                     }
                 );
 

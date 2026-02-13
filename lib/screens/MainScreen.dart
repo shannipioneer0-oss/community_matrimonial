@@ -130,8 +130,8 @@ class MainScreenAppState extends State<MainScreenContainer> {
             navService.pushNamed("/membership");
             //Navigator.pop(context);
             // SystemNavigator.pop();
-
           }
+
         } else
         if (int.parse(prefs.getString(SharedPrefs.joined_days).toString()) >=
             13) {
@@ -153,8 +153,10 @@ class MainScreenAppState extends State<MainScreenContainer> {
               context, TranslationService.translate("trial_period_1"),
               TranslationService.translate("trial_period_desc_3"),
               "Ok");
-        } else {
-          if (prefs.getString(SharedPrefs.joined_days_done).toString() != "1") {
+        } else if(prefs.getString(SharedPrefs.user_verify).toString() == "1"){
+
+          if (prefs.getString(SharedPrefs.joined_days_done).toString() != "1" ) {
+
             final res = await DialogClass().showPremiumInfoDialog(
                 context, TranslationService.translate("joined_alert"),
                 TranslationService.translate("joined_alert_desc"), "Ok");
@@ -162,8 +164,11 @@ class MainScreenAppState extends State<MainScreenContainer> {
             if (res == false) {
               prefs.setString(SharedPrefs.joined_days_done, "1");
             }
+
           }
+
         }
+
       }
     }
 

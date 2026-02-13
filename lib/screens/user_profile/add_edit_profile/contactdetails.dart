@@ -170,6 +170,8 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
 
     try {
 
+      print(number+"----"+isoCode);
+
       final parsed = await PhoneNumberUtil.isValidPhoneNumber(
           number , isoCode
       );
@@ -186,7 +188,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
   }
 
    bool? isvalid = false , isvalid2 = false;
-  String code1 = "" ,code2 = "";
+  String code1 = "+91" ,code2 = "+91";
 
   @override
   Widget build(BuildContext context) {
@@ -221,6 +223,9 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
               mobilemcc = CountryParser.parse(countryCode).phoneCode+number;
               mobilemccerrocheck = number;
 
+              code1 = CountryParser.parse(countryCode).phoneCode;
+              print(code1);
+
 
             },
             onChanged2: () async {
@@ -240,6 +245,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
                 code1 = res.split("_")[1];
 
 
+                print(code1);
 
 
               }
@@ -255,7 +261,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
 
               mobilemcc2 = CountryParser.parse(countryCode).phoneCode+number;
 
-
+              code2 = CountryParser.parse(countryCode).phoneCode;
 
             },
             onChanged2: () async {
@@ -272,6 +278,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
                 altmobileController.setValue(CountryParser.parse(res.split("_")[1]), res.split("_")[0]);
 
                 code2 = res.split("_")[1];
+
 
 
 
@@ -507,7 +514,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
                 print(isvalid.toString()+"=====");
 
                 isvalid = await isValidPhone(number: "+"+mobilemcc, isoCode: code1);
-                isvalid2 = await isValidPhone(number: "+"+mobilemcc, isoCode: code2);
+                isvalid2 = await isValidPhone(number: "+"+mobilemcc2, isoCode: code2);
 
                 if(!isvalid!){
 
@@ -517,7 +524,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
 
                   return;
 
-                }else if(!isvalid2!){
+                }else if(!isvalid2! && mobilemcc2 != ""){
 
                   DialogClass().showDialog2(
                       context, "Validation Alert!",
