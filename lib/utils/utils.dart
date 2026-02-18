@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/phone_number.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -298,6 +299,49 @@ class utils{
   }
 
 
+  Future<bool> isvalidFreeDate() async {
+
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String datestr = prefs.getString(SharedPrefs.joined_date).toString();
+    DateTime now = DateFormat('yyyy-MM-dd').parse(datestr);
+
+    DateTime march15 = DateFormat('yyyy-MM-dd').parse(prefs.getString(SharedPrefs.free_membership_date).toString());
+
+    DateTime newDate = now.add(Duration(days: int.parse(prefs.getString(SharedPrefs.free_membership_duration).toString())));
+    DateTime currentNow = DateTime.now();
+
+
+    print(currentNow.toString()+"----"+newDate.toString()+"-----"+datestr+"------"+march15.toString());
+    print(currentNow.isBefore(newDate).toString()+"----====="+now.isBefore(march15).toString());
+
+    if ( (now.isBefore(march15) || now.isAtSameMomentAs(march15)) &&  (currentNow.isBefore(newDate) || currentNow.isAtSameMomentAs(newDate))) {
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> isvalidFreeDate2() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String datestr = prefs.getString(SharedPrefs.joined_date).toString();
+    DateTime now = DateFormat('yyyy-MM-dd').parse(datestr);
+
+    DateTime march15 = DateFormat('yyyy-MM-dd').parse(prefs.getString(SharedPrefs.free_membership_date).toString());
+
+    if(now.isBefore(march15) || now.isAtSameMomentAs(march15)){
+
+      return true;
+    }
+
+    return false;
+  }
+
+
+
 
    Future<bool> validationalerts(BuildContext context) async {
 
@@ -352,26 +396,41 @@ class utils{
 
 
 
+     if(prefs.getString(SharedPrefs.role_type) != "admin") {
 
-    if(fullname.trim() == "null" || dob == "null" || createdby == "null" || marital == "null" || caste == "null" || subcaste == "null" ||
-         height == "null" || wieght == "null" || skintone == "null" || body_type == "null" || handicap == "null" || mobile == "null" || country == "null"
-         || perm_state == "null" || perm_city == "null" || education == "null" || father_name == "null" || mother_name == "null"
-         || father_coccup == "null" || mother_occup == "null" || house_owned == "null" || house_type == "null" || membername1 == "null" || membername2 == "null"
-         || relation1 == "null" || relation2 == "null" || marital1 == "null" || marital2 == "null" || age1 == "null" || age2 == "null"){
+       if (fullname.trim() == "null" || dob == "null" || createdby == "null" ||
+           marital == "null" || caste == "null" || subcaste == "null" ||
+           height == "null" || wieght == "null" || skintone == "null" ||
+           body_type == "null" || handicap == "null" || mobile == "null" ||
+           country == "null"
+           || perm_state == "null" || perm_city == "null" ||
+           education == "null" || father_name == "null" || mother_name == "null"
+           || father_coccup == "null" || mother_occup == "null" ||
+           house_owned == "null" || house_type == "null" ||
+           membername1 == "null" || membername2 == "null"
+           || relation1 == "null" || relation2 == "null" ||
+           marital1 == "null" || marital2 == "null" || age1 == "null" ||
+           age2 == "null") {
+         final result = await DialogClass().showPremiumInfoDialog(
+             context, TranslationService.translate("incomplete_alert_title"),
+             TranslationService.translate("incomplete_alert_message"),
+             TranslationService.translate("ok_button"));
 
-       final result =   await DialogClass().showPremiumInfoDialog(context, TranslationService.translate("incomplete_alert_title") , TranslationService.translate("incomplete_alert_message") , TranslationService.translate("ok_button"));
+
+         return false;
+
+       } else if (prefs.getString(SharedPrefs.user_verify).toString() == "0") {
+         DialogClass().showPremiumInfoDialog(
+             context, TranslationService.translate("verification_alert_title"),
+             TranslationService.translate("verification_alert_message"),
+             TranslationService.translate("ok_button"));
+
+         return false;
+
+       }
 
 
-       return false;
-     }else if(prefs.getString(SharedPrefs.user_verify).toString() == "0") {
-
-      DialogClass().showPremiumInfoDialog(
-          context, TranslationService.translate("verification_alert_title") ,
-          TranslationService.translate("verification_alert_message") ,
-          TranslationService.translate("ok_button"));
-
-      return false;
-    }
+     }
 
 
 

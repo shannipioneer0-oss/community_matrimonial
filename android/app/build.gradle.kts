@@ -82,7 +82,7 @@ android {
     packaging {
         jniLibs {
             useLegacyPackaging = false
-            keepDebugSymbols += listOf("**/*.so")
+            //keepDebugSymbols += listOf("**/*.so")
         }
     }
 

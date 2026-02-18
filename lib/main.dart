@@ -476,7 +476,7 @@ class MyApp extends StatelessWidget {
           case '/signup':
             return Animations().setAnimation(Registeration());
           case '/user_detail_other':
-            return Animations().setAnimation(UserDetailOtherEdit(settings.arguments as String));
+            return Animations().setAnimation(UserDetailOtherEdit(settings.arguments as List));
           case '/image_gallery_other_edit':
             return Animations().setAnimation(ImageGalleryEdit(settings.arguments as List));
           case '/basic_details_edit':
@@ -632,7 +632,7 @@ class MyScreen extends  State<MainScreen> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String? token = await FirebaseMessaging.instance.getToken();
+    String? token = "" ; //await FirebaseMessaging.instance.getToken();
     prefs.setString(SharedPrefs.token_id , token.toString());
 
     if(prefs.getString(SharedPrefs.translate) == null){

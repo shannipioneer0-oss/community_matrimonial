@@ -80,6 +80,7 @@ class VerifyImageListState  extends State<VerifyImageListStateful>{
 
     setState(() {
 
+      print(searchResult.data!.verifyimagelist2![0].total!.toString()+"====-----______");
       //current_length = searchResult.data[0][0].length;
       // controller.totalItemCount = searchResult.getTotalRowCount()[0].totalRowCount;
       if(searchResult.data!.verifyimagelist2![0].total!.toInt() > 0) {
@@ -88,7 +89,6 @@ class VerifyImageListState  extends State<VerifyImageListStateful>{
       }else{
         total_count = "0";
       }
-
 
 
     });
@@ -147,7 +147,7 @@ class VerifyImageListState  extends State<VerifyImageListStateful>{
 
         itemBuilder: (context, index, Verifyimagelist entry) {
 
-          return VerifyImageListRow(fetchImages: entry, index: index, communityId: communityId, prefs: prefs!,);
+          return entry.name != null && entry.surname != null ? VerifyImageListRow(fetchImages: entry, index: index, communityId: communityId, prefs: prefs!,) : Container();
 
         },
         errorBuilder: (context, error) {

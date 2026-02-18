@@ -84,9 +84,11 @@ class VerifydocListState  extends State<VerifydocListStateful>{
 
       //current_length = searchResult.data[0][0].length;
       // controller.totalItemCount = searchResult.getTotalRowCount()[0].totalRowCount;
+
+      print(searchResult.data!.verifydoclist2![0].total.toString()+"====-----______");
+
       if(searchResult.data!.verifydoclist2![0].total!.toInt() > 0) {
-        total_count =
-            searchResult.data!.verifydoclist2![0].total.toString();
+        total_count = searchResult.data!.verifydoclist2![0].total.toString();
       }else{
         total_count = "0";
       }
@@ -149,7 +151,7 @@ class VerifydocListState  extends State<VerifydocListStateful>{
 
         itemBuilder: (context, index, Verifydoclist entry) {
 
-          return VerifyDocListRow(fetchImages: entry, index: index, communityId: communityId, prefs: prefs!, );
+          return entry.name != null && entry.surname != null ? VerifyDocListRow(fetchImages: entry, index: index, communityId: communityId, prefs: prefs!, ) :Container();
 
         },
         errorBuilder: (context, error) {

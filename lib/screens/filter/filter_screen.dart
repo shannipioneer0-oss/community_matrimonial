@@ -115,7 +115,7 @@ class FilterScreen extends State<FilterScreenAppStateful> {
     });
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if(isvalid == false || prefs.getString(SharedPrefs.user_verify).toString() == "0"){
+    if((isvalid == false || prefs.getString(SharedPrefs.user_verify).toString() == "0") && prefs.getString(SharedPrefs.role_type) != "admin"){
       navService.pushNamed("/main_screen" ,args: 0);
     }
 
@@ -1425,7 +1425,7 @@ class part2stateful extends StatefulWidget {
 
 
         Image.asset("assets/images/path.png" , height: 60,) , SizedBox(width: 30,) ,
-        Expanded(child: CustomDropdown(icondata: MdiIcons.heart  ,controller: context.read<SearchDataFilter>().completionwiseController , labelText: "Search By Completion", onButtonPressed: () async {
+        Expanded(child: CustomDropdown(icondata: MdiIcons.heart  ,controller: context.read<SearchDataFilter>().completionwiseController , labelText: "Search By Status", onButtonPressed: () async {
 
           EasyLoading.show(status: 'Please wait...');
           List<DataFetch> listitem =  [];
@@ -1436,11 +1436,11 @@ class part2stateful extends StatefulWidget {
           listitem.add(DataFetch(label: "Unpaid Profiles", value: "unpaid"));
           listitem.add(DataFetch(label: "Payment Unverified Profiles", value: "paid_uve"));
           listitem.add(DataFetch(label: "Payment Verified Profiles", value: "paid_ve"));
-
+          listitem.add(DataFetch(label: "All Profiles", value: "all"));
 
           EasyLoading.dismiss();
 
-          final value = await SingleSelectDialog().showBottomSheet(context, listitem , "Select Completionwise");
+          final value = await SingleSelectDialog().showBottomSheet(context, listitem , "Select Status Wise");
           context.read<SearchDataFilter>().completionwiseController.text = value.label;
           context.read<SearchDataFilter>().completionWise = value.value;
 

@@ -54,7 +54,7 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  static const int PAGE_SIZE = 16;
+  static const int PAGE_SIZE = 32;
   final scroll = ItemScrollController();
   HugeListViewController controller = HugeListViewController(totalItemCount: int.parse(Strings.limit));
   String total_count = "0";
@@ -69,7 +69,7 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
   List<User> members_final = [];
   int currentPage = 1;
   double totalPages = 1;
-  int perPage = 50;
+  int perPage = 32;
   bool isLoading = false;
 
   ScrollController _scrollController = ScrollController();
@@ -96,7 +96,7 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
     current_length = 0;
 
 
-    _loadPage(context, 0, 16 , true);
+    _loadPage(context, 0, 32 , true);
 
 
     _scrollController.addListener(() {
@@ -104,8 +104,10 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
           _scrollController.position.maxScrollExtent - 100) {
 
           if(currentPage <= totalPages) {
-            offset = offset + 16;
-            _loadPage(context, 0, 16, false);
+
+
+            print(currentPage.toString()+"---()");
+            _loadPage(context, 0, 32 , false);
           }
 
       }
@@ -125,19 +127,19 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
     controller.totalItemCount = PAGE_SIZE;
     total_count = "0";
     current_length = 0;
+
   }
 
 
 
-  int current_length = 16;
-  int offset  =0;
+  int current_length = 32;
+  int offset  = 0;
+
    _loadPage(BuildContext context  ,int page, int pageSize , bool isInitial) async {
-
-
-
 
     if (isLoading) return;
     if (currentPage > totalPages)
@@ -196,7 +198,7 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
       "translate": ["en"],
       "role": prefs.getString(SharedPrefs.role_type),
       "limit":int.parse(Strings.limit),
-      "offset":page*pageSize
+      "offset":offset
     });
 
 
@@ -256,14 +258,12 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
       });
 
       currentPage++;
-
+      offset = offset + 32;
 
 
 
     EasyLoading.dismiss();
 
-
-    print("qwerty");// clone to force update
     isLoading = false;
 
   }
@@ -323,6 +323,7 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
                         },).toList();
 
                       });
+
                     },
                     decoration: InputDecoration(
                       hintText: "Search...",

@@ -252,6 +252,7 @@ class ImageGalleryScreen  extends State<ImageGallery>{
 
                         // Attach files
                         for (var i = 0; i < listimagesPath.length; i++) {
+
                           request.fields["pic" + (i + 1).toString()] =
                               prefs.getString(SharedPrefs.profileid).toString() + "_" +
                                   getFileName(File(listimagesPath[i]));
@@ -260,7 +261,9 @@ class ImageGalleryScreen  extends State<ImageGallery>{
                             'sampleFile[]',
                             listimagesPath[i],
                           );
+
                           request.files.add(file);
+
                         }
 
                         // Attach additional data
@@ -285,10 +288,11 @@ class ImageGalleryScreen  extends State<ImageGallery>{
                                     getFileName(File(listimagesPath[i])) ?? '');
                           }
                         } else {
-                          print(
-                              'Failed to upload files. Status Code: ${response.statusCode}');
+
+                          print('Failed to upload files. Status Code: ${response.statusCode}');
                         }
 
+                        Navigator.of(context).pop();
                         navService.goBack();
 
                         EasyLoading.dismiss();
@@ -297,6 +301,7 @@ class ImageGalleryScreen  extends State<ImageGallery>{
 
                         EasyLoading.dismiss();
                       }
+
                     } else {
 
 
@@ -326,6 +331,7 @@ class ImageGalleryScreen  extends State<ImageGallery>{
                           request.fields["isverifypic" + (i + 1).toString()] = "0";
 
                           print(listimage[i] + " - ---   uploads");
+
                         } else {
                           request.fields["pic" + (i + 1).toString()] =
                               prefs.getString("pic" + (i + 1).toString()) ?? "null";
@@ -352,7 +358,7 @@ class ImageGalleryScreen  extends State<ImageGallery>{
 
                       var response = await request.send();
 
-                      print(await response.stream.bytesToString());
+                     // print(await response.stream.bytesToString());
 
                       // Check the response
                       if (response.statusCode == 200) {
@@ -422,6 +428,7 @@ class ImageGalleryScreen  extends State<ImageGallery>{
             setState(() {
               _connectivityResult = result;
             });
+
               if (_connectivityResult == ConnectivityResult.none) {
 
                 DialogClass().showDialog2(context, "No Internet", "Sorry Internet is not available", "OK");
@@ -462,20 +469,26 @@ class ImageGalleryScreen  extends State<ImageGallery>{
                     // Send the request
                     var response = await request.send();
 
-                    print(response.stream.bytesToString());
+                    // print(response.stream.bytesToString());
 
                     // Check the response
                     if (response.statusCode == 200) {
-                      for (var i = 0; i < listimagesPath.length; i++) {
-                        await prefs.setString("pic" + (i + 1).toString(),
-                            prefs.getString(SharedPrefs.profileid).toString() + "_" +
-                                getFileName(File(listimagesPath[i])) ?? '');
+
+                      if(listimagesPath.length > 0) {
+                        for (var i = 0; i < listimagesPath.length; i++) {
+                          await prefs.setString("pic" + (i + 1).toString(),
+                              prefs.getString(SharedPrefs.profileid)
+                                  .toString() + "_" +
+                                  getFileName(File(listimagesPath[i])) ?? '');
+                        }
                       }
+
                     } else {
                       print(
                           'Failed to upload files. Status Code: ${response.statusCode}');
                     }
 
+                    Navigator.of(context).pop();
                     navService.goBack();
 
                     EasyLoading.dismiss();
@@ -543,14 +556,18 @@ class ImageGalleryScreen  extends State<ImageGallery>{
               if (response.statusCode == 200) {
               for (var i = 0; i < listimage.length; i++) {
               if (listimage[i] != "0") {
+
               await prefs.setString("pic" + (i + 1).toString(),
               prefs.getString(SharedPrefs.profileid).toString() + "_" +
               getFileName(File(listimage[i])) ?? '');
+
               } else {
+
               await prefs.setString(
               "pic" + (i + 1).toString(), prefs.getString("pic" + (i + 1)
                   .toString()) ?? "null");
               }
+
               }
               } else {
               print('Failed to upload files. Status Code: ${response.statusCode}');
@@ -625,11 +642,13 @@ class ImageGalleryScreen  extends State<ImageGallery>{
 
           // Check the response
           if (response.statusCode == 200) {
-            for (var i = 0; i < listimagesPath.length; i++) {
-              await prefs.setString("pic" + (i + 1).toString(),
-                  prefs.getString(SharedPrefs.profileid).toString() + "_" +
-                      getFileName(File(listimagesPath[i])) ?? '');
-            }
+    if(listimagesPath.length > 0) {
+      for (var i = 0; i < listimagesPath.length; i++) {
+        await prefs.setString("pic" + (i + 1).toString(),
+            prefs.getString(SharedPrefs.profileid).toString() + "_" +
+                getFileName(File(listimagesPath[i])) ?? '');
+      }
+    }
           } else {
             print(
                 'Failed to upload files. Status Code: ${response.statusCode}');

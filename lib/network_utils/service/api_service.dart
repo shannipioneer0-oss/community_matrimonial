@@ -333,6 +333,9 @@ abstract class ApiService extends ChopperService {
   @Post(path: 'fetch_data/premium_user_data')
   Future<Response> postPremiumUserData(@Body() Map<String, dynamic> requestBody);
 
+  @Post(path: 'fetch_data/select_free_membership')
+  Future<Response> select_free_membership(@Body() Map<String, dynamic> requestBody);
+
   @Post(path: 'activity/view_other_horoscope')
   Future<Response> postViewOtherHoroscope(@Body() Map<String, dynamic> requestBody);
 

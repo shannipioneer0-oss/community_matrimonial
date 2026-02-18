@@ -346,7 +346,10 @@
   "update_app_details": "Latest version is Available ,Please update your App to use latest improvements and features",
   "no_need_updates": "No Updates",
   "no_need_updates_details": "No Updates are Available",
-  "share_app" : "Share Invite"
+  "share_app" : "Share Invite",
+  "payment_verification" : "Payment Verification",
+  "payment_verification_details" : "Payment Verification is pending! Please wait while Payment Verification is done."
+
 
 
 }

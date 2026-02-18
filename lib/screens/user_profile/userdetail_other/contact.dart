@@ -55,9 +55,7 @@ class contact extends StatelessWidget {
       
 
      },
-    child: myState.ispremium != "" ?
-
-    Container( child: int.parse(myState.num_contacts) < int.parse(myState.allowed_contatcs) || view_contacts.split(",").contains(userId) ? SingleChildScrollView(child: Container(child:Column(children: [
+    child: Container( child: SingleChildScrollView(child: Container(child:Column(children: [
 
     Container(color: ColorsPallete.blue_2, width: MediaQuery.of(context).size.width*0.9  , margin: EdgeInsets.only(left: 8 ,right: 8 ,top: 20),padding: EdgeInsets.all(7) , child: Text("Contact Details" , textAlign: TextAlign.center, style: TextStyle(color: Colors.white , fontSize: 15),),),
     Container(color: Colors.white ,margin: EdgeInsets.only(left: 8 ,right: 8 ,bottom: 20 ), width: MediaQuery.of(context).size.width*0.9 , padding: EdgeInsets.all(10) ,child:Column(children: [
@@ -189,7 +187,7 @@ class contact extends StatelessWidget {
 
 
 
-    ]))):  Container(margin: EdgeInsets.only(left: 15 ,right: 15)  ,height:MediaQuery.of(context).size.height*0.5 , child:Center(child:Text("You have Reached the Limit of your Plan to Access Contacts , Please upgrade to access more contacts" ,textAlign: TextAlign.center , style: TextStyle(fontWeight: FontWeight.bold , color: ColorsPallete.Pink2 , fontSize: 18),)))):  Container(margin: EdgeInsets.only(left: 15 , right: 15)   ,height:MediaQuery.of(context).size.height*0.5  ,child:Center(child:Text("Access to Contacts needs the Premium user only" ,textAlign: TextAlign.center , style: TextStyle(fontWeight: FontWeight.bold , color: ColorsPallete.Pink2 , fontSize: 18),))));
+    ])))));
 
   }
 

@@ -5,6 +5,9 @@ class SharedPrefs{
 
   static String translate = "translate";
 
+  static String free_membership_date = "free_membership_date";
+  static String free_membership_duration = "free_membership_duration";
+
   static String userId = "userId";
   static String firstName = "firstName_prefs";
   static String lastname = "lastName_prefs";
@@ -277,6 +280,8 @@ class SharedPrefs{
   static const String fml_details_id = "fml_details_id";
   static const String joined_days_done = "joined_days_done";
   static const String token_id = "token_id";
+
+  static const String isverify_payment = "isverify_payment";
 
 
 

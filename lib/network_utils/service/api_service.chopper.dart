@@ -1993,6 +1993,23 @@ final class _$ApiService extends ApiService {
     return client.send<dynamic, dynamic>($request);
   }
 
+  @override
+  Future<Response<dynamic>> select_free_membership(Map<String, dynamic> requestBody) {
+
+
+    final Uri $url = Uri.parse('fetch_data/select_free_membership');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+
+    return client.send<dynamic, dynamic>($request);
+
+  }
+
 
 
 }

@@ -321,30 +321,42 @@ class MembershipCard extends State<MembershipCardStateful> {
           Container(alignment: Alignment.bottomCenter , width: MediaQuery.of(context).size.width , margin: EdgeInsets.only(bottom: 20 ,right: 20)  ,child:ElevatedButton(
             onPressed: () async {
 
-              print(widget.order);
 
-              if(widget.order.packageName != null){
+              if(await utils().isvalidFreeDate() == false) {
 
-                DialogClass().showDialog2(context , "Membership Plan" , "You Already subscribed to one of the packages ,if you need to update Please contact support" , "Ok");
+                if (widget.order.packageName != null) {
+
+                  DialogClass().showDialog2(context, "Membership Plan",
+                      "You Already subscribed to one of the packages ,if you need to update Please contact support",
+                      "Ok");
+
+                } else {
+                  SharedPreferences prefs2 = await SharedPreferences
+                      .getInstance();
+
+
+                  String userId = prefs2.getString(SharedPrefs.userId)
+                      .toString();
+                  String communityId = prefs2.getString(SharedPrefs.communityId)
+                      .toString();
+
+                  launchUrl(Uri.parse(
+                      "https://matrimonial.pioerp.com/payment_options?userId=" +
+                          userId + "&communityId=" + communityId + "&admin=0"));
+
+                  // _razorpay.open(options);
+
+                }
 
               }else{
 
 
+                DialogClass().showDialog2(context, "Free Membership",
+                    "You Already subscribed to one of the packages ,if you need to update Please contact support",
+                    "Ok");
 
-                SharedPreferences prefs2 = await SharedPreferences.getInstance();
-
-
-
-                String userId = prefs2.getString(SharedPrefs.userId).toString();
-                String communityId = prefs2.getString(SharedPrefs.communityId).toString();
-
-                launchUrl(Uri.parse("https://matrimonial.pioerp.com/payment_options?userId="+userId+"&communityId="+communityId+"&admin=0"));
-
-                // _razorpay.open(options);
 
               }
-
-
 
 
 
@@ -363,7 +375,7 @@ class MembershipCard extends State<MembershipCardStateful> {
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child:Container(width: MediaQuery.of(context).size.width*0.6 ,child: Text(
-              widget.order != "{}" && widget.order.packageName.toString() == widget.membership_model.id.toString() ? "Your Selected Package"   : 'Upgrade Membership',
+                widget.order != "{}" && widget.order.packageName.toString() == widget.membership_model.id.toString() ? "Your Selected Package"   : 'Upgrade Membership',
                textAlign: TextAlign.center , style: TextStyle(fontSize: 18 , color: Colors.white),
               ),
             ),),

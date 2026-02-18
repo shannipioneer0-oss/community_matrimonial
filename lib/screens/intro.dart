@@ -650,8 +650,17 @@ class IntroScreen extends State<IntroAppStateful> {
       await prefs.setString(SharedPrefs.refmemberadd2, ref_add2);
       await prefs.setString(SharedPrefs.refmembermobile2, ref_mobile2);
 
+      await prefs.setString(SharedPrefs.fml_details_id, _response2.body["data"][17][0]["0"]["Id"].toString());
 
 
+    }
+
+    if(_response2.body["data"][18][0].toString() != "{}"){
+
+
+      print(_response2.body["data"][18][0].toString()+"=======------");
+
+      await prefs.setString(SharedPrefs.isverify_payment , _response2.body["data"][18][0]["0"]["isverify"].toString());
     }
 
 

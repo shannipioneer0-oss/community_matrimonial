@@ -96,7 +96,7 @@ class VerifyImageListRowStateful extends State<VerifyImageListRow> {
 
       return Container(padding: EdgeInsets.all(10) ,child:Card(elevation: 5 ,child:Container(padding: EdgeInsets.all(10) ,child: Column(crossAxisAlignment: CrossAxisAlignment.start ,  children: [
 
-        Text(imageverifylist[0].name+" "+imageverifylist[0].surname ,style: TextStyle(fontSize: 17 ,fontWeight: FontWeight.bold , color: Colors.black87),),
+        Text( imageverifylist[0].name != null ?  imageverifylist[0].name+" "+imageverifylist[0].surname : "" ,style: TextStyle(fontSize: 17 ,fontWeight: FontWeight.bold , color: Colors.black87),),
         SizedBox(height: 5,),
         Text("Profile Id : "+imageverifylist[0].profileId+" -- Gender : "+imageverifylist[0].gender ,style: TextStyle(fontSize: 15 ,fontWeight: FontWeight.bold , color: Colors.black87),),
         SizedBox(height: 10,),

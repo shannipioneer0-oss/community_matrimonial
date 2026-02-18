@@ -25,7 +25,9 @@ class DialogClass {
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        return Dialog(
+        return WillPopScope(
+            onWillPop: () async => false, // ❌ Disable back button
+            child: Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -91,7 +93,7 @@ class DialogClass {
               ],
             ),
           ),
-        );
+        ));
       },
     );
 

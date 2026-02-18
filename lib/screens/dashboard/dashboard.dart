@@ -83,6 +83,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
 
 
  Future<void> _checkValidation(BuildContext context) async {
+
    final result = await utils().validationalerts(context);
    setState(() {
     isvalid = result;
@@ -90,7 +91,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
 
    SharedPreferences prefs2 = await SharedPreferences.getInstance();
 
-   if(isvalid == false || prefs2.getString(SharedPrefs.user_verify).toString() == "0"){
+   if((isvalid == false || prefs.getString(SharedPrefs.user_verify).toString() == "0") && prefs.getString(SharedPrefs.role_type) != "admin"){
      navService.pushNamed("/main_screen" , args: 0);
    }
 

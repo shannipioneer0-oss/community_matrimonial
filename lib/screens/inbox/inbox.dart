@@ -266,7 +266,8 @@ class InboxScreen extends State<InboxStateful>{
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if(isvalid == false || prefs.getString(SharedPrefs.user_verify).toString() == "0"){
+    if((isvalid == false || prefs.getString(SharedPrefs.user_verify).toString() == "0") && prefs.getString(SharedPrefs.role_type) != "admin"){
+
       navService.pushNamed("/main_screen" ,args: 0);
     }
 

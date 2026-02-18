@@ -86,10 +86,10 @@ class SearchResultListStateful extends State<SearchResultList> {
            behavior: HitTestBehavior.deferToChild,
           onTap: () {
             navService.pushNamed("/user_detail",
-                args: [widget.fetchmatches.userId, widget.fetchmatches.name , widget.fetchmatches.mobRegToken , widget.fetchmatches.profileId]);
+                args: [widget.fetchmatches.userId, widget.fetchmatches.name , widget.fetchmatches.mobRegToken , widget.fetchmatches.profileId , widget.type]);
           },
           child: Container(
-              height: 205,
+              height: 215,
               child: Stack(
                 children: [
                   Container(
@@ -101,7 +101,7 @@ class SearchResultListStateful extends State<SearchResultList> {
                         elevation: 4.0,
                         child: Container(
                             width: MediaQuery.of(context).size.width * 0.92,
-                            height: 195,
+                            height: 205,
                             child: Row(
                               children: [
                                 Expanded(
@@ -157,11 +157,11 @@ class SearchResultListStateful extends State<SearchResultList> {
                                                     .width *
                                                 0.55,
                                             child: Text(
-                                              widget.fetchmatches.fullname
-                                                  .toString(),
+                                            role == "admin" ?  widget.fetchmatches.name+"\n"+widget.fetchmatches.mobile_number
+                                                  .toString() : widget.fetchmatches.name,
                                               textAlign: TextAlign.left,
                                               style: TextStyle(
-                                                fontSize: 17.0,
+                                                fontSize: 16.0,
                                                 fontWeight: FontWeight.w500,
                                                 color: ColorsPallete.blue_2,
                                               ),
@@ -174,6 +174,10 @@ class SearchResultListStateful extends State<SearchResultList> {
                                                     .width *
                                                 0.60,
                                             child: Text(
+                                              utils()
+                                                  .calculateAge(utils().convertMarathiDateToEnglish(widget
+                                                  .fetchmatches.dob)).toString() == "-1" ? widget.fetchmatches.height
+                                                  .toString() :
                                               'Age ' +
                                                   utils()
                                                       .calculateAge(widget
@@ -280,7 +284,8 @@ class SearchResultListStateful extends State<SearchResultList> {
                                           ],)
                                         ],
                                       ),
-                                    ))
+                                    )),
+
                               ],
                             )),
                       )),
@@ -659,7 +664,7 @@ class SearchResultListStateful extends State<SearchResultList> {
                       )),
                   role == "admin" ? Positioned( bottom: 6 ,left: 14 ,child: GestureDetector(onTap: (){
 
-                     navService.pushNamed("/user_detail_other", args: widget.fetchmatches.userId);
+                     navService.pushNamed("/user_detail_other", args: [widget.fetchmatches.userId ,widget.type ]);
 
 
                   }  ,child:Container(
@@ -838,6 +843,10 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                                                     .width *
                                                 0.60,
                                             child: Text(
+                                                utils()
+                                                    .calculateAge(utils().convertMarathiDateToEnglish(widget
+        .fetchmatches.dob)).toString() == "-1" ? widget.fetchmatches.height
+                                                    .toString() :
                                               'Age ' +
                                                   utils()
                                                       .calculateAge(utils().convertMarathiDateToEnglish(widget

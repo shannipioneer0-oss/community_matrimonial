@@ -81,123 +81,177 @@ class MainScreenAppState extends State<MainScreenContainer> {
   @override
   void dispose() {
     // Unregister the observer to avoid memory leaks
-
     super.dispose();
+
   }
 
 
   initDialogs() async {
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
 
-    if (prefs.getString(SharedPrefs.reason_date).toString() != "null") {
-      DateFormat format = DateFormat("dd/MM/yyyy");
-      DateTime dateTime = format.parse(
-          prefs.getString(SharedPrefs.reason_date).toString());
-      DateTime dateTimenow = DateTime.now();
+    if(await utils().isvalidFreeDate() == true){
+
+      return;
+    }
+
+    if (prefs.getString(SharedPrefs.role_type) == "admin") {
+
+    } else {
 
 
-      if (prefs.getString(SharedPrefs.reason).toString() != "null") {
-        if (dateTimenow.isBefore(dateTime)) {
-          DialogClass().showDialog4(context, "App In Progress Alert",
-              "App Will start from " +
-                  prefs.getString(SharedPrefs.reason_date).toString() +
-                  " and reason is  " +
-                  prefs.getString(SharedPrefs.reason).toString(), "OK");
-        }
-      }
+      if (prefs.getString(SharedPrefs.reason_date).toString() != "null") {
+        DateFormat format = DateFormat("dd/MM/yyyy");
+        DateTime dateTime = format.parse(
+            prefs.getString(SharedPrefs.reason_date).toString());
+        DateTime dateTimenow = DateTime.now();
 
 
-      print(prefs.getString(SharedPrefs.remainingDays).toString()+"()()");
-
-      if (prefs.getString(SharedPrefs.remainingDays).toString() != "null") {
-        if (int.parse(prefs.getString(SharedPrefs.remainingDays).toString()) <=
-            0) {
-          DialogClass().showPremiumInfoDialog(
-              context, TranslationService.translate("renewal_alert"),
-              TranslationService.translate("renewal_alert_desc"), "Ok");
-        }
-      } else {
-
-        if (int.parse(prefs.getString(SharedPrefs.joined_days).toString()) >=
-            14) {
-          final res = await DialogClass().showPremiumInfoDialog(
-              context, TranslationService.translate("trial_period"),
-              TranslationService.translate("trial_period_desc"),
-              "Ok");
-
-          if (res == false) {
-            navService.pushNamed("/membership");
-            //Navigator.pop(context);
-            // SystemNavigator.pop();
+        if (prefs.getString(SharedPrefs.reason).toString() != "null") {
+          if (dateTimenow.isBefore(dateTime)) {
+            DialogClass().showDialog4(context, "App In Progress Alert",
+                "App Will start from " +
+                    prefs.getString(SharedPrefs.reason_date).toString() +
+                    " and reason is  " +
+                    prefs.getString(SharedPrefs.reason).toString(), "OK");
           }
+        }
 
-        } else
-        if (int.parse(prefs.getString(SharedPrefs.joined_days).toString()) >=
-            13) {
-          DialogClass().showPremiumInfoDialog(
-              context, TranslationService.translate("trial_period_1"),
-              TranslationService.translate("trial_period_desc_1"),
-              "Ok");
-        } else
-        if (int.parse(prefs.getString(SharedPrefs.joined_days).toString()) >=
-            12) {
-          DialogClass().showPremiumInfoDialog(
-              context, TranslationService.translate("trial_period_1"),
-              TranslationService.translate("trial_period_desc_2"),
-              "Ok");
-        } else
-        if (int.parse(prefs.getString(SharedPrefs.joined_days).toString()) >=
-            11) {
-          DialogClass().showPremiumInfoDialog(
-              context, TranslationService.translate("trial_period_1"),
-              TranslationService.translate("trial_period_desc_3"),
-              "Ok");
-        } else if(prefs.getString(SharedPrefs.user_verify).toString() == "1"){
 
-          if (prefs.getString(SharedPrefs.joined_days_done).toString() != "1" ) {
+        print(prefs.getString(SharedPrefs.remainingDays).toString() + "()()()" +
+            prefs.getString(SharedPrefs.isverify_payment).toString());
 
-            final res = await DialogClass().showPremiumInfoDialog(
-                context, TranslationService.translate("joined_alert"),
-                TranslationService.translate("joined_alert_desc"), "Ok");
 
-            if (res == false) {
-              prefs.setString(SharedPrefs.joined_days_done, "1");
+        if (prefs.getString(SharedPrefs.remainingDays).toString() != "null") {
+
+          if (int.parse(
+              prefs.getString(SharedPrefs.remainingDays).toString()) <=
+              0) {
+
+            final res  = await   DialogClass().showPremiumInfoDialog(
+                context, TranslationService.translate("renewal_alert"),
+                TranslationService.translate("renewal_alert_desc"), "Ok");
+
+            if (res == false || res == true) {
+              navService.pushNamed("/main_screen" , args: 0);
+              //Navigator.pop(context);
+              // SystemNavigator.pop();
             }
 
           }
 
+
+        }else if(await utils().isvalidFreeDate2() == true){
+
+          final res  = await  DialogClass().showPremiumInfoDialog(
+              context, TranslationService.translate("renewal_alert"),
+              TranslationService.translate("renewal_alert_desc"), "Ok");
+
+          if (res == false || res == true) {
+            navService.pushNamed("/main_screen" , args: 0);
+            //Navigator.pop(context);
+            // SystemNavigator.pop();
+          }
+
+
+        } else {
+          if (prefs.getString(SharedPrefs.isverify_payment).toString() ==
+              "null") {
+            if (int.parse(
+                prefs.getString(SharedPrefs.joined_days).toString()) >=
+                14) {
+              final res = await DialogClass().showPremiumInfoDialog(
+                  context, TranslationService.translate("trial_period"),
+                  TranslationService.translate("trial_period_desc"),
+                  "Ok");
+
+              if (res == false) {
+                navService.pushNamed("/membership");
+                //Navigator.pop(context);
+                // SystemNavigator.pop();
+              }
+            } else if (int.parse(
+                prefs.getString(SharedPrefs.joined_days).toString()) >=
+                13) {
+              DialogClass().showPremiumInfoDialog(
+                  context, TranslationService.translate("trial_period_1"),
+                  TranslationService.translate("trial_period_desc_1"),
+                  "Ok");
+            } else if (int.parse(
+                prefs.getString(SharedPrefs.joined_days).toString()) >=
+                12) {
+
+              DialogClass().showPremiumInfoDialog(
+                  context, TranslationService.translate("trial_period_1"),
+                  TranslationService.translate("trial_period_desc_2"),
+                  "Ok");
+
+            } else if (int.parse(
+                prefs.getString(SharedPrefs.joined_days).toString()) >=
+                11) {
+
+              DialogClass().showPremiumInfoDialog(
+                  context, TranslationService.translate("trial_period_1"),
+                  TranslationService.translate("trial_period_desc_3"),
+                  "Ok");
+
+            } else {
+              print("11112222");
+
+              if (prefs.getString(SharedPrefs.joined_days_done).toString() !=
+                  "1") {
+                final res = await DialogClass().showPremiumInfoDialog(
+                    context, TranslationService.translate("joined_alert"),
+                    TranslationService.translate("joined_alert_desc"), "Ok");
+
+                if (res == false) {
+                  prefs.setString(SharedPrefs.joined_days_done, "1");
+                }
+              }
+            }
+          } else
+          if (prefs.getString(SharedPrefs.isverify_payment).toString() == "1") {
+            final res = await DialogClass().showPremiumInfoDialog(
+                context, TranslationService.translate("payment_verification"),
+                TranslationService.translate("payment_verification_details"),
+                "Ok");
+
+            if (res == true || res == false) {
+              navService.pushNamed("/main_screen", args: 0);
+            }
+          }
         }
-
       }
-    }
 
 
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String version = prefs.getString(SharedPrefs.version).toString();
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      String version = prefs.getString(SharedPrefs.version).toString();
 
-    print(version + "-----" + packageInfo.version);
+      print(version + "-----" + packageInfo.version);
 
-    if (version.toString() != "null") {
-      if (packageInfo.version != version.split("_")[1].replaceAll(".apk", "")) {
-        final res = await DialogClass().showDialogBeforesubmit(
-            context, "Update Avialable",
-            "Please update your apk as latest version is available", "Download",
-            "1");
+      if (version.toString() != "null") {
+        if (packageInfo.version !=
+            version.split("_")[1].replaceAll(".apk", "")) {
+          final res = await DialogClass().showDialogBeforesubmit(
+              context, "Update Avialable",
+              "Please update your apk as latest version is available",
+              "Download",
+              "1");
 
-        if (res != null) {
-          EasyLoading.show(status: "Downloading Wait ...");
+          if (res != null) {
+            EasyLoading.show(status: "Downloading Wait ...");
 
-          final response = await http.get(Uri.parse(
-              'https://matriapi.shannishah.com/uploads/apks/zalawad_apk/' +
-                  version));
-          if (response.statusCode == 200) {
-            // Calculate the checksum of the downloaded APK
-            final bytes = response.bodyBytes;
-            final checksum = sha256.convert(bytes).toString();
+            final response = await http.get(Uri.parse(
+                'https://matriapi.shannishah.com/uploads/apks/zalawad_apk/' +
+                    version));
+            if (response.statusCode == 200) {
+              // Calculate the checksum of the downloaded APK
+              final bytes = response.bodyBytes;
+              final checksum = sha256.convert(bytes).toString();
 
 
-            /* try {
+              /* try {
               //LINK CONTAINS APK OF FLUTTER HELLO WORLD FROM FLUTTER SDK EXAMPLES
               OtaUpdate()
                   .execute(
@@ -217,13 +271,13 @@ class MainScreenAppState extends State<MainScreenContainer> {
             } catch (e) {
               print('Failed to make OTA update. Details: $e');
             }*/
-          }
+            }
 
-          print('https://matriapi.shannishah.com/uploads/apks/zalawad_apk/' +
-              version);
+            print('https://matriapi.shannishah.com/uploads/apks/zalawad_apk/' +
+                version);
 
 
-          /*
+            /*
 
          EasyLoading.show(status: "Downloaidng APK...");
 
@@ -246,9 +300,12 @@ class MainScreenAppState extends State<MainScreenContainer> {
 
             });*/
 
+          }
         }
       }
+
     }
+
   }
 
   ConnectivityResult _connectivityResult = ConnectivityResult.none;
@@ -287,25 +344,34 @@ class MainScreenAppState extends State<MainScreenContainer> {
       currentpage = target;
     });
 
-    initDialogs();
+
   }
 
 
   Center? _getpage(int page) {
+
+  //9328141639
+
     switch (page) {
       case 0:
         return Center(
           child: UserDetail(),
         );
       case 1:
+
+        initDialogs();
         return Center(
           child: Inbox(),
         );
       case 2:
+
+        initDialogs();
         return Center(
           child: DashboardApp(),
         );
       case 3:
+
+        initDialogs();
         return Center(
           child: FilterScreenApp(),
         );

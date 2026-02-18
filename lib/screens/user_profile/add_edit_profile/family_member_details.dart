@@ -5,6 +5,7 @@ import 'package:community_matrimonial/screens/user_profile/NumericFields.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -423,6 +424,8 @@ class FamilyMemberDetailScreen  extends State<FamilyDetailsStateful>{
 
           }else{
 
+            SVProgressHUD.show();
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     if (prefs.getString(SharedPrefs.membername1) == null) {
@@ -455,6 +458,8 @@ class FamilyMemberDetailScreen  extends State<FamilyDetailsStateful>{
       });
 
     if (_response.body["data"]["affectedRows"] == 1) {
+
+
 
       await prefs.setString(SharedPrefs.fml_details_id , _response.body["data"]["insertId"].toString());
       await prefs.setString(SharedPrefs.membername1, membername1.text.toString());
@@ -507,7 +512,13 @@ class FamilyMemberDetailScreen  extends State<FamilyDetailsStateful>{
       await prefs.setString(SharedPrefs.refmemberadd2, refmemberadd2.text.toString());
       await prefs.setString(SharedPrefs.refmembermobile2, refmembermobile2.text.toString());
 
+      SVProgressHUD.dismiss();
+
       navService.goBack();
+
+    }else{
+
+      SVProgressHUD.dismiss();
 
     }
 
@@ -520,6 +531,8 @@ class FamilyMemberDetailScreen  extends State<FamilyDetailsStateful>{
       String member_details4 = membername4.text.toString()+","+relation4.text.toString()+","+marital4.text.toString()+","+age4.text.toString()+","+education4.text.toString()+","+occupation_income4.text.toString();
       String member_details5 = membername5.text.toString()+","+relation5.text.toString()+","+marital5.text.toString()+","+age5.text.toString()+","+education5.text.toString()+","+occupation_income5.text.toString();
       String member_details6 = membername6.text.toString()+","+relation6.text.toString()+","+marital6.text.toString()+","+age6.text.toString()+","+education6.text.toString()+","+occupation_income6.text.toString();
+
+      SVProgressHUD.show();
 
 
       print({
@@ -557,58 +570,87 @@ class FamilyMemberDetailScreen  extends State<FamilyDetailsStateful>{
 
 
       if (_response.body["data"]["affectedRows"] == 1) {
-
-        await prefs.setString(SharedPrefs.membername1, membername1.text.toString());
+        await prefs.setString(
+            SharedPrefs.membername1, membername1.text.toString());
         await prefs.setString(SharedPrefs.relation1, relation1.text.toString());
         await prefs.setString(SharedPrefs.marital1, marital1.text.toString());
         await prefs.setString(SharedPrefs.age1, age1.text.toString());
-        await prefs.setString(SharedPrefs.education1, education1.text.toString());
-        await prefs.setString(SharedPrefs.occupation_income1, occupation_income1.text.toString());
+        await prefs.setString(
+            SharedPrefs.education1, education1.text.toString());
+        await prefs.setString(
+            SharedPrefs.occupation_income1, occupation_income1.text.toString());
 
-        await prefs.setString(SharedPrefs.membername2, membername2.text.toString());
+        await prefs.setString(
+            SharedPrefs.membername2, membername2.text.toString());
         await prefs.setString(SharedPrefs.relation2, relation2.text.toString());
         await prefs.setString(SharedPrefs.marital2, marital2.text.toString());
         await prefs.setString(SharedPrefs.age2, age2.text.toString());
-        await prefs.setString(SharedPrefs.education2, education2.text.toString());
-        await prefs.setString(SharedPrefs.occupation_income2, occupation_income2.text.toString());
+        await prefs.setString(
+            SharedPrefs.education2, education2.text.toString());
+        await prefs.setString(
+            SharedPrefs.occupation_income2, occupation_income2.text.toString());
 
-        await prefs.setString(SharedPrefs.membername3, membername3.text.toString());
+        await prefs.setString(
+            SharedPrefs.membername3, membername3.text.toString());
         await prefs.setString(SharedPrefs.relation3, relation3.text.toString());
         await prefs.setString(SharedPrefs.marital3, marital3.text.toString());
         await prefs.setString(SharedPrefs.age3, age3.text.toString());
-        await prefs.setString(SharedPrefs.education3, education3.text.toString());
-        await prefs.setString(SharedPrefs.occupation_income3, occupation_income3.text.toString());
+        await prefs.setString(
+            SharedPrefs.education3, education3.text.toString());
+        await prefs.setString(
+            SharedPrefs.occupation_income3, occupation_income3.text.toString());
 
-        await prefs.setString(SharedPrefs.membername4, membername4.text.toString());
+        await prefs.setString(
+            SharedPrefs.membername4, membername4.text.toString());
         await prefs.setString(SharedPrefs.relation4, relation4.text.toString());
         await prefs.setString(SharedPrefs.marital4, marital4.text.toString());
         await prefs.setString(SharedPrefs.age4, age4.text.toString());
-        await prefs.setString(SharedPrefs.education4, education4.text.toString());
-        await prefs.setString(SharedPrefs.occupation_income4, occupation_income4.text.toString());
+        await prefs.setString(
+            SharedPrefs.education4, education4.text.toString());
+        await prefs.setString(
+            SharedPrefs.occupation_income4, occupation_income4.text.toString());
 
-        await prefs.setString(SharedPrefs.membername5, membername5.text.toString());
+        await prefs.setString(
+            SharedPrefs.membername5, membername5.text.toString());
         await prefs.setString(SharedPrefs.relation5, relation5.text.toString());
         await prefs.setString(SharedPrefs.marital5, marital5.text.toString());
         await prefs.setString(SharedPrefs.age5, age5.text.toString());
-        await prefs.setString(SharedPrefs.education5, education5.text.toString());
-        await prefs.setString(SharedPrefs.occupation_income5 , occupation_income5.text.toString());
+        await prefs.setString(
+            SharedPrefs.education5, education5.text.toString());
+        await prefs.setString(
+            SharedPrefs.occupation_income5, occupation_income5.text.toString());
 
-        await prefs.setString(SharedPrefs.membername6, membername6.text.toString());
+        await prefs.setString(
+            SharedPrefs.membername6, membername6.text.toString());
         await prefs.setString(SharedPrefs.relation6, relation6.text.toString());
         await prefs.setString(SharedPrefs.marital6, marital6.text.toString());
         await prefs.setString(SharedPrefs.age6, age6.text.toString());
-        await prefs.setString(SharedPrefs.education6, education6.text.toString());
-        await prefs.setString(SharedPrefs.occupation_income6, occupation_income6.text.toString());
+        await prefs.setString(
+            SharedPrefs.education6, education6.text.toString());
+        await prefs.setString(
+            SharedPrefs.occupation_income6, occupation_income6.text.toString());
 
-        await prefs.setString(SharedPrefs.refmembername1, refmembername1.text.toString());
-        await prefs.setString(SharedPrefs.refmemberadd1, refmemberadd1.text.toString());
-        await prefs.setString(SharedPrefs.refmembermobile1, refmembermobile1.text.toString());
+        await prefs.setString(
+            SharedPrefs.refmembername1, refmembername1.text.toString());
+        await prefs.setString(
+            SharedPrefs.refmemberadd1, refmemberadd1.text.toString());
+        await prefs.setString(
+            SharedPrefs.refmembermobile1, refmembermobile1.text.toString());
 
-        await prefs.setString(SharedPrefs.refmembername2, refmembername2.text.toString());
-        await prefs.setString(SharedPrefs.refmemberadd2, refmemberadd2.text.toString());
-        await prefs.setString(SharedPrefs.refmembermobile2, refmembermobile2.text.toString());
+        await prefs.setString(
+            SharedPrefs.refmembername2, refmembername2.text.toString());
+        await prefs.setString(
+            SharedPrefs.refmemberadd2, refmemberadd2.text.toString());
+        await prefs.setString(
+            SharedPrefs.refmembermobile2, refmembermobile2.text.toString());
+
+        SVProgressHUD.dismiss();
 
         navService.goBack();
+
+      }else{
+
+        SVProgressHUD.dismiss();
 
       }
 

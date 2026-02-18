@@ -13,6 +13,19 @@ class Userdata{
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    final _responseFreemembership = await ApiService.create().select_free_membership({
+      "communityId": prefs.getString(SharedPrefs.communityId)
+    });
+
+    print(_responseFreemembership);
+    
+    if(_responseFreemembership.body["data"].toString() !=  "[]"){
+      
+      prefs.setString(SharedPrefs.free_membership_date, _responseFreemembership.body["data"][0]["free_date"]);
+      prefs.setString(SharedPrefs.free_membership_duration, _responseFreemembership.body["data"][0]["duration"]);
+      
+    }
+
     final _response = await Provider.of<ApiService>(context , listen: false).
     postPremiumUserData({
       "userId":prefs.getString(SharedPrefs.userId).toString(),

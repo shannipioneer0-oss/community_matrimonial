@@ -24,6 +24,9 @@ class User {
   @JsonKey(name: 'handicap_detail')
   String handicap_detail;
 
+  @JsonKey(name: 'mobile_number')
+  String mobile_number;
+
   @JsonKey(name: 'profile_id')
   String profileId;
 
@@ -76,6 +79,7 @@ class User {
   bool isinterstSent = false;
 
   User({
+    required this.mobile_number,
     required this.name,
     required this.mobRegToken,
     required this.webRegToken,

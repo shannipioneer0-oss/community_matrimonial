@@ -24,7 +24,7 @@ import '../../user_profile/add_edit_profile/educationaldetails.dart';
 
 class UserDetailOtherEdit extends StatelessWidget {
 
-   final String userId;
+   final List userId;
    UserDetailOtherEdit(this.userId);
 
 
@@ -42,7 +42,7 @@ class UserDetailOtherEdit extends StatelessWidget {
 
 class UserDetailStateful extends StatefulWidget {
 
-  final String userId;
+  final List userId;
   UserDetailStateful({ required this.userId});
 
   @override
@@ -113,10 +113,10 @@ class UserDetailScreen  extends State<UserDetailStateful>{
 
 
     print({
-      "userId": widget.userId,
+      "userId": widget.userId[0],
       "communityId": prefs?.getString(SharedPrefs.communityId),
-      "myuserId": widget.userId,
-      "Id": widget.userId ,
+      "myuserId": widget.userId[0],
+      "Id": widget.userId[0] ,
       "original": "en",
       "translate": ["en"]
     });
@@ -124,14 +124,16 @@ class UserDetailScreen  extends State<UserDetailStateful>{
        final _response = await Provider.of<ApiService>(context, listen: false)
            .postProfileDetailsFetchValuelabel(
            {
-             "userId": widget.userId,
+             "userId": widget.userId[0],
              "communityId": prefs?.getString(SharedPrefs.communityId),
-             "myuserId": widget.userId,
-             "Id": widget.userId ,
+             "myuserId": widget.userId[0],
+             "Id": widget.userId[0] ,
              "original": "en",
              "translate": ["en"]
            }
        );
+
+       print(_response.body.toString());
 
        setState(() {
 
@@ -140,20 +142,30 @@ class UserDetailScreen  extends State<UserDetailStateful>{
        var userData = _response.body["data"][0][0]["0"];
 
 
-        fullname =  userData["fullname"] ?? "";
-        dob = userData["dob"] ?? "";
-        createdby = userData["created_by"] != null ?  userData["created_by"].split(",")[0] : "";
-        age =  utils().calculateAge(userData["dob"]).toString();
-        marital = userData["marital_status"].split(",")[0];
-        caste = userData["caste"] != null ? userData["caste"].split(",")[0] : "";
-        subcaste = userData["subcaste_txt"] != null ?  userData["subcaste_txt"] : "";
+       if(_response.body["data"][0][0].toString() != "{}") {
 
-        profileId = userData["profileId"];
-        basic_details_id = userData["Id"].toString();
+         fullname = userData["fullname"] == null ? "" : userData["fullname"];
+         dob = userData["dob"] ?? "";
+         createdby = userData["created_by"] != null
+             ? userData["created_by"].split(",")[0]
+             : "";
+         age = utils().calculateAge(userData["dob"]).toString();
+         marital = userData["marital_status"].split(",")[0];
+         caste =
+         userData["caste"] != null ? userData["caste"].split(",")[0] : "";
+         subcaste =
+         userData["subcaste_txt"] != null ? userData["subcaste_txt"] : "";
 
-        createdby_id = userData["created_by"] != null ?  userData["created_by"].split(",")[1] : "";
-        marital_id = userData["marital_status"].split(",")[1];
-        caste_id = userData["caste"] != null ? userData["caste"].split(",")[1] : "";
+         profileId = userData["profileId"];
+         basic_details_id = userData["Id"].toString();
+
+         createdby_id = userData["created_by"] != null
+             ? userData["created_by"].split(",")[1]
+             : "";
+         marital_id = userData["marital_status"].split(",")[1];
+         caste_id =
+         userData["caste"] != null ? userData["caste"].split(",")[1] : "";
+       }
        // subcaste_id  = userData["subcaste"] != null ?  userData["subcaste"].split(",")[1] : "";
         //lang_known_id = userData["language_known"].split("*")[1];
         //mother_tonuge_id = userData["mother_tongue"].split(",")[1];
@@ -624,78 +636,74 @@ class UserDetailScreen  extends State<UserDetailStateful>{
               SizedBox(height: 10.0),
               ElevatedButton(onPressed: () async {
 
-                SharedPreferences prefs = await SharedPreferences
-                    .getInstance();
+                SharedPreferences prefs = await SharedPreferences.getInstance();
 
-                if(user_verify != "1"){
+                if(widget.userId[1] !=  "in") {
 
-                final res = await DialogClass().showDialogBeforesubmit(context, "Verify User", "Have seen the user details watchfully if yes then verify this user", "Ok" , "1");
-
-                if(res == "1") {
+                  if (user_verify != "1") {
 
 
-                  if (fullname.trim() == "null" || dob == "null" ||
-                      createdby == "null" || marital == "null" ||
-                      caste == "null" || subcaste == "null" ||
-                      height == "null" || wieght == "null" ||
-                      skintone == "null" || body_type == "null" ||
-                      handicap == "null" || mobile == "null" ||
-                      country == "null"
-                      || perm_state == "null" || perm_city == "null" ||
-                      education == "null" || occuapation == "null" ||
-                      father_name == "null" || mother_name == "null"
-                      || father_coccup == "null" || mother_occup == "null" ||
-                      house_owned == "null" || house_type == "null") {
-                    final result = await DialogClass().showPremiumInfoDialog(
-                        context,
-                        TranslationService.translate("incomplete_alert_title"),
-                        TranslationService.translate(
-                            "incomplete_alert_message"),
-                        TranslationService.translate("ok_button"));
+                    final res = await DialogClass().showDialogBeforesubmit(
+                        context, "Verify User",
+                        "Have seen the user details watchfully if yes then verify this user",
+                        "Ok", "1");
+
+                    print(res+"()()");
+
+                    if (res == "1") {
+
+                        final _response = await Provider.of<ApiService>(
+                            context, listen: false)
+                            .postUpdateVerifyUser(
+                            {
+                              "userId": widget.userId[0],
+                              "communityId": prefs.getString(
+                                  SharedPrefs.communityId),
+                              "isflag": "1"
+                            });
+
+                        print(_response.body.toString()+"===-----");
+
+                        if (_response.body["data"]["affectedRows"] == 1) {
+                          setState(() {
+                            user_verify = "1";
+                          });
+                        }
+                      }
+
                   } else {
+                    final res = await DialogClass().showDialogBeforesubmit(
+                        context, "Unverify User",
+                        "Have seen the user details watchfully if yes then Unverify this user",
+                        "Ok", "1");
 
-                    final _response = await Provider.of<ApiService>(
-                        context, listen: false)
-                        .postUpdateVerifyUser(
-                        {
-                          "userId": widget.userId,
-                          "communityId": prefs.getString(
-                              SharedPrefs.communityId),
-                          "isflag":"1"
+                    if (res == "1") {
+                      final _response = await Provider.of<ApiService>(
+                          context, listen: false)
+                          .postUpdateVerifyUser(
+                          {
+                            "userId": widget.userId[0],
+                            "communityId": prefs.getString(
+                                SharedPrefs.communityId),
+                            "isflag": "0"
+                          });
+
+
+                      if (_response.body["data"]["affectedRows"] == 1) {
+                        setState(() {
+                          user_verify = "0";
                         });
-
-
-                    if (_response.body["data"]["affectedRows"] == 1) {
-                      setState(() {
-                        user_verify = "1";
-                      });
+                      }
                     }
                   }
-
-                }
 
                 }else{
 
-                  final res = await DialogClass().showDialogBeforesubmit(context, "Unerify User", "Have seen the user details watchfully if yes then Unverify this user", "Ok" , "1");
+                  DialogClass().showDialogBeforesubmit(
+                      context, "User verification",
+                      "User can notbe verified as data is incomplete.",
+                      "Ok", "1");
 
-                  if(res ==  "1") {
-                    final _response = await Provider.of<ApiService>(
-                        context, listen: false)
-                        .postUpdateVerifyUser(
-                        {
-                          "userId": widget.userId,
-                          "communityId": prefs.getString(
-                              SharedPrefs.communityId),
-                          "isflag": "0"
-                        });
-
-
-                    if (_response.body["data"]["affectedRows"] == 1) {
-                      setState(() {
-                        user_verify = "0";
-                      });
-                    }
-                  }
 
                 }
 

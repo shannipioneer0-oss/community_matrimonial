@@ -31,6 +31,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       handicap_detail: json["handicap_detail"] != null ? json["handicap_detail"] : "",
       reciept_upload: json["reciept_upload"] != null ? json["reciept_upload"] : "",
       payment_method: json["payment_method"] != null ? json["payment_method"] : "",
+      mobile_number: json["mobile_number"] != null ? json["mobile_number"] : "",
 );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{

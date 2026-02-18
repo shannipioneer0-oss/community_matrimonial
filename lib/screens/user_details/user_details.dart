@@ -241,7 +241,7 @@ class UserDetailScreen extends State<UserDetailStateful> {
       if (_response.body["data"][3][0].toString() != "{}") {
         String first  = "" ,second  ="" , third = "";
 
-        print(_response.body["data"][3][0]["0"]["education"]+"====---");
+      //  print(_response.body["data"][3][0]["0"]["education"]+"====---");
 
         List<Course> courses = _response.body["data"][3][0]["0"]["education"] != null ? _response.body["data"][3][0]["0"]["education"].toString()
         !.split('|')

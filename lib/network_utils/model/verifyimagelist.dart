@@ -64,8 +64,8 @@ class Verifyimagelist {
   String? pic6;
   String? pic7;
   String? pic8;
-  Null? pic9;
-  Null? pic10;
+  String? pic9;
+  String? pic10;
   String? isverifypic1;
   String? isverifypic2;
   String? isverifypic3;
