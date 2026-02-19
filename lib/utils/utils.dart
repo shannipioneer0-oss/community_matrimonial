@@ -312,7 +312,6 @@ class utils{
     DateTime newDate = now.add(Duration(days: int.parse(prefs.getString(SharedPrefs.free_membership_duration).toString())));
     DateTime currentNow = DateTime.now();
 
-
     print(currentNow.toString()+"----"+newDate.toString()+"-----"+datestr+"------"+march15.toString());
     print(currentNow.isBefore(newDate).toString()+"----====="+now.isBefore(march15).toString());
 
@@ -322,6 +321,7 @@ class utils{
 
     return false;
   }
+
 
   Future<bool> isvalidFreeDate2() async {
 

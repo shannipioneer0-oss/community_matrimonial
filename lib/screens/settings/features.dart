@@ -8,9 +8,12 @@ import 'package:community_matrimonial/network_utils/service/api_service.dart';
 import 'package:community_matrimonial/utils/SharedPrefs.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../utils/utils.dart';
 
 
 class Features extends StatelessWidget {
@@ -60,6 +63,9 @@ class FeaturesState extends State<FeaturesScreen> {
   String validity_days = "0" ,num_interest = "0" , number_contacts = "0" , number_horoscope = "0" ,number_video = "0" , isexpired = "0" ;
   String num_interest_used = "0" , num_contacts_used = "0" ,num_horoscope_used = "0" , number_video_used = "0"  ,joined_days = "0" , remaining_days = "0";
 
+   bool isvalid = false , isvalid2 = false;
+   String expired_date = "";
+
   initUserData(BuildContext context) async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -72,55 +78,72 @@ class FeaturesState extends State<FeaturesScreen> {
 
     print(_response.body);
 
+    if(await utils().isvalidFreeDate() == true){
 
-    setState(() {
+      String datestr = prefs.getString(SharedPrefs.joined_date).toString();
+      DateTime now = DateFormat('yyyy-MM-dd').parse(datestr);
 
-      if(_response.body["data"][0].toString() != "[]") {
+      print(datestr+"====");
 
-        validity_days = _response.body["data"][0][0]["validity_days"];
-        isexpired =  _response.body["data"][0][0]["isexpired"];
-        num_interest =  _response.body["data"][0][0]["num_express_interests"];
-        number_contacts = _response.body["data"][0][0]["number_contacts"];
-        number_horoscope = _response.body["data"][0][0]["number_horoscope"];
-        number_video =  _response.body["data"][0][0]["number_video"];
+      isvalid =  await utils().isvalidFreeDate();
 
-      }else{
+      setState(() {
 
-        validity_days = "0";
-        isexpired =  "0";
-        num_interest =  "0";
-        number_contacts = "0";
-        number_horoscope = "0";
+        isvalid2 = isvalid;
+        validity_days = prefs.getString(SharedPrefs.free_membership_duration).toString();
 
-      }
+        DateTime newDate = now.add(Duration(days: int.parse(prefs.getString(SharedPrefs.free_membership_duration).toString())));
+        DateTime datetimeNow = DateTime.now();
 
-      if(_response.body["data"][1].toString() != "[]") {
+        remaining_days =  (newDate.difference(datetimeNow).inDays).toString();
+        expired_date =  newDate.day.toString()+"/"+newDate.month.toString()+"/"+newDate.year.toString();
 
-        num_contacts_used= _response.body["data"][1][0]["num_contact"].toString();
-        num_horoscope_used =   _response.body["data"][1][0]["num_horoscope"].toString();
-        num_interest_used =  _response.body["data"][1][0]["num_likes"].toString();
-        number_video_used = _response.body["data"][1][0]["num_video"].toString();
-        joined_days    = _response.body["data"][1][0]["joined_days"].toString();
-
-      }else{
-
-        num_contacts_used= "0";
-        num_horoscope_used =  "0";
-        num_interest_used =  "0";
-        number_video_used = "0";
-        joined_days    = "0";
-
-      }
-
-      if(_response.body["data"][2].toString() != "[]") {
-        remaining_days =  _response.body["data"][2][0]["remaining_days"].toString();
-      }else{
-        remaining_days = "0";
-      }
-
-    });
+      });
 
 
+    }else {
+      setState(() {
+        if (_response.body["data"][0].toString() != "[]") {
+          validity_days = _response.body["data"][0][0]["validity_days"];
+          isexpired = _response.body["data"][0][0]["isexpired"];
+          num_interest = _response.body["data"][0][0]["num_express_interests"];
+          number_contacts = _response.body["data"][0][0]["number_contacts"];
+          number_horoscope = _response.body["data"][0][0]["number_horoscope"];
+          number_video = _response.body["data"][0][0]["number_video"];
+        } else {
+          validity_days = "0";
+          isexpired = "0";
+          num_interest = "0";
+          number_contacts = "0";
+          number_horoscope = "0";
+        }
+
+        if (_response.body["data"][1].toString() != "[]") {
+          num_contacts_used =
+              _response.body["data"][1][0]["num_contact"].toString();
+          num_horoscope_used =
+              _response.body["data"][1][0]["num_horoscope"].toString();
+          num_interest_used =
+              _response.body["data"][1][0]["num_likes"].toString();
+          number_video_used =
+              _response.body["data"][1][0]["num_video"].toString();
+          joined_days = _response.body["data"][1][0]["joined_days"].toString();
+        } else {
+          num_contacts_used = "0";
+          num_horoscope_used = "0";
+          num_interest_used = "0";
+          number_video_used = "0";
+          joined_days = "0";
+        }
+
+        if (_response.body["data"][2].toString() != "[]") {
+          remaining_days =
+              _response.body["data"][2][0]["remaining_days"].toString();
+        } else {
+          remaining_days = "0";
+        }
+      });
+    }
 
 
   }
@@ -152,12 +175,18 @@ class FeaturesState extends State<FeaturesScreen> {
         children: [
           _buildListItem("Validity Days", validity_days),
           _buildListItem("Remaining Days", remaining_days),
-          _buildListItem(  "Contacts Allowed : "+number_contacts ,  "Contacts Used : "+num_contacts_used),
+          _buildListItem("Contacts Allowed : "+number_contacts ,  "Contacts Used : "+num_contacts_used),
           _buildListItem("Interest Expressing Allowed : "+num_interest, "Interest Accessed : "+num_interest_used),
           _buildListItem("Horoscope Access Allowed : "+number_horoscope, "Horoscope Accessed : "+num_horoscope_used),
 
         ],
-      ) :  Center(child: Text("Still Premium Plan not Subscribed"),),
+      ) : isvalid2 == true ? ListView(
+          children: [
+            _buildListItem("Validity Days", validity_days),
+            _buildListItem("Remaining Days", remaining_days),
+            _buildListItem("Plan Expiration Date", expired_date),
+
+          ])  :  Center(child: Text("Still Premium Plan not Subscribed"),),
     );
 
   }

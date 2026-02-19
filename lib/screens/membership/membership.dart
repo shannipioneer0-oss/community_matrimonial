@@ -67,7 +67,7 @@ class MembershipScreen extends State<MembershipStateful>{
 
   int count = 0;
 
-    initMmebership() async {
+  initMmebership() async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -322,6 +322,8 @@ class MembershipCard extends State<MembershipCardStateful> {
             onPressed: () async {
 
 
+              print(await utils().isvalidFreeDate().toString()+"-=-=-");
+
               if(await utils().isvalidFreeDate() == false) {
 
                 if (widget.order.packageName != null) {
@@ -352,7 +354,7 @@ class MembershipCard extends State<MembershipCardStateful> {
 
 
                 DialogClass().showDialog2(context, "Free Membership",
-                    "You Already subscribed to one of the packages ,if you need to update Please contact support",
+                    "You are under free membership , so no need to upgrade",
                     "Ok");
 
 

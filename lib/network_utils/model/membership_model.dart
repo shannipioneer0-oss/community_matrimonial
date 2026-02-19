@@ -109,6 +109,7 @@ class MembershipModel {
 
 @JsonSerializable()
 class MembershipOrder {
+
   @JsonKey(name: 'Id')
   final int? id;
 
@@ -160,6 +161,7 @@ class MembershipOrder {
       _$MembershipOrderFromJson(json);
 
   Map<String, dynamic> toJson() => _$MembershipOrderToJson(this);
+
 }
 
 @JsonSerializable()

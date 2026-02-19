@@ -76,11 +76,10 @@ class DashboardScreen extends State<DashboardAppStateful> {
  HugeListViewController controller10 = HugeListViewController(totalItemCount: int.parse(Strings.limit));
 
 
-  String total_count = "0" , pic1 = "";
+ String total_count = "0" , pic1 = "";
  late SharedPreferences prefs;
 
  bool isvalid = false;
-
 
  Future<void> _checkValidation(BuildContext context) async {
 
