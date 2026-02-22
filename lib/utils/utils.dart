@@ -346,12 +346,15 @@ class utils{
    Future<bool> validationalerts(BuildContext context) async {
 
     String fullname = "" , dob = ""  ,createdby = "" , marital = "" , caste = "" , subcaste = "";
+    String image1 = "";
     String height = "" , wieght = "" , skintone = "" ,body_type = "" , handicap ="" , mobile = "" , country = "" ;
     String perm_state = "" ,perm_city = ""  ,education = "" , occuapation = "" ,father_name = "" , mother_name = "";
     String father_coccup = "" , mother_occup = ""  , house_owned = "" , house_type = ""  ;
     String membername1 = "" ,membername2 ="" ,relation1 = "" ,relation2 = "" ,marital1 = "" ,marital2 = "" , age1 = "" ,age2 ="" ;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    image1 = prefs.getString(SharedPrefs.pic1).toString();
 
      fullname =
          prefs.getString(SharedPrefs.firstName).toString() + " " +
@@ -398,7 +401,7 @@ class utils{
 
      if(prefs.getString(SharedPrefs.role_type) != "admin") {
 
-       if (fullname.trim() == "null" || dob == "null" || createdby == "null" ||
+       if ( (image1 == null || image1 == "" || image1 == "null")  ||    fullname.trim() == "null" || dob == "null" || createdby == "null" ||
            marital == "null" || caste == "null" || subcaste == "null" ||
            height == "null" || wieght == "null" || skintone == "null" ||
            body_type == "null" || handicap == "null" || mobile == "null" ||

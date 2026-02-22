@@ -254,10 +254,7 @@ class DashboardListStateful extends State<DashboardList> {
                                     if (int.parse(prefs
                                             .getString(SharedPrefs.numLikes)
                                             .toString()) <=
-                                        int.parse(prefs
-                                            .getString(
-                                                SharedPrefs.numExpressInterests)
-                                            .toString())) {
+                                        2000) {
                                       if (iscontainLikes() == false) {
                                         final result = await DialogClass()
                                             .showDialogBeforesubmit(
@@ -311,7 +308,7 @@ class DashboardListStateful extends State<DashboardList> {
                                             });
 
                                             print(widget.user.mobRegToken);
-                                            SendNotification().sendWhatsapp(
+                                           /* SendNotification().sendWhatsapp(
                                               widget.user.whatsapp,
                                               "Like Request From " +
                                                   prefs
@@ -324,7 +321,7 @@ class DashboardListStateful extends State<DashboardList> {
                                                       .fullname)
                                                       .toString() +
                                                   " Please kindly accept or reject request from Notification section from app or website",
-                                            );
+                                            );*/
                                           }
                                         } else {}
                                       } else {
@@ -345,7 +342,7 @@ class DashboardListStateful extends State<DashboardList> {
                                     if (int.parse(prefs
                                             .getString(SharedPrefs.numLikes)
                                             .toString()) <=
-                                        2) {
+                                        3000) {
                                       if (iscontainLikes() == false) {
                                         final result = await DialogClass()
                                             .showDialogBeforesubmit(
@@ -399,7 +396,7 @@ class DashboardListStateful extends State<DashboardList> {
                                             });
 
                                             print(widget.user.mobRegToken);
-                                            SendNotification().sendWhatsapp(
+                                           /* SendNotification().sendWhatsapp(
                                                 widget.user.whatsapp,
                                                 "Like Request From " +
                                                     prefs
@@ -413,6 +410,9 @@ class DashboardListStateful extends State<DashboardList> {
                                                         .toString() +
                                                     " Please kindly accept or reject request from Notification section from app or website",
                                                );
+                                            */
+
+
                                           }
                                         } else {}
                                       } else {

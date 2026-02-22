@@ -120,7 +120,7 @@ class OccupationalDetailScreen  extends State<OccupationalDetailStateful>{
     body:SingleChildScrollView(child:Container(margin: EdgeInsets.only(left: 15 ,right: 15) ,child:Column(children: [
 
     Divider(),
-    Container(margin: EdgeInsets.only(top: 10) ,child:CustomDropdown(icondata: Icons.sell  ,controller: occupationController , labelText: TranslationService.translate("occupation"), onButtonPressed: () async {
+    Container(margin: EdgeInsets.only(top: 10) ,child:CustomTextField(icondata: Icons.sell  ,controller: occupationController , labelText: TranslationService.translate("occupation"), /*onButtonPressed: () async {
 
       final value = await SingleSelectDialog().showBottomSheetOccupation(context, await Values.getOccupationList(context , "education" , ""));
       occupationController.text = value.occupation;
@@ -149,11 +149,11 @@ class OccupationalDetailScreen  extends State<OccupationalDetailStateful>{
       }
 
 
-    },)),
+    },*/ enabled: false,)),
     SizedBox(height: 20,),
     MultilineTextfield(icondata: Icons.details, controller: occupdetailsController, labelText: TranslationService.translate("occup_details"), enabled: false, minlines: 3, maxlines: 7),
     SizedBox(height: 20,),
-      CustomDropdown(icondata: Icons.person , controller: annualincomeController , labelText: TranslationService.translate("annual_income_prefs"), onButtonPressed: () async {
+    CustomDropdown(icondata: Icons.person , controller: annualincomeController , labelText: TranslationService.translate("annual_income_prefs"), onButtonPressed: () async {
 
         EasyLoading.show(status: 'Please wait...');
 
@@ -254,7 +254,7 @@ class OccupationalDetailScreen  extends State<OccupationalDetailStateful>{
 
         if (_response.body["success"] == 1) {
           await prefs.setString(SharedPrefs.occupation, occupationController
-              .text.toString() + "," + occupation_value);
+              .text.toString() + "," + "");
           await prefs.setString(SharedPrefs.occupationDetail,
               occupdetailsController.text.toString());
           await prefs.setString(
@@ -268,6 +268,7 @@ class OccupationalDetailScreen  extends State<OccupationalDetailStateful>{
 
           navService.goBack();
         } else {
+
           EasyLoading.dismiss();
 
 
@@ -275,6 +276,7 @@ class OccupationalDetailScreen  extends State<OccupationalDetailStateful>{
               context, "Occupational Details Submit Alert!",
               "Some problem occured Please try again", "Ok");
         }
+
       }
     }
 

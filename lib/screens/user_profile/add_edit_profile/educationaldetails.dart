@@ -115,7 +115,7 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
     }
 
   try{
-    highesteducationController2.text = courses[1].label;
+    highesteducationController2.text = courses[1].label == "0" ?  "" :  courses[1].label ;
     highest_edu_value2 = courses[1].value.toString();
   }catch(ex){
      highesteducationController2.text = "";
@@ -123,7 +123,7 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
   }
 
   try{
-    highesteducationController3.text = courses[2].label;
+    highesteducationController3.text = courses[2].label == "0" ? "" : courses[2].label;
     highest_edu_value3 = courses[2].value.toString();
   }catch(ex){
     highesteducationController3.text = "";
@@ -235,8 +235,9 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
       SizedBox(height: 20,),
       CustomDropdown(icondata: MdiIcons.bookEducation  ,controller: highesteducationController , labelText: "*"+TranslationService.translate("highest_education"), onButtonPressed: () async {
 
+        final resedu =  await Values.getEducationList(context , "education" , "");
 
-        final value = await SingleSelectDialog().showBottomSheetEducation(context, await Values.getEducationList(context , "education" , ""));
+        final value = await SingleSelectDialog().showBottomSheetEducation(context, resedu);
         highesteducationController.text = value.degree_name;
         highest_edu_value = value.Id;
 
@@ -245,21 +246,31 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
         if(value.degree_name.toLowerCase() == "other"){
 
           String education = "";
-          DialogClass().showDailogwithTextField(context , "Enter Your EDucation" , "Submit Education" , "Enter Education" , Icons.history_edu , (p0) async {
+          DialogClass().showDailogwithTextField(context , "Enter Your Education" , "Submit Education" , "Enter Education" , Icons.history_edu , (p0) async {
 
-            education = p0;
+            final res =  resedu.where((element) =>  element.degree_name.toLowerCase() == p0.toLowerCase()).toList();
 
 
 
-            final _response = await Provider.of<ApiService>(
-                context, listen: false).postInsertEducationOther({"degree_name": p0});
+              if (res.length == 0) {
 
-            if (_response.body["data"]["affectedRows"] == 1) {
+                education = p0;
+                final _response = await Provider.of<ApiService>(
+                    context, listen: false).postInsertEducationOther(
+                    {"degree_name": p0});
 
-              highesteducationController.text = education;
-              highest_edu_value = _response.body["data"]["insertId"];
+                if (_response.body["data"]["affectedRows"] == 1) {
+                  highesteducationController.text = education;
+                  highest_edu_value = _response.body["data"]["insertId"];
+                }
 
-            }
+              } else {
+
+                highesteducationController.text = res[0].degree_name;
+                highest_edu_value = res[0].Id;
+
+              }
+
 
           },);
 
@@ -419,7 +430,7 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
 
             EasyLoading.dismiss();
 
-            if (widget.type == "insert") {
+          if (widget.type == "insert") {
               navService.pushNamed("/occuaptional_details", args: "insert");
             } else {
               navService.goBack();
@@ -429,6 +440,7 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
                 context, "Educational Details Submit Alert!",
                 "All fields are compulsory", "Ok");
           }
+
         } else {
           EasyLoading.show(status: 'Please wait...');
 

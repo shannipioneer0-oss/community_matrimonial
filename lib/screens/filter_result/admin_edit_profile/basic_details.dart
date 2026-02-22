@@ -91,10 +91,11 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    print(widget.list[2]+"-=-={}{}");
 
     firstnameController.text = widget.list[0] ;
     lastnameController.text = widget.list[1];
-    dobController.text =   utils().formatGivenDate(widget.list[2]);
+    dobController.text =  widget.list[2] == "" ? "" : utils().formatGivenDate(widget.list[2]);
     profilecreatedController.text =  widget.list[3];
     maritalController.text = widget.list[4];
     casteController.text =  widget.list[5] ;

@@ -98,6 +98,8 @@ class LoginScreen extends State<LoginAppStateful> {
                SharedPreferences pref = await SharedPreferences.getInstance();
 
 
+               print(pref.getString(SharedPrefs.token_id));
+
                final _response = await Provider.of<ApiService>(context, listen: false).postSendOtpSms(
                    {
                      "mobile": controllermobilenumber.text.toString(),
@@ -301,6 +303,10 @@ class LoginScreen extends State<LoginAppStateful> {
                 String? imei = await FlutterDeviceImei.instance.getIMEI();
                 //DialogClass().showDialog2(context, flavor.toString() , flavor.toString() , "OK");
                 SharedPreferences pref = await SharedPreferences.getInstance();
+
+                print(pref.getString(SharedPrefs.token_id));
+
+
 
                 final _response = await Provider.of<ApiService>(
                     context, listen: false).postSendOtpSms(

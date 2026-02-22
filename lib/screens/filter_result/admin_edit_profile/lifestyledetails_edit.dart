@@ -169,14 +169,14 @@ class LifestyleDetailsScreen  extends State<LifestyleDetailsStateful> {
 
         },),
         SizedBox(height: 20,),
-        CustomDropdown(icondata: MdiIcons.bloodBag  ,controller: bloodgroupController , labelText: TranslationService.translate("blood_group"), onButtonPressed: () async {
+       /* CustomDropdown(icondata: MdiIcons.bloodBag  ,controller: bloodgroupController , labelText: TranslationService.translate("blood_group"), onButtonPressed: () async {
 
           final value = await SingleSelectDialog().showBottomSheet(context, await Values.getValues(context , "blood_group" , "") , "Select Blood group");
           bloodgroupController.text = value.label;
           blood_group = value.label;
 
         },),
-        SizedBox(height: 20,),
+        SizedBox(height: 20,),*/
         CustomDropdown(icondata: MdiIcons.pageLayoutBody  ,controller: bodytypeController , labelText: TranslationService.translate("body_type"), onButtonPressed: () async {
 
           final value = await SingleSelectDialog().showBottomSheet(context, await Values.getValues(context , "body_type" , "") , "Select Body Type");
@@ -260,22 +260,22 @@ class LifestyleDetailsScreen  extends State<LifestyleDetailsStateful> {
           ],
         ),
         SizedBox(height: 5,),
-        CustomDropdown(icondata: MdiIcons.foodForkDrink  ,controller: drinktypeController , labelText: TranslationService.translate("drink_type"), onButtonPressed: () async {
+        /*CustomDropdown(icondata: MdiIcons.foodForkDrink  ,controller: drinktypeController , labelText: TranslationService.translate("drink_type"), onButtonPressed: () async {
 
           final value = await SingleSelectDialog().showBottomSheet(context, await Values.getValues(context , "drink_type" , "") , "Select Drink Type");
           drinktypeController.text = value.label;
           drink_type =  value.value;
 
         },),
-        SizedBox(height: 20,),
-        CustomDropdown(icondata: MdiIcons.smoke  ,controller: smoketypeController , labelText: TranslationService.translate("smoke_type"), onButtonPressed: () async {
+        SizedBox(height: 20,),*/
+        /*CustomDropdown(icondata: MdiIcons.smoke  ,controller: smoketypeController , labelText: TranslationService.translate("smoke_type"), onButtonPressed: () async {
 
           final value = await SingleSelectDialog().showBottomSheet(context, await Values.getValues(context , "smoke_type" , "") , "Select Smoke Type");
           smoketypeController.text = value.label;
           smoke_type =  value.value;
 
         },),
-        SizedBox(height: 20,),
+        SizedBox(height: 20,),*/
         MultilineTextfield(icondata: MdiIcons.details, controller: extradetailsController, labelText: TranslationService.translate("extra_details"), enabled: false, minlines: 3, maxlines: 7,),
         SizedBox(height: 20,),
         ButtonSubmit(text: 'Submit Lifestyle Details', onButtonPressed: () async {

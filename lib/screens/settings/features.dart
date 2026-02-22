@@ -103,6 +103,7 @@ class FeaturesState extends State<FeaturesScreen> {
 
     }else {
       setState(() {
+
         if (_response.body["data"][0].toString() != "[]") {
           validity_days = _response.body["data"][0][0]["validity_days"];
           isexpired = _response.body["data"][0][0]["isexpired"];
@@ -136,12 +137,16 @@ class FeaturesState extends State<FeaturesScreen> {
           joined_days = "0";
         }
 
-        if (_response.body["data"][2].toString() != "[]") {
-          remaining_days =
-              _response.body["data"][2][0]["remaining_days"].toString();
+        if (_response.body["data"][2].toString() != "[]"){
+
+          remaining_days = _response.body["data"][2][0]["remaining_days"].toString();
+
         } else {
+
           remaining_days = "0";
+
         }
+
       });
     }
 

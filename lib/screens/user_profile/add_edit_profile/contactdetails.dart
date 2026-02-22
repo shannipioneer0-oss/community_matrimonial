@@ -303,9 +303,10 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
           SizedBox(height: 20,),
           CustomDropdown(icondata: MdiIcons.city  , controller: permstateController , labelText: TranslationService.translate("perm_state"), onButtonPressed: () async {
 
-            final res = await Values.getValuesContactsState(context , "state" , "" , country_value);
+            final resState = await Values.getValuesContactsState(context , "state" , "" , country_value);
+            resState.insert(0, DataFetchstate(state_name: "other", state_hindi: "other", state_guj: "other", state_marathi: "other", state_tamil: "other", state_urdu: "other", country_id: "0", Id: "0"));
 
-            final value = await SingleSelectDialog().showBottomSheet2(context, res , "Select State");
+            final value = await SingleSelectDialog().showBottomSheet2(context, resState , "Select State");
             permstateController.text = value.state_name;
             perm_State_value = value.Id;
 
@@ -319,19 +320,31 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
 
                 state_name = p0;
 
-                print(state_name+"------"+country_value);
+                final res = resState.where((element) =>  element.state_name.toLowerCase() == p0.toLowerCase()).toList();
 
-                final _response = await Provider.of<ApiService>(
-                    context, listen: false).postInsertStateOther({"state_name": p0 , "country_id":country_value });
+                //print(state_name+"------"+country_value);
+
+                if(res.length == 0) {
+
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                  final _response = await Provider.of<ApiService>(context, listen: false).postInsertStateOther
+                    ({"state_name": p0, "country_id": country_value,
+                    "community_id": prefs.getString(SharedPrefs.communityId)});
+                  if (_response.body["data"]["affectedRows"] == 1) {
+
+                    permstateController.text = state_name;
+                    perm_State_value = _response.body["data"]["insertId"];
+
+                  }
 
 
+                }else{
 
-            if (_response.body["data"]["affectedRows"] == 1) {
+                  permstateController.text = res[0].state_name;
+                  perm_State_value = res[0].Id;
 
-              permstateController.text = state_name;
-              perm_State_value = _response.body["data"]["insertId"];
-
-            }
+                }
 
               },);
 
@@ -342,7 +355,11 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
           SizedBox(height: 20,),
           CustomDropdown(icondata: MdiIcons.city  ,controller: permcityController , labelText: TranslationService.translate("perm_city"), onButtonPressed: () async {
 
-            final value = await SingleSelectDialog().showBottomSheet3(context, await Values.getValuesContactsCity(context , perm_State_value , country_value));
+            final resCity = await Values.getValuesContactsCity(context , perm_State_value , country_value);
+            resCity.insert(0, DataFetchParams(label: "other", value: "0", value2: "0"));
+
+
+            final value = await SingleSelectDialog().showBottomSheet3(context, resCity);
             permcityController.text = value.label;
             permcityValue = value.value;
 
@@ -353,18 +370,41 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
               DialogClass().showDailogwithTextField(context , "Enter Your Permanent City" , "Submit City" , "Enter City" , Icons.location_city , (p0) async {
 
                 city_name = p0;
+                print(city_name+"-=-=-=-=");
 
-                print(city_name+"------"+country_value);
+                final res = resCity.where((element) =>  element.label.toLowerCase() == p0.toLowerCase()).toList();
 
-                final _response = await Provider.of<ApiService>(
-                    context, listen: false).postInsertCityOther({"city_name": p0 , "state_id":perm_State_value , "country_id":country_value });
+               // print(city_name+"------"+country_value);
 
-                if (_response.body["data"]["affectedRows"] == 1) {
+                print(res.length.toString()+"----");
 
-                  permcityController.text = city_name;
-                  permcityValue = _response.body["data"]["insertId"];
+                if(res.length == 0) {
+
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                  final _response = await Provider.of<ApiService>(
+                      context, listen: false).postInsertCityOther({
+                    "city_name": p0,
+                    "state_id": perm_State_value,
+                    "country_id": country_value,
+                    "community_id": prefs.getString(SharedPrefs.communityId)
+                  });
+
+                  print(_response.body);
+
+                  if (_response.body["data"]["affectedRows"] == 1) {
+                    permcityController.text = p0;
+                    permcityValue = _response.body["data"]["insertId"];
+                  }
+
+                }else{
+
+                  permcityController.text =  res[0].label;
+                  permcityValue = res[0].value;
 
                 }
+
+
 
               },);
 
@@ -385,8 +425,12 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
           SizedBox(height: 20,),
           CustomDropdown(icondata: MdiIcons.city  ,controller: workstateController , labelText: TranslationService.translate("work_state"), onButtonPressed: () async {
 
+           final resworkstate =   await Values.getValuesContactsState(context , "state" , "" , country_value2);
 
-            final value = await SingleSelectDialog().showBottomSheet2(context, await Values.getValuesContactsState(context , "state" , "" , country_value2) , "Select Work State");
+           resworkstate.insert(0, DataFetchstate(state_name: "other", state_hindi: "other", state_guj: "other", state_marathi: "other", state_tamil: "other", state_urdu: "other", country_id: "0", Id: "0"));
+
+
+           final value = await SingleSelectDialog().showBottomSheet2(context, resworkstate , "Select Work State");
             workstateController.text = value.state_name;
             work_state_value = value.Id;
 
@@ -398,19 +442,32 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
 
                 state_name = p0;
 
-                print(state_name+"------"+country_value);
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                
+                final res = resworkstate.where((element) => element.state_name.toLowerCase() == p0.toLowerCase()).toList();
 
-                final _response = await Provider.of<ApiService>(
-                    context, listen: false).postInsertStateOther({"state_name": p0 , "country_id":country_value2 ,"community_id":prefs.getString(SharedPrefs.communityId) });
+                if(res.length == 0) {
 
-                if (_response.body["data"]["affectedRows"] == 1) {
+                  SharedPreferences prefs = await SharedPreferences
+                      .getInstance();
 
-                  workstateController.text = state_name;
-                  work_state_value = _response.body["data"]["insertId"];
+                  final _response = await Provider.of<ApiService>(
+                      context, listen: false).postInsertStateOther({
+                    "state_name": p0,
+                    "country_id": country_value2,
+                    "community_id": prefs.getString(SharedPrefs.communityId)
+                  });
 
-                } 
+                  if (_response.body["data"]["affectedRows"] == 1) {
+                    workstateController.text = p0;
+                    work_state_value = _response.body["data"]["insertId"];
+                  }
+
+                }else{
+
+                  workstateController.text = res[0].state_name;
+                  work_state_value = res[0].Id;
+
+
+                }
 
               },);
 
@@ -421,7 +478,10 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
           SizedBox(height: 20,),
           CustomDropdown(icondata: MdiIcons.city  ,controller: workcityController , labelText: TranslationService.translate("work_city"), onButtonPressed: () async {
 
-            final value = await SingleSelectDialog().showBottomSheet3(context, await Values.getValuesContactsCity(context , work_state_value , country_value2));
+            final resworkcity = await Values.getValuesContactsCity(context , work_state_value , country_value2);
+            resworkcity.insert(0, DataFetchParams(label: "other", value: "0", value2: "0"));
+
+            final value = await SingleSelectDialog().showBottomSheet3(context, resworkcity);
             workcityController.text = value.label;
             work_city_value = value.value;
 
@@ -432,17 +492,29 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
 
                 city_name = p0;
 
-                print(city_name+"------"+country_value);
-
+                final res = resworkcity.where((element) => element.label.toLowerCase() == p0.toLowerCase()).toList();
                 SharedPreferences prefs = await SharedPreferences.getInstance();
 
-                final _response = await Provider.of<ApiService>(
-                    context, listen: false).postInsertCityOther({"city_name": p0 , "state_id":work_state_value , "country_id":country_value2 ,"community_id":prefs.getString(SharedPrefs.communityId)});
+                if(res.length == 0){
 
-                if (_response.body["data"]["affectedRows"] == 1) {
 
-                  workcityController.text = city_name;
-                  work_city_value = _response.body["data"]["insertId"];
+                  final _response = await Provider.of<ApiService>(
+                      context, listen: false).postInsertCityOther({
+                    "city_name": p0,
+                    "state_id": work_state_value,
+                    "country_id": country_value2,
+                    "community_id": prefs.getString(SharedPrefs.communityId)
+                  });
+
+                  if (_response.body["data"]["affectedRows"] == 1) {
+                    workcityController.text = city_name;
+                    work_city_value = _response.body["data"]["insertId"];
+                  }
+
+                }else{
+
+                  workcityController.text = res[0].label;
+                  work_city_value = res[0].value;
 
                 }
 
@@ -470,7 +542,9 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
             });
 
             if (_connectivityResult == ConnectivityResult.none) {
+
               DialogClass().showDialog2(context, "No Internet", "Sorry Internet is not available", "OK");
+
             }else {
 
               print(mobileController.toString()+"--------");
@@ -518,17 +592,13 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
 
                 if(!isvalid!){
 
-                  DialogClass().showDialog2(
-                      context, "Validation Alert!",
-                      "Mobile number is not valid", "Ok");
+                  DialogClass().showDialog2(context , "Validation Alert!" , "Mobile number is not valid", "Ok");
 
                   return;
 
                 }else if(!isvalid2! && mobilemcc2 != ""){
 
-                  DialogClass().showDialog2(
-                      context, "Validation Alert!",
-                      "Alternate Mobile number is not valid", "Ok");
+                  DialogClass().showDialog2(context , "Validation Alert!" , "Alternate Mobile number is not valid" , "Ok");
 
                   return;
 

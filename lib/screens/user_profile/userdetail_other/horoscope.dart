@@ -350,7 +350,7 @@ class horoscope extends State<HoroscopeStateful>{
 
 
     },
-    child: myState.ispremium_horoscope != "" ? Container( child: int.parse(myState.num_horoscope) < int.parse(myState.allowed_horoscope) ||  widget.view_horoscope.split(",").contains(widget.userId)  ?  widget.settings.profileId == null ? HoroscopeContainer(): widget.settings.horoscopePrivacy == "2" && grantValue == "" ? GestureDetector(onTap: () async {
+    child:  Container( child: GestureDetector(onTap: () async {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -396,15 +396,7 @@ class horoscope extends State<HoroscopeStateful>{
 
 
 
-    }  ,child:Container(child:Text("Request Horoscope" , style: TextStyle(
-        fontWeight: FontWeight.bold,
-        decoration: TextDecoration.underline,
-        fontSize: 30,
-        color: Colors.blue
-    ),)) ) : grantValue == "0" ?  Text("Request Sent!" , style: TextStyle(
-        fontWeight: FontWeight.bold,
-        color: Colors.blue
-    ),) : HoroscopeContainer() : Container(margin: EdgeInsets.only(left: 15 , right: 15) , height:MediaQuery.of(context).size.height*0.5 , child: Center(child:Text("Your Access Limit to View horoscope has reached it's peak ,please upgrade to view more horoscopes" ,textAlign: TextAlign.center , style: TextStyle(fontWeight: FontWeight.bold , color: ColorsPallete.Pink2 , fontSize: 18)),))):Container(child:Container(margin: EdgeInsets.only(left: 15 , right: 15)   ,height:MediaQuery.of(context).size.height*0.5  ,child:Center(child:Text("Access to Horoscope needs the Membership only" ,textAlign: TextAlign.center , style: TextStyle(fontWeight: FontWeight.bold , color: ColorsPallete.Pink2 , fontSize: 18),)))));
+    }  ,child: HoroscopeContainer() )));
 
   }
 

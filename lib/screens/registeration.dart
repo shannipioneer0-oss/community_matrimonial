@@ -119,7 +119,7 @@ class RegisterationState extends State<Registeration>{
         SizedBox(height: 15,),
         CustomTextField(icondata: Icons.email, controller: controlleremailid, labelText: " Enter EmailID ", enabled: false),
         SizedBox(height: 15,),
-        NumericTextField(icondata: Icons.mobile_screen_share_sharp, controller: controllermobile, labelText: " Enter Mobile Number ", enabled: false),
+        NumericTextField(icondata: Icons.mobile_screen_share_sharp, controller: controllermobile, labelText: " Enter Mobile Number ", enabled: false , type: "mobile",),
         /*SizedBox(height: 15,),
         CustomTextField(icondata: Icons.password, controller: controllerpassword, labelText: " Enter Password ", enabled: false),*/
         SizedBox(height: 30,),

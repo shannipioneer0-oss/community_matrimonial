@@ -1049,10 +1049,7 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                                   if (int.parse(prefs
                                           .getString(SharedPrefs.numLikes)
                                           .toString()) <=
-                                      int.parse(prefs
-                                          .getString(
-                                              SharedPrefs.numExpressInterests)
-                                          .toString())) {
+                                      3000) {
                                     if (iscontainLikes() == false) {
                                       final result = await DialogClass()
                                           .showDialogBeforesubmit(
@@ -1143,7 +1140,7 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                                   if (int.parse(prefs
                                           .getString(SharedPrefs.numLikes)
                                           .toString()) <=
-                                      2) {
+                                      3000) {
                                     if (iscontainLikes() == false) {
                                       final result = await DialogClass()
                                           .showDialogBeforesubmit(

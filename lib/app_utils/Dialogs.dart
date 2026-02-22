@@ -293,6 +293,7 @@ class DialogClass {
 
     TextEditingController controller = TextEditingController();
 
+    
     Dialogs.materialDialog(
         title: title,
         color: Colors.white,
@@ -303,9 +304,21 @@ class DialogClass {
         actions: [
           IconsOutlineButton(
             onPressed: () {
+
+              if(controller.text.toString().isNotEmpty){
+
               Navigator.of(context, rootNavigator: true).pop();
               onValueReturned(controller.text.toString());
-            },
+
+    }else{
+
+    DialogClass().showPremiumInfoDialog(context, "empty Textbox", "The Textbox should not be empty", "Ok");
+
+    }
+
+
+
+  },
             text: btntext1,
             iconData: Icons.info,
             textStyle: TextStyle(color: Colors.green),

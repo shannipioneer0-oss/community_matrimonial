@@ -632,7 +632,10 @@ class MyScreen extends  State<MainScreen> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String? token = "" ; //await FirebaseMessaging.instance.getToken();
+    String? token = await FirebaseMessaging.instance.getToken();
+
+    print(token.toString());
+
     prefs.setString(SharedPrefs.token_id , token.toString());
 
     if(prefs.getString(SharedPrefs.translate) == null){

@@ -10,8 +10,9 @@ class NumericTextField extends StatelessWidget{
   final String labelText;
   final bool enabled;
   final IconData icondata;
+  String? type;
 
-  NumericTextField({required this.icondata  ,required this.controller , required this.labelText , required this.enabled});
+  NumericTextField({required this.icondata  ,required this.controller , required this.labelText , required this.enabled , this.type});
 
 
   @override
@@ -21,6 +22,7 @@ class NumericTextField extends StatelessWidget{
         absorbing: enabled , child:TextField(
         controller: controller,
         keyboardType: TextInputType.number,
+        maxLength: type == "mobile" ? 10 : 50,
         decoration: InputDecoration(
           prefixIcon: Icon(icondata , color: Colors.black54,),
           labelText: labelText,
@@ -28,6 +30,7 @@ class NumericTextField extends StatelessWidget{
           contentPadding: EdgeInsets.symmetric(vertical: 16.0),
           enabledBorder: Designs.myinputborder(),
           focusedBorder: Designs.myfocusborder(),
+
         )
     ));
 

@@ -740,7 +740,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                 leftIcon:  GestureDetector(onTap: () async {
 
               final res =  await navService.pushNamed("/basic_details_edit" ,args:[fullname.split(" ")[0] ,
-                fullname.split(" ")[1],
+                fullname.split(" ").length > 1 ?  fullname.split(" ")[1] : "",
               dob,
               createdby ,
                   marital ,

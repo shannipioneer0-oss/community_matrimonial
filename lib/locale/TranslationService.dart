@@ -12,7 +12,7 @@ class TranslationService {
 
  static String translate(String key) {
 
-    print(key+"-=-=");
+    //print(key+"-=-=");
     return _localizedStrings[key];
   }
 
