@@ -303,7 +303,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
           SizedBox(height: 20,),
           CustomDropdown(icondata: MdiIcons.city  , controller: permstateController , labelText: TranslationService.translate("perm_state"), onButtonPressed: () async {
 
-            final resState = await Values.getValuesContactsState(context , "state" , "" , country_value);
+            final resState = (await Values.getValuesContactsState(context , "state" , "" , country_value)).where((element) => element.state_name.isNotEmpty,).toList();
             resState.insert(0, DataFetchstate(state_name: "other", state_hindi: "other", state_guj: "other", state_marathi: "other", state_tamil: "other", state_urdu: "other", country_id: "0", Id: "0"));
 
             final value = await SingleSelectDialog().showBottomSheet2(context, resState , "Select State");
@@ -355,7 +355,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
           SizedBox(height: 20,),
           CustomDropdown(icondata: MdiIcons.city  ,controller: permcityController , labelText: TranslationService.translate("perm_city"), onButtonPressed: () async {
 
-            final resCity = await Values.getValuesContactsCity(context , perm_State_value , country_value);
+            final resCity = (await Values.getValuesContactsCity(context , perm_State_value , country_value)).where((element) => element.label.isNotEmpty,).toList();;
             resCity.insert(0, DataFetchParams(label: "other", value: "0", value2: "0"));
 
 
@@ -425,7 +425,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
           SizedBox(height: 20,),
           CustomDropdown(icondata: MdiIcons.city  ,controller: workstateController , labelText: TranslationService.translate("work_state"), onButtonPressed: () async {
 
-           final resworkstate =   await Values.getValuesContactsState(context , "state" , "" , country_value2);
+           final resworkstate =   (await Values.getValuesContactsState(context , "state" , "" , country_value2)).where((element) => element.state_name.isNotEmpty,).toList();
 
            resworkstate.insert(0, DataFetchstate(state_name: "other", state_hindi: "other", state_guj: "other", state_marathi: "other", state_tamil: "other", state_urdu: "other", country_id: "0", Id: "0"));
 
@@ -478,7 +478,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
           SizedBox(height: 20,),
           CustomDropdown(icondata: MdiIcons.city  ,controller: workcityController , labelText: TranslationService.translate("work_city"), onButtonPressed: () async {
 
-            final resworkcity = await Values.getValuesContactsCity(context , work_state_value , country_value2);
+            final resworkcity = (await Values.getValuesContactsCity(context , work_state_value , country_value2)).where((element) => element.label.isNotEmpty,).toList();
             resworkcity.insert(0, DataFetchParams(label: "other", value: "0", value2: "0"));
 
             final value = await SingleSelectDialog().showBottomSheet3(context, resworkcity);

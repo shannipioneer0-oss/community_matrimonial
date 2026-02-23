@@ -185,14 +185,14 @@ class LifestyleDetailsScreen  extends State<LifestyleDetailsStateful> {
 
         },),
         SizedBox(height: 20,),
-        CustomDropdown(icondata: MdiIcons.food  ,controller: diettypeController , labelText: TranslationService.translate("diet_type"), onButtonPressed: () async {
+        /*CustomDropdown(icondata: MdiIcons.food  ,controller: diettypeController , labelText: TranslationService.translate("diet_type"), onButtonPressed: () async {
 
           final value = await SingleSelectDialog().showBottomSheet(context, await Values.getValues(context , "diet_type" , "") , "Select Diet Type");
           diettypeController.text = value.label;
           diet_type =  value.value;
 
         },),
-        SizedBox(height: 20,),
+        SizedBox(height: 20,),*/
         Container(width: MediaQuery.of(context).size.width , margin: EdgeInsets.only(left: 10) ,child:Text("Are You Handicap?" , textAlign: TextAlign.left, style: TextStyle(),),),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,

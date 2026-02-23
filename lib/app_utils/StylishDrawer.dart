@@ -90,7 +90,7 @@ class _StylishDrawerState extends State<StylishDrawer> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-           Container(margin: EdgeInsets.only(bottom: 20) , height: MediaQuery.of(context).size.height*0.35 ,child:DrawerHeader(
+           Container(margin: EdgeInsets.only(bottom: 20) , height: MediaQuery.of(context).size.height*0.37 ,child:DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.pinkAccent,
               ),
@@ -98,7 +98,7 @@ class _StylishDrawerState extends State<StylishDrawer> {
 
                Row(mainAxisAlignment: MainAxisAlignment.start  ,children: [Text(community_name ,textAlign: TextAlign.left , style: TextStyle(color: Colors.white , fontSize:  15 , fontWeight: FontWeight.bold , overflow: TextOverflow.ellipsis),),],),
                SizedBox(height: 10,),
-               Row(children: [ CircleAvatar(radius: 30 ,backgroundImage: NetworkImage(Strings.IMAGE_BASE_URL+"/uploads/matrimonial_photo/"+prefs.getString(SharedPrefs.communityId).toString()+"/"+img1 ), ) , SizedBox(width: 10,),Container(width: MediaQuery.of(context).size.width*0.45  ,child: Text(username , maxLines: 3 ,overflow: TextOverflow.ellipsis , style: TextStyle(color: Colors.white , fontSize:  20 , fontWeight: FontWeight.bold ,overflow: TextOverflow.ellipsis),))],),
+               Row(children: [ CircleAvatar(radius: 30 ,backgroundImage: NetworkImage(Strings.IMAGE_BASE_URL+"/uploads/matrimonial_photo/"+prefs.getString(SharedPrefs.communityId).toString()+"/"+img1 ), ) , SizedBox(width: 10,),Container(width: MediaQuery.of(context).size.width*0.45  ,child: Text(username , maxLines: 3 ,overflow: TextOverflow.ellipsis , style: TextStyle(color: Colors.white , fontSize:  16 , fontWeight: FontWeight.bold ,overflow: TextOverflow.ellipsis),))],),
 
                 Container(width:300  ,margin: EdgeInsets.only(top: 25 , bottom: 5 ,left:15) ,child:Text("Your Profile Completion" , textAlign: TextAlign.left , style: TextStyle(color: Colors.white , fontSize:  13 , fontWeight: FontWeight.bold),)),
                 LinearPercentIndicator(
@@ -113,7 +113,7 @@ class _StylishDrawerState extends State<StylishDrawer> {
 
                 Row(mainAxisAlignment: MainAxisAlignment.start  ,children: [Text(mobilenumber ,textAlign: TextAlign.left , style: TextStyle(color: Colors.white , fontSize:  15 , fontWeight: FontWeight.bold , overflow: TextOverflow.ellipsis),),],),
 
-                SizedBox(height: 1,),
+                SizedBox(height: 0.1,),
 
                Row(mainAxisAlignment: MainAxisAlignment.start  ,children: [Container(child: Text("Version : "+version , style: TextStyle(color: Colors.white , fontWeight: FontWeight.bold),),),])
 
@@ -403,7 +403,7 @@ class DrawerItem extends StatelessWidget {
           title,
           style: TextStyle(
             color: isSelected ? Colors.pinkAccent : Colors.black54 ,
-            fontSize: 16,
+            fontSize: 14,
             fontFamily: "Roboto-Medium",
             fontWeight: FontWeight.normal
           ),

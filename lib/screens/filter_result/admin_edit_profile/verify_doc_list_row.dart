@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../network_utils/service/api_service.dart';
 import '../../../utils/SharedPrefs.dart';
 import '../../../utils/utils.dart';
+import 'document_image_popup.dart';
 
 class VerifyDocListClass{
 
@@ -96,9 +97,14 @@ class VerifyDocListRowStateful extends State<VerifyDocListRow> {
               width: 2.0, // Border width
             ),
             borderRadius: BorderRadius.circular(12), // Optional: Rounded corners
-          ), child:Column(children: [ Text( e.indexlist == 1 ? "New Image\n (Identity)" : e.indexlist == 2 ? "New Image\n (Education)" : "New Image\n (Income)"  , textAlign: TextAlign.center,) ,SizedBox(height: 5,)  ,Image.network(Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+e.newImage ,width: MediaQuery.of(context).size.width*0.25, height: 150, errorBuilder: (context, error, stackTrace) {
+          ), child:Column(children: [ Text( e.indexlist == 1 ? "New Image\n (Identity)" : e.indexlist == 2 ? "New Image\n (Education)" : "New Image\n (Income)"  , textAlign: TextAlign.center,) ,SizedBox(height: 5,)  , GestureDetector(onTap: (){
+
+
+            showFullScreenPopup(context , Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+e.newImage);
+
+          }  , child: Image.network(Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+e.newImage ,width: MediaQuery.of(context).size.width*0.25, height: 150, errorBuilder: (context, error, stackTrace) {
             return Image.asset("assets/images/no_image.png" ,width: 30, height: 60,);
-          },),],)),
+          },)),],)),
           SizedBox(width: 10,),
           Container( decoration: BoxDecoration(
             border: Border.all(
@@ -106,10 +112,16 @@ class VerifyDocListRowStateful extends State<VerifyDocListRow> {
               width: 2.0, // Border width
             ),
             borderRadius: BorderRadius.circular(12), // Optional: Rounded corners
-          ),child:Column(children: [ Text(e.indexlist == 1 ? "old Image\n (Identity)" : e.indexlist == 2 ? "Old Image\n (Education)" : "Old Image\n (Income)" , textAlign: TextAlign.center,) ,SizedBox(height: 5,)  ,Image.network(Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+e.oldImage ,width: MediaQuery.of(context).size.width*0.25, height: 150, errorBuilder: (context, error, stackTrace) {
+          ),child:Column(children: [ Text(e.indexlist == 1 ? "old Image\n (Identity)" : e.indexlist == 2 ? "Old Image\n (Education)" : "Old Image\n (Income)" , textAlign: TextAlign.center,) ,SizedBox(height: 5,)  ,GestureDetector(onTap: (){
+
+
+            showFullScreenPopup(context , Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+e.oldImage);
+
+
+          }  ,child:Image.network(Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+e.oldImage ,width: MediaQuery.of(context).size.width*0.25, height: 150, errorBuilder: (context, error, stackTrace) {
 
             return Image.asset("assets/images/user_image.png" , width: MediaQuery.of(context).size.width*0.25, height: 150 , color: Colors.black54,);
-          },),
+          },),),
 
           ],) ,) ,
 

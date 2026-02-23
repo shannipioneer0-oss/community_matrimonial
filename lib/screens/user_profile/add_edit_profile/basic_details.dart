@@ -227,8 +227,8 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
             month = date.month.toString();
           }
 
-
           dobController.text = date.year.toString() + "-" + month + "-" + day;
+
         }
 
 

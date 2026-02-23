@@ -418,13 +418,7 @@ class SearchResultListStateful extends State<SearchResultList> {
                                 if (prefs.getString(
                                         SharedPrefs.validityDays ?? "") !=
                                     "") {
-                                  if (int.parse(prefs
-                                          .getString(SharedPrefs.numLikes)
-                                          .toString()) <=
-                                      int.parse(prefs
-                                          .getString(
-                                              SharedPrefs.numExpressInterests)
-                                          .toString())) {
+
                                     if (iscontainLikes() == false) {
                                       final result = await DialogClass()
                                           .showDialogBeforesubmit(
@@ -502,18 +496,9 @@ class SearchResultListStateful extends State<SearchResultList> {
                                           "Already Expressed Interest",
                                           "Ok");
                                     }
-                                  } else {
-                                    DialogClass().showDialog2(
-                                        context,
-                                        "Express Interest alert!",
-                                        "Please upgrade to Membership Plans to Express More Interests",
-                                        "Ok");
-                                  }
+
                                 } else {
-                                  if (int.parse(prefs
-                                          .getString(SharedPrefs.numLikes)
-                                          .toString()) <=
-                                      2) {
+
                                     if (iscontainLikes() == false) {
                                       final result = await DialogClass()
                                           .showDialogBeforesubmit(
@@ -590,13 +575,7 @@ class SearchResultListStateful extends State<SearchResultList> {
                                           "Already Expressed Interest",
                                           "Ok");
                                     }
-                                  } else {
-                                    DialogClass().showDialog2(
-                                        context,
-                                        "Express Interest alert!",
-                                        "Please upgrade to Membership Plans",
-                                        "Ok");
-                                  }
+
                                 }
                               },
                               child: Stack(
@@ -1137,10 +1116,7 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                                         "Ok");
                                   }
                                 } else {
-                                  if (int.parse(prefs
-                                          .getString(SharedPrefs.numLikes)
-                                          .toString()) <=
-                                      3000) {
+
                                     if (iscontainLikes() == false) {
                                       final result = await DialogClass()
                                           .showDialogBeforesubmit(
@@ -1220,13 +1196,7 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                                           "Already Expressed Interest",
                                           "Ok");
                                     }
-                                  } else {
-                                    DialogClass().showDialog2(
-                                        context,
-                                        "Express Interest alert!",
-                                        "Please upgrade to Membership Plans",
-                                        "Ok");
-                                  }
+
                                 }
                               },
                               child: Stack(

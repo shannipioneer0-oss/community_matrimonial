@@ -691,11 +691,7 @@ class UserDetailScreen extends State<UserDetailStateful> {
                                             if (prefs.getString(
                                                     SharedPrefs.validityDays) !=
                                                 null) {
-                                              if (int.parse(prefs
-                                                      .getString(
-                                                          SharedPrefs.numLikes)
-                                                      .toString()) <=
-                                                  num) {
+
                                                 if (like == false) {
                                                   final result = await DialogClass()
                                                       .showDialogBeforesubmit(
@@ -783,19 +779,9 @@ class UserDetailScreen extends State<UserDetailStateful> {
                                                       "Already Expressed Interest",
                                                       "Ok");
                                                 }
-                                              } else {
-                                                DialogClass().showDialog2(
-                                                    context,
-                                                    "Express Interest alert!",
-                                                    "Please upgrade to Membership Plans to Exprress More Interests",
-                                                    "Ok");
-                                              }
+
                                             } else {
-                                              if (int.parse(prefs
-                                                      .getString(
-                                                          SharedPrefs.numLikes)
-                                                      .toString()) <=
-                                                  2) {
+
                                                 if (like == false) {
                                                   final result = await DialogClass()
                                                       .showDialogBeforesubmit(
@@ -806,6 +792,7 @@ class UserDetailScreen extends State<UserDetailStateful> {
                                                           "like");
 
                                                   if (result == "like") {
+
                                                     final _response = await Provider
                                                             .of<ApiService>(
                                                                 context,
@@ -883,13 +870,7 @@ class UserDetailScreen extends State<UserDetailStateful> {
                                                       "Already Expressed Interest",
                                                       "Ok");
                                                 }
-                                              } else {
-                                                DialogClass().showDialog2(
-                                                    context,
-                                                    "Express Interest alert!",
-                                                    "Please upgrade to Membership Plans",
-                                                    "Ok");
-                                              }
+
                                             }
                                           },
                                           child: Stack(

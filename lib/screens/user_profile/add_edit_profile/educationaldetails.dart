@@ -235,9 +235,9 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
       SizedBox(height: 20,),
       CustomDropdown(icondata: MdiIcons.bookEducation  ,controller: highesteducationController , labelText: "*"+TranslationService.translate("highest_education"), onButtonPressed: () async {
 
-        final resedu =  await Values.getEducationList(context , "education" , "");
+        final resedu =  (await Values.getEducationList(context , "education" , "")).where((element) => element.degree_name.isNotEmpty,).toList();;
 
-        final value = await SingleSelectDialog().showBottomSheetEducation(context, resedu);
+        final value = await SingleSelectDialog().showBottomSheetEducation(context , resedu);
         highesteducationController.text = value.degree_name;
         highest_edu_value = value.Id;
 

@@ -99,7 +99,7 @@ class SingleSelectDialog {
                       Expanded(
                         child: ListView.builder(
                           controller: scrollController,
-                          itemCount: items.length,
+                          itemCount: _filteredItems.length,
                           // Replace with your actual item count
                           itemBuilder: (context, index) {
                             return ListTile(
@@ -243,72 +243,82 @@ class SingleSelectDialog {
       isScrollControlled: true,
       useRootNavigator: true,
       builder: (BuildContext context) {
-        return DraggableScrollableSheet(
-          expand: false,
-          initialChildSize: 0.85,
-          builder: (BuildContext context, ScrollController scrollController) {
+        return StatefulBuilder(builder: (context, setState) {
+
+          return DraggableScrollableSheet(
+            expand: false,
+            initialChildSize: 0.85,
+            builder: (BuildContext context, ScrollController scrollController) {
 
 
 
-            return Container(constraints: BoxConstraints(maxHeight: double.infinity)   ,child:Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: TextField(
-                            style: TextStyle(color: Colors.black),
-                            decoration: InputDecoration(
-                              hintText: 'Search...',
-                              hintStyle: TextStyle(color: Colors.grey),
-                              prefixIcon: Icon(Icons.search, color: Colors.grey),
-                              border: InputBorder.none,
+              return Container(constraints: BoxConstraints(maxHeight: double.infinity)   ,child:Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(10.0),
                             ),
-                            onChanged: (value) {
+                            child: TextField(
+                              style: TextStyle(color: Colors.black),
+                              decoration: InputDecoration(
+                                hintText: 'Search...',
+                                hintStyle: TextStyle(color: Colors.grey),
+                                prefixIcon: Icon(Icons.search, color: Colors.grey),
+                                border: InputBorder.none,
+                              ),
+                              onChanged: (value) {
 
-                              filteredItemscity = items
-                                  .where((item) => item.label.toLowerCase().contains(value.toLowerCase()))
-                                  .toList();
 
-                            },
+                                setState((){
+
+                                  filteredItemscity = items
+                                      .where((item) => item.label.toLowerCase().contains(value.toLowerCase()))
+                                      .toList();
+
+                                });
+
+
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.close),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
+                        IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    controller: scrollController,
-                    itemCount: filteredItemscity.length, // Replace with your actual item count
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(filteredItemscity[index].label),
-                        onTap: () {
+                  Expanded(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: filteredItemscity.length, // Replace with your actual item count
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(filteredItemscity[index].label),
+                          onTap: () {
 
-                          completer.complete(filteredItemscity[index]);
-                          Navigator.pop(context);
-                        },
-                      );
-                    },
+                            completer.complete(filteredItemscity[index]);
+                            Navigator.pop(context);
+                          },
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ));
-          },
-        );
+                ],
+              ));
+            },
+          );
+
+        },);
       },
     );
 

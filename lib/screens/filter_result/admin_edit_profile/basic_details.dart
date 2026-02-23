@@ -153,21 +153,23 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
         body:SafeArea(child: SingleChildScrollView(child:Container(margin: EdgeInsets.only(left: 15 ,right: 15) ,child:Column(children: [
 
           Divider(),
-          Container(margin: EdgeInsets.only(top: 10) ,child:CustomTextField(icondata: Icons.person  ,controller: firstnameController , labelText: TranslationService.translate("firstnameHint"), enabled: firtname.isEmpty ? false : true ,),),
+          Container(margin: EdgeInsets.only(top: 10) ,child:CustomTextField(icondata: Icons.person  ,controller: firstnameController , labelText: TranslationService.translate("firstnameHint"), enabled: firtname.isEmpty ? false : false ,),),
           SizedBox(height: 20,),
-          CustomTextField(icondata: Icons.person , controller: lastnameController , labelText: TranslationService.translate("enter_surname"), enabled: lastname.isEmpty ? false : true,),
+          CustomTextField(icondata: Icons.person , controller: lastnameController , labelText: TranslationService.translate("enter_surname"), enabled: lastname.isEmpty ? false : false,),
           SizedBox(height: 20,),
           GestureDetector(onTap: () async {
 
-            if(dob.isEmpty){
+//print(dob.split("-")[2].toString());
+
+            if(dob.isEmpty || dob.isNotEmpty){
 
               final date =  await showDatePickerDialog(
                 context: context,
-                initialDate: DateTime(int.parse(dobController.text.split("-")[2].toString()), int.parse(dobController.text.split("-")[1].toString()), int.parse(dobController.text.split("-")[0].toString())),
-                minDate: DateTime(1960, 10, 10),
-                maxDate: DateTime(2024, 10, 30),
+                initialDate: dobController.text.toString().isNotEmpty ? DateTime(int.parse(dob.split("-")[0].toString()), int.parse(dob.split("-")[1].toString()), int.parse(dob.split("-")[2].toString())) : DateTime(DateTime.now().year , DateTime.now().month , DateTime.now().day),
+                minDate: DateTime(1940, 10, 10),
+                maxDate: DateTime(2050, 10, 30),
                 currentDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-                selectedDate: DateTime(int.parse(dobController.text.split("-")[2].toString()), int.parse(dobController.text.split("-")[1].toString()), int.parse(dobController.text.split("-")[0].toString())),
+                selectedDate: dobController.text.toString().isNotEmpty ? DateTime(int.parse(dob.split("-")[0].toString()), int.parse(dob.split("-")[1].toString()), int.parse(dob.split("-")[2].toString())) : DateTime(DateTime.now().year , DateTime.now().month , DateTime.now().day),
                 currentDateDecoration: const BoxDecoration(),
                 currentDateTextStyle: const TextStyle(),
                 daysOfTheWeekTextStyle: const TextStyle(),
@@ -208,6 +210,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                 }
 
 
+                passdate = date.year.toString()+"-"+month+"-"+day;
                 dobController.text = date.year.toString() + "-" + month + "-" + day;
               }
 
@@ -349,6 +352,25 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                 if (widget.list[0] ==  "") {
                   EasyLoading.show(status: 'Please wait...');
 
+                  print( {
+                    "fullname": firstnameController.text.toString() + " " +
+                        lastnameController.text.toString(),
+                    "created_by": created_value,
+                    "dob": passdate,
+                    "age": calculateAge( passdate.toString().isEmpty ? DateTime(int.parse(dobController.text.toString().split("-")[0]) , int.parse(dobController.text.toString().split("-")[1]) , int.parse(dobController.text.toString().split("-")[2]))  :  DateTime(int.parse(passdate.toString().split("-")[0]) , int.parse(passdate.toString().split("-")[1]) , int.parse(passdate.toString().split("-")[2]))).toString(),
+                    "marital_status": marital_value,
+                    "religion": "Hindu",
+                    "caste": caste_value,
+                    "subcaste": subcasteController.text.toString(),
+                    "language_known": lang_known_value,
+                    "mother_tongue": mother_tongue_value,
+                    "isnri" : isnri == false ? "0" : "1" ,
+                    "nri_detail" : nriController.text.toString(),
+                    "userId": widget.list[18][0],
+                    "communityId": prefs.getString(SharedPrefs.communityId),
+                    "profileId": widget.list[19]
+                  });
+
 
                   final _response = await Provider.of<ApiService>(
                       context, listen: false)
@@ -357,8 +379,8 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                         "fullname": firstnameController.text.toString() + " " +
                             lastnameController.text.toString(),
                         "created_by": created_value,
-                        "dob": passdate,
-                        "age": calculateAge(DateTime(int.parse(passdate.toString().split("-")[0]) , int.parse(passdate.toString().split("-")[1]) , int.parse(passdate.toString().split("-")[2]))).toString(),
+                        "dob": passdate.toString().isEmpty ?  dobController.text.toString() : passdate,
+                        "age": calculateAge( passdate.toString().isEmpty ? DateTime(int.parse(dobController.text.toString().split("-")[0]) , int.parse(dobController.text.toString().split("-")[1]) , int.parse(dobController.text.toString().split("-")[2]))  :  DateTime(int.parse(passdate.toString().split("-")[0]) , int.parse(passdate.toString().split("-")[1]) , int.parse(passdate.toString().split("-")[2]))).toString(),
                         "marital_status": marital_value,
                         "religion": "Hindu",
                         "caste": caste_value,
@@ -367,7 +389,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                         "mother_tongue": mother_tongue_value,
                         "isnri" : isnri == false ? "0" : "1" ,
                         "nri_detail" : nriController.text.toString(),
-                        "userId": widget.list[18],
+                        "userId": widget.list[18][0],
                         "communityId": prefs.getString(SharedPrefs.communityId),
                         "profileId": widget.list[19]
                       }
@@ -400,7 +422,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                             lastnameController.text.toString(),
                         "created_by": created_value,
                         "dob": passdate,
-                        "age": calculateAge(DateTime(int.parse(passdate.toString().split("-")[0]) , int.parse(passdate.toString().split("-")[1]) , int.parse(passdate.toString().split("-")[2]))).toString(),
+                        "age": calculateAge( passdate.toString().isEmpty ? DateTime(int.parse(dobController.text.toString().split("-")[0]) , int.parse(dobController.text.toString().split("-")[1]) , int.parse(dobController.text.toString().split("-")[2]))  :  DateTime(int.parse(passdate.toString().split("-")[0]) , int.parse(passdate.toString().split("-")[1]) , int.parse(passdate.toString().split("-")[2]))).toString(),
                         "marital_status": marital_value,
                         "religion": "Hindu",
                         "caste": caste_value,
@@ -419,13 +441,15 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                   if (_response.body["success"] == 1) {
 
                     EasyLoading.dismiss();
-
                     navService.goBack();
+
                   } else {
+
                     EasyLoading.dismiss();
 
                     DialogClass().showDialog2(context, "Basic Details Submit Alert!",
                         "Some problem occured Please try again", "Ok");
+
                   }
                 }
               }
