@@ -101,7 +101,7 @@ class MainScreenAppState extends State<MainScreenContainer> {
 
       }else if(packageInfo.version.toString().compareTo(res.body["data"][0]["version"].toString()) < 0){
 
-        final res = await  DialogClass().showPremiumInfoDialog(context,  TranslationService.translate("update_app") , TranslationService.translate("update_app_details"), "Ok");
+        final res = await  DialogClass().showPremiumInfoDialog3(context,  TranslationService.translate("update_app") , TranslationService.translate("update_app_details"), "Ok");
 
         if(res == true || res == false){
 

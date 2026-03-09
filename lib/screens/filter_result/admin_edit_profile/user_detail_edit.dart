@@ -676,6 +676,11 @@ class UserDetailScreen  extends State<UserDetailStateful>{
 
                     if (res == "1") {
 
+
+                      final _response2 = await Provider.of<ApiService>(context, listen: false).postUpdatePhotoVerification({"isverifypic1": "1" , "isverifypic2": "1" , "isverifypic3": "1" , "isverifypic4": "1" ,
+                        "isverifypic5": "1" , "isverifypic6": "1" ,"isverifypic7": "1" , "isverifypic8": "1" , "userId":widget.userId[0] , "communityId": prefs.getString(SharedPrefs.communityId)});
+
+
                         final _response = await Provider.of<ApiService>(
                             context, listen: false)
                             .postUpdateVerifyUser(
@@ -707,6 +712,11 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                         "Ok", "1");
 
                     if (res == "1") {
+
+                      final _response2 = await Provider.of<ApiService>(context, listen: false).postUpdatePhotoVerification({"isverifypic1": "0" , "isverifypic2": "0" , "isverifypic3": "0" , "isverifypic4": "0" ,
+                        "isverifypic5": "0" , "isverifypic6": "0" ,"isverifypic7": "0" , "isverifypic8": "0" , "userId":widget.userId[0] , "communityId": prefs.getString(SharedPrefs.communityId)});
+
+
                       final _response = await Provider.of<ApiService>(
                           context, listen: false)
                           .postUpdateVerifyUser(

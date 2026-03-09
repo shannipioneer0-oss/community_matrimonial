@@ -19,7 +19,7 @@ class DialogClass {
 
 
 
-  Future<bool> showPremiumInfoDialog(BuildContext context , String title , String message , String okbutton) async {
+  Future<bool> showPremiumInfoDialog(BuildContext context , String title , String message , String okbutton ) async {
 
    return await showDialog(
       context: context,
@@ -89,7 +89,9 @@ class DialogClass {
                     ),
                     child:  Text(okbutton),
                   ),
-                ),
+                )
+
+
               ],
             ),
           ),
@@ -172,6 +174,104 @@ class DialogClass {
             ),
           ),
         );
+      },
+    );
+
+  }
+
+
+  Future<bool> showPremiumInfoDialog3(BuildContext context , String title , String message , String okbutton ) async {
+
+    return await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return WillPopScope(
+            onWillPop: () async => false, // ❌ Disable back button
+            child: Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.error_outline,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          title ,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      message,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                   Row(children: [  Align(
+                     alignment: Alignment.centerLeft,
+                     child: ElevatedButton(
+                       onPressed: () {
+
+                         Navigator.pop(context , 0);
+
+                       },
+                       style: ElevatedButton.styleFrom(
+                         shape: RoundedRectangleBorder(
+                           borderRadius: BorderRadius.circular(10),
+                         ),
+                       ),
+                       child:  Text("Later"),
+                     ),
+                   ), SizedBox(width: 20,), Align(
+                     alignment: Alignment.centerRight,
+                     child: ElevatedButton(
+                       onPressed: () {
+
+                         Navigator.pop(context , false);
+
+                       },
+                       style: ElevatedButton.styleFrom(
+                         shape: RoundedRectangleBorder(
+                           borderRadius: BorderRadius.circular(10),
+                         ),
+                       ),
+                       child:  Text("Update"),
+                     ),
+                   ),],)
+
+                  ],
+                ),
+              ),
+            ));
       },
     );
 
