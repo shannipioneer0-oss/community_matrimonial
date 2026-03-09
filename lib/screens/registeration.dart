@@ -134,38 +134,24 @@ class RegisterationState extends State<Registeration>{
           }else{
 
             final flavor = FlavorConfig.instance.name;
+            String communityId = flavor == "appA" ? "20" : "2";
 
-            final _response = await Provider.of<ApiService>(
-                context, listen: false).postRegisteration(
-                {"name": controllerfirstName.text.toString(),
-                "surname": controllerlastName.text.toString() ,
-                "emailid": controlleremailid.text.toString().isEmpty ? "-" : controlleremailid.text.toString(),
-                "password": "",
-                "gender":  controllergender.text.toString(),
-                "birthdate":  controllerbirthyear.text.toString()+"-"+month+"-"+controllerbirthdate.text.toString(),
-                "mobile": controllermobile.text.toString(),
-                "profile_id": getProfileId(),
-          "community_id": flavor == "appA" ? "20" : "2",
-          "community_name": flavor == "appA" ? "SAMAST GUJARAT RAVAL DEV" :  "BJP Matrimony",
-          "mobile_reg_token":"",
-          "web_reg_token":"",
-          "joined_date": utils().getTodayDate()});
+              final res = await ApiService.create().postMobileExists({"mobile":controllermobile.text.toString() ,  "community_id":communityId});
 
-              print(_response.body);
+            if(res.body["data"].toString() == "[]"){
 
-              if(_response.body["data"].length >= 1){
+              navService.pushNamed("/signup_verify" , args: [controllermobile.text.toString() , controllerfirstName.text.toString() ,
+                controllerlastName.text.toString() , controllerbirthdate.text ,
+                month , controllerbirthyear.text ,
+                controllergender.text , controlleremailid.text.toString() , generateOtp() ]);
 
-                if(_response.body["data"][0]["success"].toString() ==  "1"){
+            }else{
 
-                  navService.pushNamed("/login");
+              DialogClass().showDialog2(context, "Already Exists Alert!", "Mobile Number Already Exists", "OK");
 
-                }else if(_response.body["data"][0]["success"].toString() == "0"){
+            }
 
-                  DialogClass().showDialog2(context, "Login Validation", "Mobile number you provided is already registered", "OK");
 
-                }
-
-              }
 
           }
 
@@ -180,32 +166,18 @@ class RegisterationState extends State<Registeration>{
   }
 
 
+  String generateOtp() {
+    final random = Random();
+    const min = 100000; // Smallest 6-digit number
+    const max = 999999; // Largest 6-digit number
 
-  String getProfileId() {
-    // First three letters of the alphabet
-    String letters = 'ABC';
-
-    // Length of the digits to be appended
-    int digitLength = 3;
-
-    // Generating the numeric part
-    String digits = generateRandomDigits(digitLength);
-
-    // Combine letters and digits
-    return letters + digits;
+    int otp = min + random.nextInt(max - min + 1);
+    return otp.toString();
   }
 
 
-  String generateRandomDigits(int length) {
 
-    Random random = Random();
-    String digits = '';
-    for (int i = 0; i < length; i++) {
-      digits += random.nextInt(10).toString(); // Generates a single digit (0-9)
-    }
 
-    return digits;
-  }
 
 
 }

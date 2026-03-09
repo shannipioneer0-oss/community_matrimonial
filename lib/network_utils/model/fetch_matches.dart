@@ -9,8 +9,17 @@ class User {
   @JsonKey(name: 'name')
   String name;
 
+  @JsonKey(name: 'surname')
+  String surname;
+
   @JsonKey(name: 'whatsapp')
   String whatsapp;
+
+  @JsonKey(name: 'gender')
+  String gender;
+
+  @JsonKey(name: 'status')
+  String status;
 
   @JsonKey(name: 'mob_reg_token')
   String mobRegToken;
@@ -79,8 +88,11 @@ class User {
   bool isinterstSent = false;
 
   User({
+    required this.gender,
     required this.mobile_number,
     required this.name,
+    required this.surname,
+    required this.status,
     required this.mobRegToken,
     required this.webRegToken,
     required this.whatsapp,

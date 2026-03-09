@@ -57,7 +57,7 @@ class DialogClass {
                      Text(
                       title ,
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -480,6 +480,77 @@ class DialogClass {
   }
 
 
+   void showAlertDialogChangeNumber(BuildContext context , String title , String decsription){
+
+
+     showDialog(
+       context: context,
+       builder: (BuildContext context2) {
+         return AlertDialog(
+           title: Text(title , style: TextStyle(fontSize: 17 , fontWeight: FontWeight.bold,)),
+           content: Text(decsription , style: TextStyle(fontSize: 15 , fontWeight: FontWeight.w400,)),
+           actions: [
+             // First Button
+             TextButton(
+               child: Text("Change Number"),
+               onPressed: () {
+                 Navigator.of(context2).pop(); // Close dialog
+
+                 navService.goBack();
+               },
+             ),
+
+             // Second Button
+             TextButton(
+               child: Text("Cancel"),
+               onPressed: () {
+                 // Your action here
+
+                 Navigator.of(context2).pop();
+               },
+             ),
+           ],
+         );
+       },
+     );
+
+
+   }
+
+
+
+  void showOtpDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismiss on outside tap
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Verify Your Number"),
+          content: const Text(
+            "We have sent a verification code to your registered mobile number. Please verify to continue.",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // Handle Change Number action
+              },
+              child: const Text("Change Number"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // Handle Resend action
+              },
+              child: const Text("RESEND"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
 }
 
 
@@ -531,5 +602,8 @@ class CustomProgressDialog extends StatelessWidget {
       ),
     );
   }
+
+
+
 }
 

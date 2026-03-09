@@ -1,4 +1,5 @@
 
+import 'package:community_matrimonial/firebase_options.dart';
 import 'package:community_matrimonial/locale/TranslationService.dart';
 import 'package:community_matrimonial/network_utils/model/profile_details_model.dart';
 import 'package:community_matrimonial/network_utils/model/user_plan_data.dart';
@@ -41,6 +42,7 @@ import 'package:community_matrimonial/screens/notification/notification_list.dar
 import 'package:community_matrimonial/screens/registeration.dart';
 import 'package:community_matrimonial/screens/settings/features.dart';
 import 'package:community_matrimonial/screens/settings/settings.dart';
+import 'package:community_matrimonial/screens/signup_mobile_verify.dart';
 import 'package:community_matrimonial/screens/user_details/image_gallery.dart';
 import 'package:community_matrimonial/screens/user_details/match_profile.dart';
 import 'package:community_matrimonial/screens/user_details/user_details.dart';
@@ -59,6 +61,7 @@ import 'package:community_matrimonial/screens/user_profile/add_edit_profile/occu
 import 'package:community_matrimonial/screens/user_profile/add_edit_profile/partner_prefs_details.dart';
 import 'package:community_matrimonial/screens/user_profile/user_detail.dart';
 import 'package:community_matrimonial/screens/videocalls/call.dart';
+import 'package:community_matrimonial/utils/ApiClass.dart';
 import 'package:community_matrimonial/utils/SharedPrefs.dart';
 import 'package:community_matrimonial/utils/animations.dart';
 import 'package:community_matrimonial/utils/utils.dart';
@@ -72,6 +75,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -86,7 +90,7 @@ import 'package:flutter/services.dart';
 String channelname = "" , message_type = "";
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
-
+  showNotificationFromMessage(message);
 
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
@@ -246,53 +250,7 @@ _showNotification()  {
 
 
 
-_showNotificationMissedDeclined(RemoteMessage message , String type)  async {
 
-
-  RemoteNotification? notification = message.notification;
-
-  AndroidNotification? android = message.notification?.android;
-  if (notification != null && android != null) {
-
-    var initializationSettingsAndroid =
-    new AndroidInitializationSettings("@drawable/kin_removebg");
-
-
-    var initializationSettings = new InitializationSettings(
-        android: initializationSettingsAndroid);
-
-    await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse:(details) {
-        //navService.pushNamed("/notification");
-      },
-      onDidReceiveBackgroundNotificationResponse: (details) {
-       // navService.pushNamed("/notification");
-      },);
-
-
-    flutterLocalNotificationsPlugin.show(
-      notification.hashCode,
-      type == "missed" ? "Timed Out" : "Call Declined",
-      type == "missed" ?  "Your Video has been Timed out!" : "Your Video call has been declined",
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          channel.id,
-          channel.name,
-          channelDescription: channel.description,
-          // TODO add a proper drawable resource to android, for now using
-          //      one that already exists in example app.
-          icon: 'launch_background',
-
-        ),
-      ),
-    );
-
-
-
-  }
-
-}
 
 
 
@@ -304,13 +262,86 @@ late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin2 =
+FlutterLocalNotificationsPlugin();
+
+Future<void> initLocalNotifications() async {
+
+  const AndroidInitializationSettings androidInit =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const DarwinInitializationSettings iosInit =
+  DarwinInitializationSettings();
+
+  const InitializationSettings settings =
+  InitializationSettings(
+    android: androidInit,
+    iOS: iosInit,
+  );
+
+  await flutterLocalNotificationsPlugin2.initialize(settings);
+}
+
+
+
+Future<void> showNotificationFromMessage(RemoteMessage message) async {
+
+  final title = message.notification?.title ?? message.data['title'] ?? '';
+  final body = message.notification?.body ?? message.data['body'] ?? '';
+  final tag = message.data['tag'] ?? 'default';
+
+  final data = message.data;
+
+  AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+    "general_channel",
+    "General Notifications",
+    importance: Importance.max,
+    priority: Priority.high,
+    tag: tag,
+  );
+
+  DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
+    presentAlert: true,
+    presentBadge: true,
+    presentSound: true,
+    threadIdentifier: tag, // iOS equivalent of tag
+  );
+
+  NotificationDetails details = NotificationDetails(
+    android: androidDetails,
+    iOS: iosDetails,
+  );
+
+  await flutterLocalNotificationsPlugin.show(
+    DateTime.now().millisecondsSinceEpoch ~/ 1000,
+    title,
+    body,
+    details,
+    payload: data["title"] ?? "",
+  );
+
+}
+
+
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
+  initLocalNotifications();
+
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  DefaultFirebaseOptions2.currentPackageName = packageInfo.packageName;
+
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+    options: DefaultFirebaseOptions2.currentPlatform,
   );
+
+  print("LOG: Sender ID in use is: ${Firebase.app().options.messagingSenderId}");
+
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.dumpErrorToConsole(details);
+  };
 
   debugDefaultTargetPlatformOverride = TargetPlatform.android;
 
@@ -321,6 +352,12 @@ Future<void> main() async {
    // await setupFlutterNotifications();
   }
 
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    showNotificationFromMessage(message);
+  });
+
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  
   runApp(MyApp());
 
   initLoader();
@@ -509,7 +546,8 @@ class MyApp extends StatelessWidget {
             return Animations().setAnimation(HtmlWithFilesScreen(settings.arguments as String,));
           case  "/launch_code":
             return Animations().setAnimation(LaunchCodeScreen());
-
+          case  "/signup_verify":
+            return Animations().setAnimation(SignupMobileVerifyApp(settings.arguments as List,));
           default:
             return null;
         }
@@ -533,6 +571,7 @@ class MyScreen extends  State<MainScreen> {
   @override
   void initState() {
     super.initState();
+
 
 
   SystemChannels.platform.setMethodCallHandler((call) async {
@@ -600,7 +639,7 @@ class MyScreen extends  State<MainScreen> {
 
     });
 
-    initNextScreen();
+
 
 
   }
@@ -618,8 +657,10 @@ class MyScreen extends  State<MainScreen> {
 
     }else{
 
-      Future.delayed(const Duration(milliseconds: 3500), () {
-        navService.pushNamedAndRemoveUntil("/intro");
+      Future.delayed(const Duration(milliseconds: 1000), () {
+
+        Apiclass().apiclass(context);
+
       });
 
     }
@@ -634,7 +675,7 @@ class MyScreen extends  State<MainScreen> {
 
     String? token = await FirebaseMessaging.instance.getToken();
 
-    print(token.toString());
+    print(token.toString()+"=====");
 
     prefs.setString(SharedPrefs.token_id , token.toString());
 
@@ -642,16 +683,17 @@ class MyScreen extends  State<MainScreen> {
 
       TranslationService.load("en");
 
-    }else{
+    }else {
 
-      if(prefs.getString(SharedPrefs.translate).toString() == "en"){
+      if (prefs.getString(SharedPrefs.translate).toString() == "en") {
         TranslationService.load("en");
-      }else if(prefs.getString(SharedPrefs.translate).toString() == "gu"){
+      } else if (prefs.getString(SharedPrefs.translate).toString() == "gu") {
         TranslationService.load("gu");
       }
 
-
     }
+
+      initNextScreen();
 
   }
 
@@ -667,6 +709,7 @@ class MyScreen extends  State<MainScreen> {
   }
 
   void _showNoInternetAlert() {
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -684,6 +727,7 @@ class MyScreen extends  State<MainScreen> {
         );
       },
     );
+
   }
 
 

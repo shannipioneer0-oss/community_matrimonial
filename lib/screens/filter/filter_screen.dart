@@ -166,7 +166,7 @@ class FilterScreen extends State<FilterScreenAppStateful> {
       prefs.remove(SharedPrefs.isLogin);
       prefs.clear();
 
-      navService.pushNamedAndRemoveUntil("/intro");
+      navService.pushNamedAndRemoveUntil("/login");
 
       return;
     }
@@ -1268,6 +1268,7 @@ class part2stateful extends StatefulWidget {
 
 
     if(prefs.getString("savedSearch") != "") {
+
     Map<String, dynamic> jsonObject = jsonDecode(prefs.getString("savedSearch").toString());
 
 

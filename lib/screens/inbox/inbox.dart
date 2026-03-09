@@ -90,7 +90,7 @@ class InboxScreen extends State<InboxStateful>{
       prefs?.remove(SharedPrefs.isLogin);
       prefs?.clear();
 
-      navService.pushNamedAndRemoveUntil("/intro");
+      navService.pushNamedAndRemoveUntil("/login");
 
       return [];
     }

@@ -71,9 +71,12 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  TextEditingController  admiistrativeController =new TextEditingController();
+  TextEditingController admiistrativeController =new TextEditingController();
   TextEditingController raputedController =new TextEditingController();
   TextEditingController highesteducationController =new TextEditingController();
+  TextEditingController highesteducationController_status = new TextEditingController();
+
+  TextEditingController specialization = new TextEditingController();
   TextEditingController highesteducationController2 =new TextEditingController();
   TextEditingController highesteducationController3 =new TextEditingController();
 
@@ -87,8 +90,7 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
     super.initState();
 
     EasyLoading.dismiss();
-
-     initViews();
+    initViews();
 
   }
 
@@ -114,12 +116,21 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
       highest_edu_value = "";
     }
 
+      if(prefs.getString(SharedPrefs.status).toString() == "1"){
+         highesteducationController_status.text = "Pursuing (Running)";
+      }else if(prefs.getString(SharedPrefs.status).toString() == "2"){
+        highesteducationController_status.text = "Completed";
+      }
+
+    highest_edu_value2 = prefs.getString(SharedPrefs.status).toString();
+
+
   try{
     highesteducationController2.text = courses[1].label == "0" ?  "" :  courses[1].label ;
-    highest_edu_value2 = courses[1].value.toString();
+    //highest_edu_value2 = courses[1].value.toString();
   }catch(ex){
      highesteducationController2.text = "";
-     highest_edu_value2 = "";
+    // highest_edu_value2 = "";
   }
 
   try{
@@ -130,6 +141,7 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
     highest_edu_value3 = "";
   }
 
+    specialization.text =   utils().replaceNull(prefs.getString(SharedPrefs.specialization).toString());
     edudetailsController.text =   utils().replaceNull(prefs.getString(SharedPrefs.educationDetail).toString());
     raputedController.text =  utils().replaceNull(prefs.getString(SharedPrefs.instituteName).toString().split(",")[0]);
     admiistrativeController.text =   utils().replaceNull(prefs.getString(SharedPrefs.adminPositionName).toString());
@@ -166,9 +178,8 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
   Widget build(BuildContext context) {
 
     return UniversalBackWrapper(
-        isRoot: false
-
-        ,child: Scaffold(key: _scaffoldKey,
+    isRoot: false,
+    child: Scaffold(key: _scaffoldKey,
     appBar: AppBar(
     title: Text('Educational Details\nRavaldev Matrimony' , style: TextStyle(color: Colors.black87 , fontSize: 18),),
     toolbarOpacity: 1,
@@ -280,7 +291,18 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
 
       },),
       SizedBox(height: 20,),
-      CustomDropdown(icondata: MdiIcons.bookEducation  ,controller: highesteducationController2 , labelText: TranslationService.translate("highest_education"), onButtonPressed: () async {
+      CustomDropdown(icondata: MdiIcons.bookEducation  ,controller: highesteducationController_status , labelText: "*"+TranslationService.translate("education_running_status"), onButtonPressed: () async {
+
+        final resedu =  [EduFetchstate(degree_name: "Pursuing (Running)", Id: "1") , EduFetchstate(degree_name: "Completed", Id: "2")];
+
+        final value = await SingleSelectDialog().showBottomSheetEducation(context , resedu);
+        highesteducationController_status.text = value.degree_name;
+        highest_edu_value2 = value.Id;
+
+
+      },),
+      SizedBox(height: 20,),
+      /*CustomDropdown(icondata: MdiIcons.bookEducation  ,controller: highesteducationController2 , labelText: TranslationService.translate("highest_education"), onButtonPressed: () async {
 
          final res = await Values.getEducationList(context , "education" , "");
         final value = await SingleSelectDialog().showBottomSheetEducation(context, res);
@@ -356,6 +378,8 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
 
 
       },),
+      SizedBox(height: 20,),*/
+      CustomTextField(icondata: Icons.history_edu , controller: specialization , labelText: TranslationService.translate("specialization"), enabled: false, ),
       SizedBox(height: 20,),
       MultilineTextfield(icondata: Icons.history_edu, controller: edudetailsController, labelText: TranslationService.translate("educational_details"), enabled: false, minlines: 3, maxlines: 7),
       SizedBox(height: 20,),
@@ -384,7 +408,7 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
 
       if (highesteducationController.text
           .toString()
-          .length > 0) {
+          .length > 0  && highesteducationController_status.text.toString().length > 0) {
         if (prefs
             .getString(SharedPrefs.education) == null) {
           EasyLoading.show(status: 'Please wait...');
@@ -393,15 +417,13 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
               context, listen: false)
               .postInserteducation(
               {
-                "is_from_admin_service": _isCheckedadminstraive == false
-                    ? 0
-                    : 1,
+                "is_from_admin_service": _isCheckedadminstraive == false ? 0 : 1 ,
                 "admin_position_name": "",
                 "is_from_iit_iim_nit": _isCheckedreputed == false ? 0 : 1,
                 "college_name": "",
-                "education_list": itemedu.join(",").split(',')
-                  .map((e) => e.split('|')[1])
-                  .join(','),
+                "education_list": highest_edu_value,
+                "education_status":highest_edu_value2,
+                "specialization": specialization.text.toString() ,
                 "education_detail": edudetailsController.text.toString(),
                 "userId": prefs.getString(SharedPrefs.userId),
                 "communityId": prefs.getString(SharedPrefs.communityId),
@@ -421,8 +443,10 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
             await prefs.setString(SharedPrefs.education,
                 itemedu.map((e) => e.replaceAll('|', ',')).toList().join("|")
             );
+            await prefs.setString(SharedPrefs.status , highest_edu_value2);
             await prefs.setString(SharedPrefs.educationDetail,
                 edudetailsController.text.toString());
+            await prefs.setString(SharedPrefs.specialization , specialization.text.toString());
             await prefs.setString(SharedPrefs.education_id,
                 _response
                     .body["data"]["insertId"].toString());
@@ -454,9 +478,9 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
                 "admin_position_name": "",
                 "is_from_iit_iim_nit": _isCheckedreputed == false ? 0 : 1,
                 "college_name": "",
-                "education_list": itemedu.join(",").split(',')
-                    .map((e) => e.split('|')[1])
-                    .join(','),
+                "education_list": highest_edu_value,
+                "education_status":highest_edu_value2,
+                "specialization": specialization.text.toString() ,
                 "education_detail": edudetailsController.text.toString(),
                 "Id": prefs.getString(SharedPrefs.education_id),
               }
@@ -481,6 +505,8 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
                 _isCheckedreputed == false ? "0" : "1");
             await prefs.setString(SharedPrefs.instituteName, raputedController
                 .text.toString() + "," + reputed_edu_value);
+            await prefs.setString(SharedPrefs.specialization , specialization.text.toString());
+            await prefs.setString(SharedPrefs.status , highest_edu_value2);
             await prefs.setString(SharedPrefs.education,
                 itemedu.map((e) => e.replaceAll('|', ',')).toList().join("|"));
             await prefs.setString(SharedPrefs.educationDetail,

@@ -415,16 +415,9 @@ class FamilyMemberDetailScreen  extends State<FamilyDetailsStateful>{
         SizedBox(height: 30,),
         ButtonSubmit(text: 'Submit Family Details', onButtonPressed: () async {
 
-          if(membername1.text.toString().length == 0 || membername2.text.toString().length == 0 || relation1.text.toString().length == 0 ||
-          relation2.text.toString().length == 0 || marital1.text.toString().length == 0 || marital2.text.toString().length == 0 ||
-              age1.text.toString().length == 0 || age2.text.toString().length == 0){
 
-            DialogClass().showDialog2(context, "Family Member Details Submit Alert!",
-                "All fields with * mark are compulsory", "Ok");
 
-          }else{
-
-            SVProgressHUD.show();
+    SVProgressHUD.show();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -438,14 +431,13 @@ class FamilyMemberDetailScreen  extends State<FamilyDetailsStateful>{
       String member_details6 = membername6.text.toString()+","+relation6.text.toString()+","+marital6.text.toString()+","+age6.text.toString()+","+education6.text.toString()+","+occupation_income6.text.toString();
 
 
-      final _response = await Provider.of<ApiService>(
-          context, listen: false).insert_family_member_details({
+      final _response = await Provider.of<ApiService>(context, listen: false).insert_family_member_details({
         "member_details1": member_details1 ,
         "member_details2": member_details2 ,
         "member_details3": member_details3 ,
-        "member_details4": member_details4,
-        "member_details5": member_details5,
-        "member_details6": member_details6,
+        "member_details4": member_details4 ,
+        "member_details5": member_details5 ,
+        "member_details6": member_details6 ,
         "ref_membername1": refmembername1.text.toString(),
         "ref_memberadd1": refmemberadd1.text.toString() ,
         "ref_membermobile1": refmembermobile1.text.toString() ,
@@ -458,7 +450,6 @@ class FamilyMemberDetailScreen  extends State<FamilyDetailsStateful>{
       });
 
     if (_response.body["data"]["affectedRows"] == 1) {
-
 
 
       await prefs.setString(SharedPrefs.fml_details_id , _response.body["data"]["insertId"].toString());
@@ -658,7 +649,7 @@ class FamilyMemberDetailScreen  extends State<FamilyDetailsStateful>{
 
    }
 
-        }),
+        ),
 
       ],),),
 

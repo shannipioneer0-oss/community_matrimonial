@@ -8,6 +8,7 @@ import 'package:community_matrimonial/screens/user_profile/AcceptReject.dart';
 import 'package:community_matrimonial/utils/Strings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../network_utils/service/api_service.dart';
@@ -133,6 +134,8 @@ class VerifyImageListRowStateful extends State<VerifyImageListRow> {
             SizedBox(width: 20,),
              AcceptReject((value) {
 
+               print(value.toString()+"===");
+
                imageverifylist[0].imagelist[imageverifylist[0].imagelist.indexOf(e)].istrue = value;
 
              }) ],)),
@@ -180,14 +183,36 @@ class VerifyImageListRowStateful extends State<VerifyImageListRow> {
                  isverify8 = element.istrue.toString();
                }
 
+
+
+
           });
 
           final _response = await Provider.of<ApiService>(context, listen: false).postUpdatePhotoVerification({"isverifypic1": isverify1 , "isverifypic2": isverify2 , "isverifypic3": isverify3 , "isverifypic4": isverify4 ,
             "isverifypic5": isverify5 , "isverifypic6": isverify6 ,"isverifypic7": isverify7 , "isverifypic8": isverify8 , "userId":widget.fetchImages.userId , "communityId":widget.communityId});
 
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+
+          String message = "";
+
+          message = message + getLabeledStatus("Image1", isverify1)+" ";
+          message = message + getLabeledStatus("Image2", isverify2)+" ";
+          message = message + getLabeledStatus("Image3", isverify3)+" ";
+          message = message + getLabeledStatus("Image4", isverify4)+" ";
+          message = message + getLabeledStatus("Image5", isverify5)+" ";
+          message = message + getLabeledStatus("Image6", isverify6)+" ";
+          message = message + getLabeledStatus("Image7", isverify7)+" ";
+          message = message + getLabeledStatus("Image8", isverify8);
 
 
-       if (_response.body["data"]["affectedRows"] >= 1) {
+          await ApiService.create().postSendNotification({"Ids":[imageverifylist[0].userId] , "type":"verification" , "message": "Verification of Pictures from Ravaldev Matrimonial "+message , "sender_type":"admin",
+            "sender_id": prefs.getString(SharedPrefs.userId) ,
+            "reciever_id":imageverifylist[0].userId , "title":"Image Verification" , "body":"Verification of Pictures from Ravaldev Matrimonial "+message ,
+            "communityId":prefs.getString(SharedPrefs.communityId) });
+
+
+
+          if (_response.body["data"]["affectedRows"] >= 1) {
 
          DialogClass().showDialog2(context, "Verification Success" , "Verification Process of Photos done For "+widget.fetchImages.name.toString()+" "+widget.fetchImages.surname.toString(), "Ok");
 
@@ -200,5 +225,24 @@ class VerifyImageListRowStateful extends State<VerifyImageListRow> {
 
   }
 
+
+
+  String getStatusMessage(String? status) {
+    if (status == "1") {
+      return "Verified";
+    } else if (status == "2") {
+      return "Rejected";
+    } else {
+      return ""; // nothing for 0 or null
+    }
+  }
+
+
+
+  String getLabeledStatus(String label, String? status) {
+    String msg = getStatusMessage(status);
+    if (msg.isEmpty) return "";
+    return "$label: $msg";
+  }
 
 }

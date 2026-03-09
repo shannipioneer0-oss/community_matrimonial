@@ -324,6 +324,8 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
 
                 //print(state_name+"------"+country_value);
 
+                print(res.length.toString()+"===-----"+p0);
+
                 if(res.length == 0) {
 
                   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -331,9 +333,11 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
                   final _response = await Provider.of<ApiService>(context, listen: false).postInsertStateOther
                     ({"state_name": p0, "country_id": country_value,
                     "community_id": prefs.getString(SharedPrefs.communityId)});
+
+
                   if (_response.body["data"]["affectedRows"] == 1) {
 
-                    permstateController.text = state_name;
+                    permstateController.text = p0.toString();
                     perm_State_value = _response.body["data"]["insertId"];
 
                   }
@@ -457,7 +461,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
                   });
 
                   if (_response.body["data"]["affectedRows"] == 1) {
-                    workstateController.text = p0;
+                    workstateController.text = p0.toString();
                     work_state_value = _response.body["data"]["insertId"];
                   }
 

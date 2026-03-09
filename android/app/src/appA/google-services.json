@@ -23,6 +23,25 @@
           "other_platform_oauth_client": []
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371992800955:android:d8581f46d0d52e784ac39e",
+        "android_client_info": {
+          "package_name": "com.matrimonial.community_matrimonial_latest2.appb"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcyIwNHXPBTiCGECmyHuyeHMk2Ldd9S9g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
     }
   ],
   "configuration_version": "1"

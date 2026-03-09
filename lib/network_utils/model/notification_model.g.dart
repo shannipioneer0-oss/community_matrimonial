@@ -32,6 +32,7 @@ NotificationItem _$NotificationItemFromJson(Map<String, dynamic> json) =>
       senderId: json['sender_id'] !=null ?  json['sender_id'] as String : "",
       receiverId: json['reciever_id'] != null ? json['reciever_id'] as String : "",
       communityId: json['communityId'] !=null ?  json['communityId'] as String : "",
+      datetime:  json['datetime'] !=null ?  json['datetime'] as String : "",
     );
 
 

@@ -36,7 +36,11 @@ class CustomDropdown extends StatelessWidget{
               IconButton(
                 icon: Icon(Icons.close, color: Colors.black45),
                 onPressed: () {
-                  controller.clear(); // Clear the text in the TextField
+
+                  if(labelText != "Select Gender") {
+                    controller.clear(); // Clear the text in the TextField
+                  }
+
                 },
               ),
               Icon(Icons.keyboard_arrow_down, color: Colors.black45),

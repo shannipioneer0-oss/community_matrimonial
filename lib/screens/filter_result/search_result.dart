@@ -75,6 +75,7 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
   ScrollController _scrollController = ScrollController();
 
   late  SharedPreferences prefs;
+  int prefsint =0;
 
   @override
   void initState() {
@@ -120,6 +121,11 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
 
     prefs = await SharedPreferences.getInstance();
 
+    setState(() {
+      prefsint = 1;
+    });
+
+
    }
 
 
@@ -135,9 +141,12 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
   }
 
 
+  List itemIds = [];
 
   int current_length = 32;
   int offset  = 0;
+
+  String status = "";
 
    _loadPage(BuildContext context  ,int page, int pageSize , bool isInitial) async {
 
@@ -149,7 +158,7 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
 
     isLoading = true;
 
-    if (isInitial) {
+    if(isInitial) {
       currentPage = 1;
       members.clear();
       totalPages = 1;
@@ -251,6 +260,36 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
         members.addAll(searchResult.getUsers());
         members_final.addAll(searchResult.getUsers());
 
+        if(widget.maps[21] == "in"){
+
+          status = "1";
+
+        }else if(widget.maps[21] == "uve"){
+
+          status = "2";
+
+        }else if(widget.maps[21] == "ve"){
+
+          status = "3";
+
+        }else if(widget.maps[21] == "unpaid"){
+
+          status = "4";
+
+        }else if(widget.maps[21] == "paid_uve"){
+
+          status = "5";
+
+        }else if(widget.maps[21] == "paid_ve"){
+
+          status = "6";
+
+        }
+
+
+
+
+
         total_count = searchResult.getTotalRowCount()[0].totalRowCount.toString();
         //current_length = searchResult.data[0][0].length;
         // controller.totalItemCount = searchResult.getTotalRowCount()[0].totalRowCount;
@@ -269,7 +308,7 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
   }
 
 
-
+  int select_type = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -300,7 +339,58 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
           slivers: [
 
             SliverAppBar(
-              title: Text('Search Results ('+total_count+") \nRavaldev Matrimony" , style: TextStyle(color: Colors.black87 , fontSize: 18),),
+              title: prefsint != 0 ? Row(children: [ Text('Search Results ('+total_count+") \nRavaldev Matrimony"+" - ("+status+")" , style: TextStyle(color: Colors.black87 , fontSize: 18),) , prefs != null && prefs.getString(SharedPrefs.role_type) == "admin" ? IconButton(onPressed: (){
+
+                print(itemIds);
+
+                setState(() {
+
+                  if(select_type == 1){
+                    select_type = 2;
+
+                    List item = ["Select All" , "Select Specific"];
+                    showDialog(context: context, builder: (context) {
+
+                      return AlertDialog(title: Text("Select for Notification" , style: TextStyle(fontSize: 18 ,fontWeight: FontWeight.bold),),
+                      content: Container(height: MediaQuery.of(context).size.height*0.3  ,child:ListView.builder(itemCount: item.length  ,itemBuilder: (context, index) {
+
+                          return GestureDetector(onTap: (){
+
+                            Navigator.pop(context);
+                            setState(() {
+
+                              if(item[index] == "Select All") {
+
+                                select_type = 3;
+                                members_final.forEach((element) {
+
+                                  itemIds.add(element.userId);
+
+                                },);
+
+                              }else{
+
+                                select_type = 2;
+                                itemIds.clear();
+
+                              }
+
+                            });
+
+
+                          } ,child:Container(padding: EdgeInsets.all(10)  ,child: Text(item[index] , style: TextStyle(fontWeight: FontWeight.w400 , fontSize: 18),),));
+
+                      },),));
+
+                    },);
+                  }else {
+                    select_type = 1;
+                    itemIds.clear();
+                  }
+
+                });
+
+              }, icon: Icon( select_type == 1 ? Icons.check_box_outline_blank : Icons.check_box)) : Container() ],) : Container(),
               pinned: true,
               floating: true,
               snap: true,
@@ -314,12 +404,14 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
                   margin: EdgeInsets.fromLTRB(16, 0, 16, 12),
                   child: TextField(
                     onChanged: (value) {
+                      
                       setState(() {
 
-                      members =  members_final.where((element) {
+                      members = members_final.where((element) {
 
                           return element.fullname.toLowerCase().contains(value.toLowerCase()) || element.education.toLowerCase().contains(value.toLowerCase()) || element.height.toLowerCase().contains(value.toLowerCase())
-                          || element.occupation.toLowerCase().contains(value.toLowerCase()) || element.profileId.toLowerCase() == value.toLowerCase();
+                          || element.occupation.toLowerCase().contains(value.toLowerCase()) || element.profileId.toLowerCase().contains(value.toLowerCase()) ||  element.mobile_number.contains(value);
+
                         },).toList();
 
                       });
@@ -340,7 +432,7 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
               ),
             ),
 
-            /// 📃 List
+            //
             SliverList(
 
               delegate: SliverChildBuilderDelegate(
@@ -348,7 +440,15 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
 
                     (context, index) {
 
-                      return  SearchResultList(fetchmatches: members[index] , index:index , prefs: prefs, type:widget.maps[21]);
+                      return  SearchResultList(fetchmatches: members[index] , index:index , prefs: prefs, type:widget.maps[21], select: select_type, press: (flag) {
+
+                        if(flag == 1){
+                          itemIds.add(members[index].userId);
+                        }else{
+                          itemIds.removeWhere((element) => element == members[index].userId);
+                        }
+
+                      },);
 
 
                     }
@@ -417,9 +517,66 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
 
     ),*/
 
-    )));
+    ),
+    
+    bottomNavigationBar: select_type == 1 ?  const SizedBox()  :  SafeArea(child: ElevatedButton(onPressed: () async {
+
+      print(itemIds);
+
+      showMessageDialog(context);
+
+
+    }, child: Text("Send Notification"))),
+    
+    ));
 
   }
 
+
+
+  void showMessageDialog(BuildContext context) {
+    TextEditingController messageController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Enter Message"),
+          content: TextField(
+            controller: messageController,
+            maxLines: 3,
+            decoration: const InputDecoration(
+              hintText: "Type your message here",
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                String message = messageController.text;
+                Navigator.pop(context);
+
+
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                await ApiService.create().postSendNotification({"Ids":  itemIds , "type":"list" , "message": message , "sender_type":"admin",
+                  "sender_id": prefs.getString(SharedPrefs.userId) ,
+                  "reciever_id": itemIds , "title":"Message From Ravaldev Matrimony" , "body": message ,
+                  "communityId":prefs.getString(SharedPrefs.communityId) });
+
+              },
+              child: const Text("Send"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
 }

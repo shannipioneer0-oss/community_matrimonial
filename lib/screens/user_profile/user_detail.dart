@@ -4,6 +4,7 @@ import 'package:accordion/controllers.dart';
 import 'package:community_matrimonial/app_utils/Dialogs.dart';
 import 'package:community_matrimonial/app_utils/StylishDrawer.dart';
 import 'package:community_matrimonial/locale/TranslationService.dart';
+import 'package:community_matrimonial/network_utils/model/profile_details_model.dart';
 import 'package:community_matrimonial/network_utils/service/api_service.dart';
 import 'package:community_matrimonial/screens/user_profile/ProfileDetailItem.dart';
 import 'package:community_matrimonial/utils/Colors.dart';
@@ -12,6 +13,7 @@ import 'package:community_matrimonial/utils/Strings.dart';
 import 'package:community_matrimonial/utils/utils.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_device_imei/flutter_device_imei.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -119,7 +121,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
   String fullname = "" , fullnameabove = "" , dob = ""  , age = "" , createdby = "" , marital = "" , caste = "" , subcaste2 = "" ,subcaste ="" , lang_known = "", mother_tongue = "" ,isnri = "" , nri_details = "" , profileId = "";
   String height = "" , wieght = "" , skintone = "" ,bld_group = "" , body_type ="" ,diet_type = "" ,drink_type = "" ,smoke_type = "" ,fitness ="", handicap = "" ,handicap_details ="" , overall_health_details= "" ;
   String mobile= "" ,alt_mobile = "" , email ="" ,alt_email = "", country = "" , perm_state = "" , perm_city = "" , work_state = "" ,work_city = "" , work_address = "" , perm_address = "" , contact_time = "" ;
-  String education = "" , edu_details = "" , is_reputed = "" , institute_name = "" , is_administrative = "" , admin_position= "" ;
+  String education = "" , edu_details = "" , status = "" , is_reputed = "" , institute_name = "" , is_administrative = "" , admin_position= "" ,specialization = "" ;
   String occuapation = "" , occupation_details = "" , annual_income = "" , employment_type = "" , office_address = "";
   String rashi = "" , birth_star = "" , gotra = "" ,bdate = "" ,bcity ="" ,btime = "" , magalik = "" , belive_horoscope = "" , location_coords = "" , time_zone = "";
   String fml_value = "" , fml_status = "" , fml_type = "" , num_brother  ="" , num_sister = "" ,num_married_bro = "" ,num_married_sister = "" , father_name = "" , mother_name = "" , father_coccup = "" ,mother_occup = "" ,house_owned = "" ,house_type = "" , family_slogan = "" , parent_stay = "" , family_details = "";
@@ -127,10 +129,12 @@ class UserDetailScreen  extends State<UserDetailStateful>{
   String age_range = "" , height_range = "" , marital_prefs = "" , caste_prefs ="" , subcaste_prefs ="" , skintone_prefs = "" ,state_prefs = "" ,city_prefs = "" , edu_prefs = "" , ocupation_prefs = "" ,body_prefs = "" ;
   String diet_prefs = "" ,drink_prefs= "" , smoke_prefs = "" ,   fml_value_prefs = "" , annual_income_prefs = "" , partner_details = "";
   String pic1= "" ,pic2= "" ,pic3= "",pic4= "",pic5= "",pic6= "",pic7= "",pic8= "",pic9= "",pic10= "";
+  String oldpic1= "" ,oldpic2= "" ,oldpic3= "",oldpic4= "",oldpic5= "", oldpic6= "",oldpic7= "",oldpic8= "",oldpic9= "", oldpic10= "";
   String verifypic1= "" ,verifypic2= "" ,verifypic3= "",verifypic4= "",verifypic5= "",verifypic6= "",verifypic7= "",verifypic8= "",verifypic9= "",verifypic10= "";
   String communityName = "";
-  String hobbies = "";
+  String hobbies = "" , mobilenumber = "";
   bool isload =  false , initialload = false;
+  String gender = "";
 
   String membername1 = "";
   String relation1 = "";
@@ -209,7 +213,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
       prefs.remove(SharedPrefs.isLogin);
       prefs.clear();
 
-      navService.pushNamedAndRemoveUntil("/intro");
+      navService.pushNamedAndRemoveUntil("/login");
 
       return;
     }
@@ -233,6 +237,10 @@ class UserDetailScreen  extends State<UserDetailStateful>{
          communityName = prefs.getString(SharedPrefs.communityName).toString();
          fullnameabove = prefs.getString(SharedPrefs.firstName).toString()+" "+prefs.getString(SharedPrefs.lastname).toString();
 
+         gender = prefs.getString(SharedPrefs.gender_fetch).toString();
+
+         print(gender+"-=-=()()");
+
         var userData = _response.body["data"][0][0]["0"];
 
         if(userData != null) {
@@ -250,7 +258,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
               ? userData["subcaste_txt"]
               : "";
         /*  lang_known = userData["language_known"].split("*")[0] ?? "";
-          mother_tongue = userData["mother_tongue"].split(",")[0] ?? "";
+          mother_tongue = userData["mother_tongue"].split(",
           isnri = userData["isnri"] ?? "";
           nri_details = userData["nri_detail"] ?? "";*/
           profileId = prefs.getString(SharedPrefs.profileid).toString() ?? "";
@@ -323,8 +331,12 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                ? adminServiceDetails['institute_name'].split(",")[0] ?? ""
                : "";
            education = adminServiceDetails['education'] != null
-               ? adminServiceDetails['education'].split(",")[0]
+               ? adminServiceDetails['education'].split(",")[0].toString().replaceAll(", 0", "")
                : "";
+
+           status = adminServiceDetails["status"];
+
+           specialization = adminServiceDetails["specialization"];
            edu_details = adminServiceDetails['education_detail'] != null
                ? adminServiceDetails['education_detail']
                : "";
@@ -410,6 +422,16 @@ class UserDetailScreen  extends State<UserDetailStateful>{
          pic8 = pictures['pic8'] ?? '';
          pic9 = pictures['pic9'] ?? '';
          pic10 = pictures['pic10'] ?? '';
+         oldpic1 = pictures['oldpic1'] ?? '';
+         oldpic2 = pictures['oldpic2'] ?? '';
+         oldpic3 = pictures['oldpic3'] ?? '';
+         oldpic4 = pictures['oldpic4'] ?? '';
+         oldpic5 = pictures['oldpic5'] ?? '';
+         oldpic6 = pictures['oldpic6'] ?? '';
+         oldpic7 = pictures['oldpic7'] ?? '';
+         oldpic8 = pictures['oldpic8'] ?? '';
+         oldpic9 = pictures['oldpic9'] ?? '';
+         oldpic10 = pictures['oldpic10'] ?? '';
 
          print(pic1 + "-----++++=======");
 
@@ -555,6 +577,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
          communityName = prefs.getString(SharedPrefs.communityName).toString();
          fullnameabove = prefs.getString(SharedPrefs.firstName).toString()+" "+prefs.getString(SharedPrefs.lastname).toString();
 
+         gender = prefs.getString(SharedPrefs.gender_fetch).toString();
          fullname = prefs.getString(SharedPrefs.fullname).toString();
 
          print(prefs.getString(SharedPrefs.dob).toString()+"()()");
@@ -621,6 +644,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
          overall_health_details = prefs.getString(SharedPrefs.extra_details_physique).toString();
 
 
+         mobilenumber = prefs.getString(SharedPrefs.mobile).toString();
          mobile = prefs.getString(SharedPrefs.mobileNumber).toString();
          alt_mobile = prefs.getString(SharedPrefs.alternateMobile).toString();
          email = prefs.getString(SharedPrefs.emailId).toString();
@@ -675,13 +699,15 @@ class UserDetailScreen  extends State<UserDetailStateful>{
 
          final result = [
             if (first.isNotEmpty) first ,
-           if (second.isNotEmpty) second,
+           if (second.isNotEmpty) second ,
            if (third.isNotEmpty) third
          ];
 
-         education = result.join(", ");
+         education = result.join(", ").replaceAll(", 0", "");
          edu_details = prefs.getString(SharedPrefs.educationDetail).toString();
          is_reputed = prefs.getString(SharedPrefs.isFromIITIIMNIT).toString();
+         specialization = prefs.getString(SharedPrefs.specialization).toString();
+         status = prefs.getString(SharedPrefs.status).toString();
          institute_name = prefs.getString(SharedPrefs.instituteName).toString().split(",")[0];
          is_administrative = prefs.getString(SharedPrefs.isFromAdminService).toString();
          admin_position = prefs.getString(SharedPrefs.adminPositionName).toString();
@@ -692,46 +718,32 @@ class UserDetailScreen  extends State<UserDetailStateful>{
          office_address = prefs.getString(SharedPrefs.officeAddress).toString();
 
 
-         rashi =
-         prefs.getString(SharedPrefs.astroRashi).toString().split(",")[0];
-         birth_star =
-         prefs.getString(SharedPrefs.birthStar).toString().split(",")[0];
+         rashi = prefs.getString(SharedPrefs.astroRashi).toString().split(",")[0];
+         birth_star = prefs.getString(SharedPrefs.birthStar).toString().split(",")[0];
          gotra = prefs.getString(SharedPrefs.gotra).toString();
          bdate = prefs.getString(SharedPrefs.birthDate).toString();
          bcity = prefs.getString(SharedPrefs.birthPlace).toString();
          btime = prefs.getString(SharedPrefs.birthTime).toString();
          magalik = prefs.getString(SharedPrefs.isMangalik).toString() == "1"
-             ? "Yes"  : prefs.getString(SharedPrefs.isMangalik).toString() == "-1" ? ""
-             : "No";
-         belive_horoscope =
-             prefs.getString(SharedPrefs.believeHoroscope).toString() == "1" ? "Yes" :
-             prefs.getString(SharedPrefs.isMangalik).toString() == "-1" ? ""
-                 : "No";
-         location_coords =
-             prefs.getString(SharedPrefs.locationCoordinates).toString();
+             ? "Yes"  : prefs.getString(SharedPrefs.isMangalik).toString() == "-1" ? "" : "No";
+         belive_horoscope = prefs.getString(SharedPrefs.believeHoroscope).toString() == "1" ? "Yes" :
+             prefs.getString(SharedPrefs.isMangalik).toString() == "-1" ? "" : "No";
+         location_coords = prefs.getString(SharedPrefs.locationCoordinates).toString();
 
 
-         fml_value =
-         prefs.getString(SharedPrefs.familyValue).toString().split(",")[0];
-         fml_type =
-         prefs.getString(SharedPrefs.familyType).toString().split(",")[0];
-         fml_status =
-         prefs.getString(SharedPrefs.familyStatus).toString().split(",")[0];
+         fml_value = prefs.getString(SharedPrefs.familyValue).toString().split(",")[0];
+         fml_type = prefs.getString(SharedPrefs.familyType).toString().split(",")[0];
+         fml_status = prefs.getString(SharedPrefs.familyStatus).toString().split(",")[0];
          num_brother = prefs.getString(SharedPrefs.noBrother).toString();
          num_sister = prefs.getString(SharedPrefs.noSister).toString();
-         num_married_bro =
-             prefs.getString(SharedPrefs.marriedBrother).toString();
-         num_married_sister =
-             prefs.getString(SharedPrefs.marriedSister).toString();
+         num_married_bro = prefs.getString(SharedPrefs.marriedBrother).toString();
+         num_married_sister = prefs.getString(SharedPrefs.marriedSister).toString();
          father_name = prefs.getString(SharedPrefs.fatherName).toString();
          mother_name = prefs.getString(SharedPrefs.motherName).toString();
-         father_coccup =
-             prefs.getString(SharedPrefs.fatherOccupation).toString();
-         mother_occup =
-             prefs.getString(SharedPrefs.motherOccupation).toString();
+         father_coccup = prefs.getString(SharedPrefs.fatherOccupation).toString();
+         mother_occup = prefs.getString(SharedPrefs.motherOccupation).toString();
          house_owned = prefs.getString(SharedPrefs.houseOwned).toString().split(",")[0];
-         house_type =
-         prefs.getString(SharedPrefs.houseType).toString().split(",")[0];
+         house_type = prefs.getString(SharedPrefs.houseType).toString().split(",")[0];
          family_slogan = prefs.getString(SharedPrefs.detailFamily).toString();
          shakh =  prefs.getString(SharedPrefs.sakh).toString();
          native =  prefs.getString(SharedPrefs.native).toString();
@@ -741,12 +753,37 @@ class UserDetailScreen  extends State<UserDetailStateful>{
 
 
          pic1 = prefs.getString(SharedPrefs.pic1).toString();
+         pic2 = prefs.getString(SharedPrefs.pic2).toString();
+         pic3 = prefs.getString(SharedPrefs.pic3).toString();
+         pic4 = prefs.getString(SharedPrefs.pic4).toString();
+         pic5 = prefs.getString(SharedPrefs.pic5).toString();
+         pic6 = prefs.getString(SharedPrefs.pic6).toString();
+         pic7 = prefs.getString(SharedPrefs.pic7).toString();
+         pic8 = prefs.getString(SharedPrefs.pic8).toString();
+
+         oldpic1 = prefs.getString(SharedPrefs.oldpic1).toString();
+         oldpic2 = prefs.getString(SharedPrefs.oldpic2).toString();
+         oldpic3 = prefs.getString(SharedPrefs.oldpic3).toString();
+         oldpic4 = prefs.getString(SharedPrefs.oldpic4).toString();
+         oldpic5 = prefs.getString(SharedPrefs.oldpic5).toString();
+         oldpic6 = prefs.getString(SharedPrefs.oldpic6).toString();
+         oldpic7 = prefs.getString(SharedPrefs.oldpic7).toString();
+         oldpic8 = prefs.getString(SharedPrefs.oldpic8).toString();
+
+         verifypic1 = prefs.getString(SharedPrefs.isVerifyPic1).toString();
+         verifypic2 = prefs.getString(SharedPrefs.isVerifyPic2).toString();
+         verifypic3 = prefs.getString(SharedPrefs.isVerifyPic3).toString();
+         verifypic4 = prefs.getString(SharedPrefs.isVerifyPic4).toString();
+         verifypic5 = prefs.getString(SharedPrefs.isVerifyPic5).toString();
+         verifypic6 = prefs.getString(SharedPrefs.isVerifyPic6).toString();
+         verifypic7 = prefs.getString(SharedPrefs.isVerifyPic7).toString();
+         verifypic8 = prefs.getString(SharedPrefs.isVerifyPic8).toString();
+
+
 
          age_range = prefs.getString(SharedPrefs.ageRange).toString();
          height_range = prefs.getString(SharedPrefs.heightRange).toString();
-         marital_prefs =
-         prefs.getString(SharedPrefs.maritalStatus_prefs).toString().split(
-             "*")[0];
+         marital_prefs = prefs.getString(SharedPrefs.maritalStatus_prefs).toString().split("*")[0];
          caste_prefs =
          prefs.getString(SharedPrefs.caste_prefs).toString().split("*")[0];
          subcaste_prefs =
@@ -769,15 +806,11 @@ class UserDetailScreen  extends State<UserDetailStateful>{
          prefs.getString(SharedPrefs.smokeType_prefs).toString().split("*")[0];
          drink_prefs =
          prefs.getString(SharedPrefs.drinkType_prefs).toString().split("*")[0];
-         fml_value_prefs =
-         prefs.getString(SharedPrefs.familyValue_prefs).toString().split(
-             "*")[0];
-         annual_income_prefs =
-             prefs.getString(SharedPrefs.annualIncome_prefs).toString();
+         fml_value_prefs = prefs.getString(SharedPrefs.familyValue_prefs).toString().split("*")[0];
+         annual_income_prefs = prefs.getString(SharedPrefs.annualIncome_prefs).toString();
+
 
          hobbies = prefs.getString(SharedPrefs.hobbies).toString() ?? "";
-
-
 
 
          membername1 = prefs.getString(SharedPrefs.membername1).toString();
@@ -889,7 +922,39 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                     ),
                   ],
                 ),
-                child: ClipOval(
+                child: GestureDetector(onTap: (){
+
+                  Map<String, dynamic> jsonData = {
+                    "Id": 1,
+                    "pic1": pic1,
+                    "pic2": pic2,
+                    "pic3": pic3,
+                    "pic4": pic4,
+                    "pic5": pic5,
+                    "pic6": pic6,
+                    "pic7": pic7,
+                    "pic8": pic8,
+                    "pic9": pic9,
+                    "pic10":pic10,
+                    "isverifypic1":"1",
+                    "isverifypic2":"1",
+                    "isverifypic3":"1",
+                    "isverifypic4":"1",
+                    "isverifypic5":"1",
+                    "isverifypic6":"1",
+                    "isverifypic7":"1",
+                    "isverifypic8":"1",
+                    "isverifypic9":"1",
+                    "userId": "0",
+                    "communityId": "10",
+                    "profileId": "10"
+                  };
+
+                  PhotoInfo photoinfo = new PhotoInfo.fromJson(jsonData);
+                  navService.pushNamed("/img_gallery_other",
+                      args: [photoinfo , fullnameabove]);
+
+                }  ,child:ClipOval(
                   child: Image.network(
                     prefs == null ? "" : Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+pic1,
                     width: 150.0,
@@ -900,16 +965,25 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                     },
                   ),
                 ),
-              ),
+              ),),
               SizedBox(height: 10.0),
               Container(child: Text(fullnameabove , textAlign: TextAlign.center, style: TextStyle(fontSize: 18 ,color: ColorsPallete.blue_2 ,fontWeight: FontWeight.bold),),),
               SizedBox(height: 5),
               Container(child: Text("Profile ID : "+profileId , textAlign: TextAlign.center, style: TextStyle(fontSize: 16 ,color: ColorsPallete.purple ,fontWeight: FontWeight.bold),),),
+              SizedBox(height: 5),
+              GestureDetector(onTap: (){
+
+                Clipboard.setData(ClipboardData(text: mobilenumber)).then((_) {
+
+                });
+
+              }  ,child:Container(child: Text("Mobile No. : "+mobilenumber , textAlign: TextAlign.center, style: TextStyle(fontSize: 16 ,color: ColorsPallete.purple ,fontWeight: FontWeight.bold),),),),
 
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
 
-                  navService.pushNamed("/img_gallery");
+                 final res =  await navService.pushNamed("/img_gallery");
+                 initdata();
 
                 },
                 style: ElevatedButton.styleFrom(
@@ -977,6 +1051,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                       ProfileDetailItem(label: TranslationService.translate("marital_status_key"), value: marital ,  isrequired: "1") ,
                       ProfileDetailItem(label: TranslationService.translate("caste_key"), value: caste ,  isrequired: "1"),
                       ProfileDetailItem(label: TranslationService.translate("shakh"), value: subcaste ,  isrequired: "1"),
+                      ProfileDetailItem(label: TranslationService.translate("gender"), value: gender ,  isrequired: "1"),
                       /*ProfileDetailItem(label:TranslationService.translate("language_known_key"), value: lang_known),
                       ProfileDetailItem(label: TranslationService.translate("mother_tongue_key"), value: mother_tongue),
                       ProfileDetailItem(label: TranslationService.translate("is_nri") , value: isnri == "1" ? "Yes"  : "No"),
@@ -1070,12 +1145,19 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+
                       ProfileDetailItem(label: TranslationService.translate("education_key"), value: education, isrequired: "1"),
+                      ProfileDetailItem(label: TranslationService.translate("specialization"), value: specialization),
+                      ProfileDetailItem(label: TranslationService.translate("education_running_status"), value: status == "1" ? "Pursuing (Running)" : status == "2" ? "Completed" : ""),
                       ProfileDetailItem(label: TranslationService.translate("edu_details_key"), value: edu_details),
-                      /*ProfileDetailItem(label: TranslationService.translate("is_reputed_key"), value: is_reputed == "0" ? "No" : "Yes"),
+
+                      /*
+                      ProfileDetailItem(label: TranslationService.translate("is_reputed_key"), value: is_reputed == "0" ? "No" : "Yes"),
                       ProfileDetailItem(label: TranslationService.translate("institute_name_key"), value: institute_name),
                       ProfileDetailItem(label: TranslationService.translate("is_administrative_key") , value: is_administrative == "0" ? "No" : "Yes"),
-                      ProfileDetailItem(label: TranslationService.translate("admin_position_key"), value: admin_position),*/
+                      ProfileDetailItem(label: TranslationService.translate("admin_position_key"), value: admin_position),
+                      */
+
                     ],
                   ),
                 ),),

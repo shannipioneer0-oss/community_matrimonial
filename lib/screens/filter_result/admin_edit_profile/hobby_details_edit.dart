@@ -191,9 +191,10 @@ class HobbyDetailsScreen  extends State<HobbyDetailsStateful>{
 
              if (_response.body["data"]["affectedRows"] == 1) {
 
-                   EasyLoading.dismiss();
+                  EasyLoading.dismiss();
                   prefs.setString(SharedPrefs.hobbies ,  controller.text.toString());
-                   navService.goBack();
+                  navService.goBack();
+
               }
 
             }else{

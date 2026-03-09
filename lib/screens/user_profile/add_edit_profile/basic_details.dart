@@ -76,8 +76,12 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
   TextEditingController mothertongueController = new TextEditingController();
   TextEditingController nriController = new TextEditingController();
 
+  TextEditingController controllergender =new TextEditingController();
+
   String firtname = "" , lastname = ""  , dob = "";
   String created_value = "" , marital_value = "" , caste_value = "" , subcaste_value = "" , mother_tongue_value = "" , lang_known_value = "" , nri_detail = "";
+
+  String user_verify = "0";
 
   @override
   void initState() {
@@ -89,17 +93,22 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
 
   }
 
-  String passdate = "";
+  String passdate = "" , passdate2 = "";
+
 
   initView() async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    setState(() {
+      user_verify = prefs.getString(SharedPrefs.user_verify).toString();
+    });
 
-    print(prefs.getString(SharedPrefs.birthdate).toString()+"====()()");
+    print(prefs.getString(SharedPrefs.user_verify).toString()+"====()()");
 
     firstnameController.text = utils().replaceNull(prefs.getString(SharedPrefs.firstName).toString());
     lastnameController.text = utils().replaceNull(prefs.getString(SharedPrefs.lastname).toString());
+    controllergender.text =  prefs.getString(SharedPrefs.gender_fetch).toString();
    // dobController.text =   utils().replaceNull(prefs.getString(SharedPrefs.dob).toString());
 
     if(utils().replaceNull(prefs.getString(SharedPrefs.birthdate).toString()) != ""){
@@ -107,6 +116,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
     }
 
     passdate = prefs.getString(SharedPrefs.birthdate).toString();
+    passdate2 = prefs.getString(SharedPrefs.birthdate).toString();
 
     print(passdate+"-=-=-=-=-=");
 
@@ -125,8 +135,8 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
     marital_value = prefs.getString(SharedPrefs.maritalStatus).toString().split(",")[1];
     caste_value  = prefs.getString(SharedPrefs.caste).toString().split(",")[1];
     subcaste_value  = prefs.getString(SharedPrefs.subcaste_shakh).toString();
-    lang_known_value = prefs.getString(SharedPrefs.languageKnown).toString().split("*")[1];
-    mother_tongue_value = prefs.getString(SharedPrefs.motherTongue).toString().split(",")[1];
+   // lang_known_value = prefs.getString(SharedPrefs.languageKnown).toString().split("*")[1];
+    //mother_tongue_value = prefs.getString(SharedPrefs.motherTongue).toString().split(",")[1];
 
     print(prefs.getString(SharedPrefs.birthdate).toString()+"====()()");
 
@@ -147,6 +157,8 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
 
   late ConnectivityResult _connectivityResult;
   bool isnri = false;
+  List<DataFetchParams> items_gender = [DataFetchParams(label: "Male", value: "Male", value2: "Male") , DataFetchParams(label: "Female", value: "Female", value2: "Female")];
+
 
   @override
   Widget build(BuildContext context) {
@@ -173,21 +185,32 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
       body:SafeArea(child: SingleChildScrollView(child:Container(margin: EdgeInsets.only(left: 15 ,right: 15) ,child:Column(children: [
 
         Divider(),
-        Container(margin: EdgeInsets.only(top: 10) ,child:CustomTextField(icondata: Icons.person  ,controller: firstnameController , labelText: TranslationService.translate("firstnameHint"), enabled: firtname.isEmpty ? false : true ,),),
+        Container(margin: EdgeInsets.only(top: 10) ,child:CustomTextField(icondata: Icons.person  ,controller: firstnameController , labelText: TranslationService.translate("firstnameHint"), enabled: firtname.isEmpty || user_verify == "0" ? false : true ,),),
         SizedBox(height: 20,),
-        CustomTextField(icondata: Icons.person , controller: lastnameController , labelText: TranslationService.translate("enter_surname"), enabled: lastname.isEmpty ? false : true,),
+        CustomTextField(icondata: Icons.person , controller: lastnameController , labelText: TranslationService.translate("enter_surname"), enabled: lastname.isEmpty || user_verify == "0" ? false : true,),
         SizedBox(height: 20,),
+        CustomDropdown(icondata: Icons.supervised_user_circle, controller: controllergender, labelText: "Select Gender", onButtonPressed: () async {
+
+          if(user_verify == "0") {
+
+            final value = await SingleSelectDialog().showBottomSheet3(context, items_gender);
+            controllergender.text = value.label;
+
+          }
+
+        }),
+        SizedBox(height: 15,),
         GestureDetector(onTap: () async {
 
-          if(dob.isEmpty){
+          if(dob.isEmpty ||  user_verify == "0"){
 
         final date =  await showDatePickerDialog(
             context: context,
-            initialDate: DateTime(int.parse(dobController.text.split("-")[2].toString()), int.parse(dobController.text.split("-")[1].toString()), int.parse(dobController.text.split("-")[0].toString())),
+            initialDate: dobController.text.toString().isEmpty ? DateTime(DateTime.now().year , DateTime.now().month , DateTime.now().day)  : DateTime(int.parse(dobController.text.split("/")[2].toString()), int.parse(dobController.text.split("/")[1].toString()), int.parse(dobController.text.split("/")[0].toString())),
             minDate: DateTime(1960, 10, 10),
-            maxDate: DateTime(2024, 10, 30),
+            maxDate: DateTime(2040, 10, 30),
             currentDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-            selectedDate: DateTime(int.parse(dobController.text.split("-")[2].toString()), int.parse(dobController.text.split("-")[1].toString()), int.parse(dobController.text.split("-")[0].toString())),
+            selectedDate: dobController.text.toString().isEmpty ? DateTime(DateTime.now().year , DateTime.now().month , DateTime.now().day)  : DateTime(int.parse(dobController.text.split("/")[2].toString()), int.parse(dobController.text.split("/")[1].toString()), int.parse(dobController.text.split("/")[0].toString())),
             currentDateDecoration: const BoxDecoration(),
             currentDateTextStyle: const TextStyle(),
             daysOfTheWeekTextStyle: const TextStyle(),
@@ -228,6 +251,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
           }
 
           dobController.text = date.year.toString() + "-" + month + "-" + day;
+          passdate2 = date.year.toString()+"-"+month+"-"+day;
 
         }
 
@@ -377,11 +401,12 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                 "fullname": firstnameController.text.toString() + " " +
                     lastnameController.text.toString(),
                 "created_by": created_value,
-                "dob": passdate,
+                "dob": passdate2,
                 "age": calculateAge(DateTime(int.parse(passdate.toString().split("-")[0]) , int.parse(passdate.toString().split("-")[1]) , int.parse(passdate.toString().split("-")[2]))).toString(),
                 "marital_status": marital_value,
                 "religion": "Hindu",
                 "caste": caste_value,
+                "gender": controllergender.text.toString(),
                 "subcaste": subcasteController.text.toString(),
                 "language_known": lang_known_value,
                 "mother_tongue": mother_tongue_value,
@@ -399,13 +424,20 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
             await prefs.setString(
                 SharedPrefs.lastname, lastnameController.text.toString());
             await prefs.setString(SharedPrefs.fullname , firstnameController.text.toString()+" "+lastnameController.text.toString());
-            await prefs.setString(SharedPrefs.age , calculateAge(DateTime(int.parse(passdate.toString().split("-")[0]) , int.parse(passdate.toString().split("-")[1]) , int.parse(passdate.toString().split("-")[2]))).toString());
+            await prefs.setString(SharedPrefs.age , calculateAge(DateTime(int.parse(passdate2.toString().split("-")[0]) , int.parse(passdate2.toString().split("-")[1]) , int.parse(passdate2.toString().split("-")[2]))).toString());
+
+            await prefs.setString(
+                SharedPrefs.gender_fetch, controllergender.text
+                .toString());
 
             await prefs.setString(
                 SharedPrefs.createdBy, profilecreatedController.text
                 .toString() + "," + created_value);
             await prefs.setString(
-                SharedPrefs.dob, passdate
+                SharedPrefs.dob, passdate2
+                .toString());
+            await prefs.setString(
+                SharedPrefs.birthdate, passdate2
                 .toString());
             await prefs.setString(
                 SharedPrefs.maritalStatus, maritalController.text
@@ -426,6 +458,10 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
 
             EasyLoading.dismiss();
 
+            if(utils().isCompleted(context) == true){
+              ApiService.create().postUpdateStatus({"status_update":"2" , "userId": prefs.getString(SharedPrefs.userId)});
+            }
+
             if (widget.type == "insert") {
               navService.pushNamed("/lifestyle_details", args: "insert");
             } else {
@@ -439,6 +475,8 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
         } else {
           EasyLoading.show(status: 'Please wait...');
 
+          print(prefs.getString(SharedPrefs.basic_details_id).toString()+"-=-=()");
+
           final _response = await Provider.of<ApiService>(
               context, listen: false)
               .postBasicDetailUpdate(
@@ -446,17 +484,19 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                 "fullname": firstnameController.text.toString() + " " +
                     lastnameController.text.toString(),
                 "created_by": created_value,
-                "dob": passdate,
-                "age": calculateAge(DateTime(int.parse(passdate.toString().split("-")[0]) , int.parse(passdate.toString().split("-")[1]) , int.parse(passdate.toString().split("-")[2]))).toString(),
+                "dob": passdate2,
+                "age": "0",
                 "marital_status": marital_value,
                 "religion": "Hindu",
                 "caste": caste_value,
+                "gender": controllergender.text.toString(),
                 "subcaste": subcasteController.text.toString(),
                 "isnri" : isnri == false ? "0" : "1" ,
                 "nri_detail" : nriController.text.toString(),
                 "language_known": lang_known_value,
                 "mother_tongue": mother_tongue_value,
                 "Id": prefs.getString(SharedPrefs.basic_details_id),
+                "userId" : prefs.getString(SharedPrefs.userId)
               }
           );
 
@@ -464,17 +504,23 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
           print(_response.body.toString()+"---"+dobController.text.toString());
 
           if (_response.body["success"] == 1) {
+
             await prefs.setString(
                 SharedPrefs.firstName, firstnameController.text.toString());
             await prefs.setString(
                 SharedPrefs.lastname, lastnameController.text.toString());
             await prefs.setString(SharedPrefs.fullname , firstnameController.text.toString()+" "+lastnameController.text.toString());
-            await prefs.setString(SharedPrefs.age , calculateAge(DateTime(int.parse(passdate.toString().split("-")[0]) , int.parse(passdate.toString().split("-")[1]) , int.parse(passdate.toString().split("-")[2]))).toString());
+            await prefs.setString(SharedPrefs.age , calculateAge(DateTime(int.parse(passdate2.toString().split("-")[0]) , int.parse(passdate2.toString().split("-")[1]) , int.parse(passdate2.toString().split("-")[2]))).toString());
             await prefs.setString(
                 SharedPrefs.createdBy, profilecreatedController.text
                 .toString() + "," + created_value);
             await prefs.setString(
-                SharedPrefs.dob, passdate
+                SharedPrefs.dob, passdate2
+                .toString());
+            await prefs.setString(SharedPrefs.gender_fetch, controllergender.text.toString());
+
+            await prefs.setString(
+                SharedPrefs.birthdate, passdate2
                 .toString());
             await prefs.setString(
                 SharedPrefs.maritalStatus, maritalController.text
@@ -491,15 +537,23 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
             await prefs.setString(SharedPrefs.isnri, isnri == true ? "1" : "0");
             await prefs.setString(SharedPrefs.nri_details, nriController.text.toString());
 
-            EasyLoading.dismiss();
 
+            if(utils().isCompleted(context) == true){
+              ApiService.create().postUpdateStatus({"status_update":"2" , "userId": prefs.getString(SharedPrefs.userId)});
+            }
+
+            EasyLoading.dismiss();
             navService.goBack();
+
           } else {
+
             EasyLoading.dismiss();
 
             DialogClass().showDialog2(context, "Basic Details Submit Alert!",
                 "Some problem occured Please try again", "Ok");
+
           }
+
         }
       }
     }

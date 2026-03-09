@@ -573,11 +573,17 @@ class SettingsState extends State<SettingsScreen> {
       TextEditingController controller  =new TextEditingController();
       TextEditingController controllerPassword  =new TextEditingController();
 
-      Dialogs.materialDialog(
+     /* Dialogs.materialDialog(
           color: Colors.white,
           msg: 'Are you sure you want to delete this account? ',
           title: 'Delete Account Alert!',
-          customView: Container( padding: EdgeInsets.all(10) ,child:Column( crossAxisAlignment: CrossAxisAlignment.start ,children: [
+          customView: SingleChildScrollView(child:Padding(
+          padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom, // ✅ pushes content above keyboard
+      ),
+      child: Container( padding: EdgeInsets.all(10) ,child:Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start ,children: [
             SizedBox(height: 20,),
             Text("Enter reason to delete") ,
             Container(child: TextField(controller: controller, ),),
@@ -586,7 +592,7 @@ class SettingsState extends State<SettingsScreen> {
 
             Text("Enter "+randomotp+" below to delete") ,
             Container(child: TextField(controller: controllerPassword, ),),
-          ],),),
+          ],),),),),
           customViewPosition: CustomViewPosition.BEFORE_ACTION,
           context: context,
           actions: [
@@ -674,7 +680,133 @@ class SettingsState extends State<SettingsScreen> {
               iconColor: Colors.red,
             )
 
-          ]);
+          ])*/
+
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Delete Account Alert!"),
+            content: SingleChildScrollView(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 10),
+
+                  Text("Are you sure you want to delete this account?"),
+                  SizedBox(height: 20),
+
+                  Text("Enter reason to delete"),
+                  SizedBox(height: 8),
+
+                  TextField(
+                    controller: controller,
+                    minLines: 1,
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+
+                  SizedBox(height: 20),
+
+                  Text("Enter $randomotp below to delete"),
+                  SizedBox(height: 8),
+
+                  TextField(
+                    controller: controllerPassword,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  if (controllerPassword.text.trim() == randomotp) {
+                    Navigator.pop(context);
+
+                    SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
+
+                    final response = await Provider.of<ApiService>(
+                      context,
+                      listen: false,
+                    ).postDeleteAccount({
+                      "delete_account_reason": controller.text.trim(),
+                      "userId": prefs.getString(SharedPrefs.userId),
+                    });
+
+                    if (response.body["success"].toString() == "1") {
+                      await prefs.clear();
+
+                      navService.pushNamed("/login");
+
+                      showDialog(
+                        context: context,
+                        builder: (_) {
+                          return AlertDialog(
+                            content:
+                            Text("Account Deleted Successfully"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text("OK"),
+                              )
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (_) {
+                        return AlertDialog(
+                          content: Text(
+                              "Enter $randomotp properly to delete."),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("OK"),
+                            )
+                          ],
+                        );
+                      },
+                    );
+                  }
+                },
+                child: Text("Delete"),
+              ),
+            ],
+          );
+        },
+      );
+
+
 
 
 
@@ -895,7 +1027,7 @@ SizedBox(height: 20,),
           prefs.remove(SharedPrefs.isLogin);
           prefs.clear();
 
-          navService.pushNamedAndRemoveUntil("/intro");
+          navService.pushNamedAndRemoveUntil("/login");
 
         },
         style: ElevatedButton.styleFrom(

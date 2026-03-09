@@ -66,7 +66,8 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
     {
       setState(() {
         if (widget.photo[0].pic1 != null && widget.photo[0].pic1!.isNotEmpty &&
-            widget.photo[0].pic1 != "null") {
+            widget.photo[0].pic1 != "null" && widget.photo[0].pic1 != "0"  && widget.photo[0].isVerifyPic1 == "1") {
+
           listpics.add(Image.network(
             Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
                 prefs.getString(SharedPrefs.communityId).toString()) +
@@ -76,9 +77,25 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
               return RoundedContainer();
             },
           ));
+        }else if (widget.photo[0].pic1 != null && widget.photo[0].pic1!.isNotEmpty &&
+            widget.photo[0].pic1 != "null" && widget.photo[0].pic1 != "0"  && widget.photo[0].isVerifyPic1 != "1") {
+
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].oldpic1.toString(),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return RoundedContainer();
+            },
+          ));
+
+
         }
+
         if (widget.photo[0].pic2 != null && widget.photo[0].pic2!.isNotEmpty &&
-            widget.photo[0].pic2 != "null") {
+            widget.photo[0].pic2 != "null" && widget.photo[0].pic2 != "0" && widget.photo[0].isVerifyPic2 == "1") {
+
           listpics.add(Image.network(
             Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
                 prefs.getString(SharedPrefs.communityId).toString()) +
@@ -88,10 +105,24 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
               return RoundedContainer();
             },
           ));
+
+        }else if (widget.photo[0].pic2 != null && widget.photo[0].pic2!.isNotEmpty &&
+            widget.photo[0].pic2 != "null" && widget.photo[0].pic2 != "0" && widget.photo[0].isVerifyPic2 != "1") {
+
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].oldpic2.toString(),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return RoundedContainer();
+            },
+          ));
+
         }
 
         if (widget.photo[0].pic3 != null && widget.photo[0].pic3!.isNotEmpty &&
-            widget.photo[0].pic3 != "null") {
+            widget.photo[0].pic3 != "null" && widget.photo[0].pic3 != "0" && widget.photo[0].isVerifyPic3 == "1") {
           listpics.add(Image.network(
             Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
                 prefs.getString(SharedPrefs.communityId).toString()) +
@@ -101,10 +132,21 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
               return RoundedContainer();
             },
           ));
+        }else if (widget.photo[0].pic3 != null && widget.photo[0].pic3!.isNotEmpty &&
+            widget.photo[0].pic3 != "null" && widget.photo[0].pic3 != "0" && widget.photo[0].isVerifyPic3 != "1") {
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].oldpic3.toString(),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return RoundedContainer();
+            },
+          ));
         }
 
         if (widget.photo[0].pic4 != null && widget.photo[0].pic4!.isNotEmpty &&
-            widget.photo[0].pic4 != "null") {
+            widget.photo[0].pic4 != "null" && widget.photo[0].pic4 != "0" && widget.photo[0].isVerifyPic4 == "1") {
 
           listpics.add(Image.network(
             Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
@@ -113,11 +155,21 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
             fit: BoxFit.cover,
           ));
 
+        }else if(widget.photo[0].pic4 != null && widget.photo[0].pic4!.isNotEmpty &&
+            widget.photo[0].pic4 != "null" && widget.photo[0].pic4 != "0" && widget.photo[0].isVerifyPic4 != "1"){
+
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].oldpic4.toString(),
+            fit: BoxFit.cover,
+          ));
+
         }
 
 
         if (widget.photo[0].pic5 != null && widget.photo[0].pic5!.isNotEmpty &&
-            widget.photo[0].pic5 != "null") {
+            widget.photo[0].pic5 != "null" && widget.photo[0].pic5 != "0" && widget.photo[0].isVerifyPic5 == "1") {
 
           listpics.add(Image.network(
             Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
@@ -129,11 +181,26 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
             },
           ));
 
+        }else if (widget.photo[0].pic5 != null && widget.photo[0].pic5!.isNotEmpty &&
+            widget.photo[0].pic5 != "null" && widget.photo[0].pic5 != "0" && widget.photo[0].isVerifyPic5 != "1") {
+
+
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].oldpic5.toString(),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return RoundedContainer();
+            },
+          ));
+
         }
 
 
         if (widget.photo[0].pic6 != null && widget.photo[0].pic6!.isNotEmpty &&
-            widget.photo[0].pic6 != "null") {
+            widget.photo[0].pic6 != "null" && widget.photo[0].pic6 != "0" && widget.photo[0].isVerifyPic6 == "1") {
+
           listpics.add(Image.network(
             Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
                 prefs.getString(SharedPrefs.communityId).toString()) +
@@ -143,11 +210,27 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
               return RoundedContainer();
             },
           ));
+        }else if (widget.photo[0].pic6 != null && widget.photo[0].pic6!.isNotEmpty &&
+            widget.photo[0].pic6 != "null" && widget.photo[0].pic6 != "0" && widget.photo[0].isVerifyPic6 != "1") {
+
+
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].oldpic6.toString(),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return RoundedContainer();
+            },
+          ));
+
+
+
         }
 
 
         if (widget.photo[0].pic7 != null && widget.photo[0].pic7!.isNotEmpty &&
-            widget.photo[0].pic7 != "null") {
+            widget.photo[0].pic7 != "null" && widget.photo[0].pic7 != "0" && widget.photo[0].isVerifyPic7 == "1") {
           listpics.add(Image.network(
             Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
                 prefs.getString(SharedPrefs.communityId).toString()) +
@@ -157,10 +240,24 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
               return RoundedContainer();
             },
           ));
+        }else if (widget.photo[0].pic7 != null && widget.photo[0].pic7!.isNotEmpty &&
+            widget.photo[0].pic7 != "null" && widget.photo[0].pic7 != "0" && widget.photo[0].isVerifyPic7 != "1") {
+
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].oldpic7.toString(),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return RoundedContainer();
+            },
+          ));
+
+
         }
 
         if (widget.photo[0].pic8 != null && widget.photo[0].pic8!.isNotEmpty &&
-            widget.photo[0].pic8 != "null") {
+            widget.photo[0].pic8 != "null" && widget.photo[0].pic8 != "0" && widget.photo[0].isVerifyPic8 == "1") {
           listpics.add(Image.network(
             Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
                 prefs.getString(SharedPrefs.communityId).toString()) +
@@ -170,7 +267,22 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
               return RoundedContainer();
             },
           ));
+        }else if (widget.photo[0].pic8 != null && widget.photo[0].pic8!.isNotEmpty &&
+            widget.photo[0].pic8 != "null" && widget.photo[0].pic8 != "0" && widget.photo[0].isVerifyPic8 != "1") {
+          listpics.add(Image.network(
+            Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
+                prefs.getString(SharedPrefs.communityId).toString()) +
+                widget.photo[0].oldpic8.toString(),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return RoundedContainer();
+            },
+          ));
         }
+
+
+
+
       });
 
     });

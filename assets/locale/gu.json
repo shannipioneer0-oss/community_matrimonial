@@ -14,6 +14,7 @@
   "search": "શોધો",
   "inbox": "ઇનબૉક્સ",
   "chat": "ચેટ",
+  "gender": "જાતિ",
   "membership": "સભ્યતા યોજનાઓ",
   "settings": "સેટિંગ્સ",
   "notification": "નોટિફિકેશન",
@@ -210,6 +211,8 @@
   "edu_details_key": "શિક્ષણની વિગતો",
   "is_reputed_key": "કેમ રીપ્યુટેડ વિશ્વવિદ્યાલયથી છો?",
   "institute_name_key": "ઇન્સ્ટીટ્યૂટ નામ",
+  "specialization": "શિક્ષણ ડિગ્રી",
+  "education_running_status": "ડિગ્રી ચાલુ સ્થિતિ",
   "is_administrative_key": "કેમ સંચાલનિક સેવા થી છો?",
   "admin_position_key": "સંચાલનિક સ્થાન",
 

@@ -145,7 +145,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
       prefs.remove(SharedPrefs.isLogin);
       prefs.clear();
 
-      navService.pushNamedAndRemoveUntil("/intro");
+      navService.pushNamedAndRemoveUntil("/login");
 
       return;
     }
@@ -392,12 +392,12 @@ class DashboardScreen extends State<DashboardAppStateful> {
       await Provider.of<ApiService>(context, listen: false).postMatchJustJoined({
         "userId":prefs.getString(SharedPrefs.userId),
         "today": '${currentDate.year}-${currentDate.month}-${currentDate.day}',
-        "Id":prefs.getString(SharedPrefs.userId),
-        "gender":prefs.getString(SharedPrefs.gender),
-        "communityId":prefs.getString(SharedPrefs.communityId),
+        "Id":  prefs.getString(SharedPrefs.userId),
+        "gender":  prefs.getString(SharedPrefs.gender),
+        "communityId": prefs.getString(SharedPrefs.communityId),
         "original": "en",
         "translate": ["en"],
-        "limit":int.parse(Strings.limit),
+        "limit": int.parse(Strings.limit),
         "offset": page*pageSize
       });
 
@@ -559,12 +559,11 @@ class DashboardScreen extends State<DashboardAppStateful> {
         setState(() {
           //controller.totalItemCount = searchResult.getTotalRowCount()[0].totalRowCount;
 
-          if (searchResult.getTotalRowCount()[0].totalRowCount > 0) {
-            total_count =
-                searchResult.getTotalRowCount()[0].totalRowCount.toString();
-          } else {
-            total_count = "0";
-          }
+
+          print(searchResult.getTotalRowCount()[0].totalRowCount.toString()+"()()()()()");
+          //if (searchResult.getTotalRowCount()[0].totalRowCount > 0) {
+
+            total_count = searchResult.getTotalRowCount()[0].totalRowCount.toString();
 
 
           if (selectedIndex == 0 && total_count == "0") {
@@ -670,7 +669,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
           firstShown: (item) => {
 
 
-            if( item >= controller2.totalItemCount - 12 &&  controller2.totalItemCount <= int.parse(total_count)){
+            if( item % 32 >= 25 &&  controller2.totalItemCount <= int.parse(total_count)){
 
             controller2.totalItemCount = controller2.totalItemCount + int.parse(Strings.limit) ,
             loadPage(  (controller2.totalItemCount / int.parse(Strings.limit)).toInt() - 1  , PAGE_SIZE, selectedIndex),
@@ -719,19 +718,24 @@ class DashboardScreen extends State<DashboardAppStateful> {
 
   HugeListView setLists(int index){
 
+    print(controller.totalItemCount.toString() +"______=====_______"+ total_count);
+
     return HugeListView<UserMatch>(
         key: Key((index).toString()),
         scrollController: scroll,
-        listViewController: controller2,
+        listViewController: controller,
         pageSize: PAGE_SIZE,
         startIndex: 0,
-        firstShown: (item) => {  if( item >= controller.totalItemCount - 12 &&  controller.totalItemCount <= int.parse(total_count)){
+        firstShown: (item) => {
+
+         // print(item.toString()+"()+++===="+controller.totalItemCount.toString()),
+
+          if( (item % 32) >= 25  && controller.totalItemCount <= int.parse(total_count)){
 
           controller.totalItemCount = controller.totalItemCount + int.parse(Strings.limit) ,
 
           loadPage( (controller.totalItemCount / int.parse(Strings.limit)).toInt() - 1  , PAGE_SIZE, selectedIndex),
 
-          print(item),
 
         }},
         velocityThreshold: 8,
@@ -771,7 +775,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
       startIndex: 0,
       firstShown: (item) => {
 
-        if( item >= controller3.totalItemCount - 12 &&  controller3.totalItemCount <= int.parse(total_count)){
+        if( (item % 32) >= 25 &&  controller3.totalItemCount <= int.parse(total_count)){
 
         controller3.totalItemCount = controller3.totalItemCount + int.parse(Strings.limit) ,
         loadPage( (controller3.totalItemCount / int.parse(Strings.limit)).toInt() - 1  , PAGE_SIZE, selectedIndex),
@@ -816,7 +820,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
       startIndex: 0,
       firstShown: (item) => {
 
-        if( item >= controller4.totalItemCount - 12 &&  controller4.totalItemCount <= int.parse(total_count)){
+        if( (item % 32) >= 25 &&  controller4.totalItemCount <= int.parse(total_count)){
 
         controller4.totalItemCount = controller4.totalItemCount + int.parse(Strings.limit) ,
         loadPage( (controller4.totalItemCount / int.parse(Strings.limit)).toInt() - 1  , PAGE_SIZE, selectedIndex),
@@ -859,7 +863,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
       listViewController: controller5,
       pageSize: PAGE_SIZE,
       startIndex: 0,
-      firstShown: (item) => {   if( item >= controller5.totalItemCount - 12 &&  controller5.totalItemCount <= int.parse(total_count)){
+      firstShown: (item) => {   if( (item % 32) >= 25 &&  controller5.totalItemCount <= int.parse(total_count)){
 
         controller5.totalItemCount = controller5.totalItemCount + int.parse(Strings.limit) ,
         loadPage( (controller5.totalItemCount / int.parse(Strings.limit)).toInt() - 1  , PAGE_SIZE, selectedIndex),
@@ -902,7 +906,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
       startIndex: 0,
       firstShown: (item) => {
 
-        if( item >= controller6.totalItemCount - 12 &&  controller6.totalItemCount <= int.parse(total_count)){
+        if( (item % 32) >= 25 &&  controller6.totalItemCount <= int.parse(total_count)){
 
         controller6.totalItemCount = controller6.totalItemCount + int.parse(Strings.limit) ,
         loadPage(  (controller6.totalItemCount / int.parse(Strings.limit)).toInt() - 1  , PAGE_SIZE, selectedIndex),
@@ -947,7 +951,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
       startIndex: 0,
       firstShown: (item) => {
 
-        if( item >= controller7.totalItemCount - 12 &&  controller7.totalItemCount <= int.parse(total_count)){
+        if( (item % 32) >= 25  &&  controller7.totalItemCount <= int.parse(total_count)){
 
         controller7.totalItemCount = controller7.totalItemCount + int.parse(Strings.limit) ,
         loadPage( (controller7.totalItemCount / int.parse(Strings.limit)).toInt() - 1  , PAGE_SIZE, selectedIndex),
@@ -989,7 +993,7 @@ class DashboardScreen extends State<DashboardAppStateful> {
       startIndex: 0,
       firstShown: (item) => {
 
-        if( item >= controller8.totalItemCount - 12 &&  controller8.totalItemCount <= int.parse(total_count)){
+        if( (item % 32) >= 25 &&  controller8.totalItemCount <= int.parse(total_count)){
 
           controller8.totalItemCount = controller8.totalItemCount + int.parse(Strings.limit) ,
           loadPage( (controller8.totalItemCount / int.parse(Strings.limit)).toInt() - 1  , PAGE_SIZE, selectedIndex),

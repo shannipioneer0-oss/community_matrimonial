@@ -241,10 +241,9 @@ class UserDetailScreen extends State<UserDetailStateful> {
       if (_response.body["data"][3][0].toString() != "{}") {
         String first  = "" ,second  ="" , third = "";
 
-      //  print(_response.body["data"][3][0]["0"]["education"]+"====---");
+        //print(_response.body["data"][3][0]["0"]["education"]+"====---");
 
-        List<Course> courses = _response.body["data"][3][0]["0"]["education"] != null ? _response.body["data"][3][0]["0"]["education"].toString()
-        !.split('|')
+        List<Course> courses = _response.body["data"][3][0]["0"]["education"] != null ? _response.body["data"][3][0]["0"]["education"].toString()!.split('|')
             .map((e) => Course.fromString(e))
             .toList() : [];
 
@@ -410,6 +409,14 @@ class UserDetailScreen extends State<UserDetailStateful> {
             pic6: _response.body["data"][7][0]["0"]["pic6"],
             pic7: _response.body["data"][7][0]["0"]["pic7"],
             pic8: _response.body["data"][7][0]["0"]["pic8"],
+            oldpic1: _response.body["data"][7][0]["0"]["oldpic1"],
+            oldpic2: _response.body["data"][7][0]["0"]["oldpic2"],
+            oldpic3: _response.body["data"][7][0]["0"]["oldpic3"],
+            oldpic4: _response.body["data"][7][0]["0"]["oldpic4"],
+            oldpic5: _response.body["data"][7][0]["0"]["oldpic5"],
+            oldpic6: _response.body["data"][7][0]["0"]["oldpic6"],
+            oldpic7: _response.body["data"][7][0]["0"]["oldpic7"],
+            oldpic8: _response.body["data"][7][0]["0"]["oldpic8"],
             isVerifyPic1: _response.body["data"][7][0]["0"]["isverifypic1"],
             isVerifyPic2: _response.body["data"][7][0]["0"]["isverifypic2"],
             isVerifyPic3: _response.body["data"][7][0]["0"]["isverifypic3"],

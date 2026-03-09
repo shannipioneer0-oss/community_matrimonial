@@ -84,7 +84,7 @@ class _StylishDrawerState extends State<StylishDrawer> {
   Widget build(BuildContext context) {
 
 
-    return Drawer(
+    return SafeArea(child:  Drawer(
       child:SingleChildScrollView(child:Container(
         color: Colors.white54,
         child: Column(
@@ -225,7 +225,7 @@ class _StylishDrawerState extends State<StylishDrawer> {
           ],
         ),
       ),
-    ));
+    )));
   }
 
 
@@ -360,7 +360,7 @@ https://matrimonial.pioerp.com/uploads/shareapp.html
       prefs.remove(SharedPrefs.isLogin);
       prefs.clear();
 
-      navService.pushNamedAndRemoveUntil("/intro");
+      navService.pushNamedAndRemoveUntil("/login");
 
     }
 

@@ -11,6 +11,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:community_matrimonial/screens/MainScreen.dart';
 import 'package:community_matrimonial/screens/about_us/about_us.dart';
@@ -64,10 +65,110 @@ import 'package:community_matrimonial/screens/user_profile/add_edit_profile/part
 import 'package:community_matrimonial/screens/user_profile/user_detail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app_utils/DefaultFirebaseOptions.dart';
+import 'firebase_options.dart';
 import 'locale/TranslationService.dart';
 import 'main.dart';
 import 'network_utils/service/api_service.dart';
 
+
+
+String channelname = "" , message_type = "";
+@pragma('vm:entry-point') // Required for background tasks
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // You MUST re-initialize Firebase here
+  await Firebase.initializeApp(options: DefaultFirebaseOptions2.currentPlatform);
+
+  await initLocalNotifications(); // Initialize plugin in this isolate too
+  showNotificationFromMessage(message);
+}
+
+
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin2 = FlutterLocalNotificationsPlugin();
+
+Future<void> initLocalNotifications() async {
+  const AndroidInitializationSettings androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+  const InitializationSettings settings = InitializationSettings(android: androidInit);
+
+  await flutterLocalNotificationsPlugin2.initialize(settings);
+
+  // Create the channel explicitly (Crucial for Android)
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'general_channel', // Must match your showNotificationFromMessage ID
+    'General Notifications',
+    description: 'This channel is used for important notifications.',
+    importance: Importance.max,
+  );
+
+  await flutterLocalNotificationsPlugin2
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  final androidPlugin = flutterLocalNotificationsPlugin2
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+  await androidPlugin?.requestNotificationsPermission();
+}
+
+
+Future<void> showNotificationFromMessage(RemoteMessage message) async {
+
+  String? title = "";
+  String? body ="";
+  String tag = "";
+
+  try{
+    title = message.notification?.title;
+    body = message.notification?.body;
+    tag =  'default';
+  }catch(ex){
+
+  }
+
+  try{
+
+    title = message.data['title'];
+    body  = message.data['body'];
+    tag  = message.data['tag'];
+
+  }catch(ex){
+
+  }
+
+  print(title);
+  print(body);
+
+  final data = message.data;
+
+  AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+    "general_channel",
+    "General Notifications",
+    importance: Importance.max,
+    priority: Priority.high,
+    tag: tag,
+  );
+
+  DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
+    presentAlert: true,
+    presentBadge: true,
+    presentSound: true,
+    threadIdentifier: tag, // iOS equivalent of tag
+  );
+
+  NotificationDetails details = NotificationDetails(
+    android: androidDetails,
+    iOS: iosDetails,
+  );
+
+  await flutterLocalNotificationsPlugin2.show(
+    DateTime.now().millisecondsSinceEpoch ~/ 1000,
+    title,
+    body,
+    details,
+    payload: data["title"] ?? "",
+  );
+
+}
 
 
 
@@ -75,7 +176,14 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  initLocalNotifications();
+
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  DefaultFirebaseOptions2.currentPackageName = packageInfo.packageName;
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions2.currentPlatform);
+
+  print("LOG: Sender ID in use is: ${Firebase.app().options.messagingSenderId}-----");
 
   FlavorConfig(
     name: "appA",
@@ -87,10 +195,21 @@ Future<void> main() async {
     },
   );
 
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+
+    print("testtttt");
+
+    showNotificationFromMessage(message);
+
+  });
+
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
 
   runApp(MyApp());
 
 }
+
 
 initLoader(){
 

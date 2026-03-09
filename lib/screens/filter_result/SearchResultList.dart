@@ -22,14 +22,18 @@ class SearchResultList extends StatefulWidget {
   final int index;
   final SharedPreferences prefs;
   final String type;
+  final int select;
+  final void Function(int flag) press;
 
-  SearchResultList({required this.fetchmatches , required this.index, required this.prefs, required this.type});
+  SearchResultList({required this.fetchmatches , required this.index, required this.prefs, required this.type, required this.select, required this.press});
 
   @override
   SearchResultListStateful createState() => SearchResultListStateful();
 }
 
 class SearchResultListStateful extends State<SearchResultList> {
+
+
   bool iscontain() {
     return widget.fetchmatches.shortlist
         .split(",")
@@ -68,7 +72,7 @@ class SearchResultListStateful extends State<SearchResultList> {
 
   }
 
-
+   int type = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -88,8 +92,21 @@ class SearchResultListStateful extends State<SearchResultList> {
             navService.pushNamed("/user_detail",
                 args: [widget.fetchmatches.userId, widget.fetchmatches.name , widget.fetchmatches.mobRegToken , widget.fetchmatches.profileId , widget.type]);
           },
+          onLongPress: (){
+             setState(() {
+               if(type == 0) {
+                 type = 1;
+               }else{
+                 type = 0;
+               }
+             });
+
+             widget.press(type);
+
+          },
           child: Container(
               height: 215,
+              color: widget.select == 3 ?  Colors.blueGrey : widget.select == 2 && type == 1 ? Colors.grey  : Colors.transparent,
               child: Stack(
                 children: [
                   Container(
@@ -126,7 +143,7 @@ class SearchResultListStateful extends State<SearchResultList> {
                                     }  ,child:ClipRRect(
                                       borderRadius: BorderRadius.circular(16.0),
                                       child: Image.network(
-                                        widget.fetchmatches.pic != "" && (widget.fetchmatches.verifypic1 == "1" || widget.fetchmatches.verifypic1 == "0")
+                                        widget.fetchmatches.pic != "" && (widget.fetchmatches.verifypic1 == "1")
                                             ? Strings.IMAGE_BASE_URL +
                                                 "/uploads/"+utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+
                                                 widget.fetchmatches.pic
@@ -157,8 +174,8 @@ class SearchResultListStateful extends State<SearchResultList> {
                                                     .width *
                                                 0.55,
                                             child: Text(
-                                            role == "admin" ?  widget.fetchmatches.name+"\n"+widget.fetchmatches.mobile_number
-                                                  .toString() : widget.fetchmatches.name,
+                                            role == "admin" ?  widget.fetchmatches.name+" "+widget.fetchmatches.surname+"\n"+widget.fetchmatches.mobile_number+" - "+widget.fetchmatches.gender+" - "+"("+widget.fetchmatches.status+")"
+                                                  .toString() : widget.fetchmatches.name+" "+widget.fetchmatches.surname,
                                               textAlign: TextAlign.left,
                                               style: TextStyle(
                                                 fontSize: 16.0,
@@ -213,9 +230,9 @@ class SearchResultListStateful extends State<SearchResultList> {
                                                 child: Text(
                                                   widget.fetchmatches.education,
                                                   textAlign: TextAlign.left,
-                                                  maxLines: 2,
+                                                  maxLines: 3,
                                                   style: TextStyle(
-                                                      fontSize: 14.0,
+                                                      fontSize: 13.0,
                                                       fontWeight:
                                                           FontWeight.w400,
                                                       color: Colors.black87,
@@ -569,11 +586,32 @@ class SearchResultListStateful extends State<SearchResultList> {
                                         }
                                       } else {}
                                     } else {
-                                      DialogClass().showDialog2(
-                                          context,
-                                          "Express Interest alert!",
-                                          "Already Expressed Interest",
-                                          "Ok");
+
+                                      final res = await DialogClass().showDialogBeforesubmit(context, "Delete Express Alert!", "Are you sure want to delete expressed interest " , "OK" , "1");
+
+                                      if(res ==  "1"){
+
+                                        final res = await ApiService.create().postDeleteInterest({"fromId": prefs.getString(SharedPrefs.userId) , "toId":widget.fetchmatches.userId , "communityId":prefs.getString(SharedPrefs.communityId)});
+
+                                        print(res.body);
+
+                                        if(res.body["data"]["affectedRows"] == 0 || res.body["data"]["affectedRows"] == 1){
+
+                                          List<String> list_likes = widget.fetchmatches.likes.split(",");
+
+                                          setState(() {
+
+                                            widget.fetchmatches.likes =  widget.fetchmatches.likes.replaceAll(widget.fetchmatches.userId , "");
+
+                                          });
+
+                                        }
+
+                                      }
+
+
+
+
                                     }
 
                                 }
@@ -643,7 +681,7 @@ class SearchResultListStateful extends State<SearchResultList> {
                       )),
                   role == "admin" ? Positioned( bottom: 6 ,left: 14 ,child: GestureDetector(onTap: (){
 
-                     navService.pushNamed("/user_detail_other", args: [widget.fetchmatches.userId ,widget.type ]);
+                     navService.pushNamed("/user_detail_other", args: [widget.fetchmatches.userId , widget.type ]);
 
 
                   }  ,child:Container(
@@ -730,6 +768,9 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
         ? Colors.white
         : Colors.pink;
 
+
+      print(widget.fetchmatches.oldpic1.toString()+"====");
+
     return Column(children: [
       InkWell(
 
@@ -774,7 +815,7 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                                     }  ,child:ClipRRect(
                                       borderRadius: BorderRadius.circular(16.0),
                                       child: Image.network(
-                                          widget.fetchmatches.pic != null && ( widget.fetchmatches.verifypic1 == "1" || widget.fetchmatches.verifypic1 == "0")
+                                          widget.fetchmatches.pic != null && ( widget.fetchmatches.verifypic1 == "1")
                                               ? Strings.IMAGE_BASE_URL +
                                               "/uploads/" +utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+
                                               widget.fetchmatches.pic.toString()
@@ -861,9 +902,9 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                                                 child: Text(
                                                   widget.fetchmatches.education.toString(),
                                                   textAlign: TextAlign.left,
-                                                  maxLines: 2,
+                                                  maxLines: 3,
                                                   style: TextStyle(
-                                                      fontSize: 14.0,
+                                                      fontSize: 13.0,
                                                       fontWeight:
                                                           FontWeight.w400,
                                                       color: Colors.black87,
@@ -1170,7 +1211,7 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                                                 SharedPrefs.communityId)
                                           });
 
-                                          SendNotification().sendPushMessage(
+                                          /*SendNotification().sendPushMessage(
                                               [widget.fetchmatches.mobRegToken],
                                               "Like Request From " +
                                                   prefs
@@ -1186,15 +1227,37 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                                               prefs
                                                   .getString(SharedPrefs.userId)
                                                   .toString(),
-                                              widget.fetchmatches.userId);
+                                              widget.fetchmatches.userId);*/
+
+
                                         }
                                       } else {}
                                     } else {
-                                      DialogClass().showDialog2(
-                                          context,
-                                          "Express Interest alert!",
-                                          "Already Expressed Interest",
-                                          "Ok");
+
+                                      final res = await DialogClass().showDialogBeforesubmit(context, "Delete Express Alert!", "Are you sure want to delete expressed interest " , "OK" , "1");
+
+                                      if(res ==  "1"){
+
+                                        final res = await ApiService.create().postDeleteInterest({"fromId": prefs.getString(SharedPrefs.userId) , "toId":widget.fetchmatches.userId , "communityId":prefs.getString(SharedPrefs.communityId)});
+
+                                        print(res.body);
+
+                                        if(res.body["data"]["affectedRows"] == 0 || res.body["data"]["affectedRows"] == 1){
+
+                                          List<String> list_likes = widget.fetchmatches.likes.split(",");
+
+                                          setState(() {
+
+                                            widget.fetchmatches.likes =  widget.fetchmatches.likes.replaceAll(widget.fetchmatches.userId , "");
+
+                                          });
+
+                                        }
+
+                                      }
+
+
+
                                     }
 
                                 }

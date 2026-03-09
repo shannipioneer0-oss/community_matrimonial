@@ -48,6 +48,12 @@ abstract class ApiService extends ChopperService {
   @Patch(path: 'profile/basic_detail')
   Future<Response> postBasicDetailUpdate(@Body() Map<String, dynamic> requestBody);
 
+  @Post(path: 'profile/delete_pictures')
+  Future<Response> postDeleteImages(@Body() Map<String, dynamic> requestBody);
+
+  @Post(path: 'profile/delete_send_interest')
+  Future<Response> postDeleteInterest(@Body() Map<String, dynamic> requestBody);
+
   @Post(path: 'profile/contact_detail')
   Future<Response> postContactDetail(@Body() Map<String, dynamic> requestBody);
 
@@ -83,6 +89,13 @@ abstract class ApiService extends ChopperService {
 
   @Post(path: 'signup/')
   Future<Response> postRegisteration(@Body() Map<String, dynamic> requestBody);
+
+  @Post(path: 'signup/mobile_exists')
+  Future<Response> postMobileExists(@Body() Map<String, dynamic> requestBody);
+
+  @Post(path: 'signup/update_status')
+  Future<Response> postUpdateStatus(@Body() Map<String, dynamic> requestBody);
+
 
   @Post(path: 'profile/insert_horoscope', headers: {'Content-Type': 'multipart/form-data'},)
   @multipart
@@ -312,6 +325,9 @@ abstract class ApiService extends ChopperService {
   @Post(path: 'profile/insert_notification')
   Future<Response> postInsertNotification(@Body() Map<String, dynamic> requestBody);
 
+  @Post(path: 'profile/send_notification')
+  Future<Response> postSendNotification(@Body() Map<String, dynamic> requestBody);
+
   @Post(path: 'fetch_data/fetch_notification')
   Future<Response> postFetchNotification(@Body() Map<String, dynamic> requestBody);
 
@@ -380,7 +396,7 @@ abstract class ApiService extends ChopperService {
 
   @Post(path: 'activity/save_search_insert')
   Future<Response> postSaveSearch(@Body() Map<String, dynamic> requestBody);
-  
+
   @Post(path: 'fetch_data/select_saved_search')
   Future<Response> postSelectSavedSearch(@Body() Map<String, dynamic> requestBody);
 

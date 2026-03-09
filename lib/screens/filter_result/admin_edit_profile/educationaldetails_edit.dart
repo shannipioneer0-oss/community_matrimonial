@@ -59,13 +59,15 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
   TextEditingController raputedController =new TextEditingController();
   TextEditingController edudetailsController = new TextEditingController();
 
+  TextEditingController specialization = new TextEditingController();
+
   TextEditingController highesteducationController =new TextEditingController();
   TextEditingController highesteducationController2 =new TextEditingController();
   TextEditingController highesteducationController3 =new TextEditingController();
 
   bool _isCheckedadminstraive = false , _isCheckedreputed = false;
   String highest_edu_value = "" , highest_edu_value2 = "" , highest_edu_value3 = "" ,   reputed_edu_value = "" ;
-
+  TextEditingController highesteducationController_status = new TextEditingController();
 
   @override
   void initState() {
@@ -79,9 +81,7 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    print(widget.list[4]);
-
-    List<Course> courses = widget.list[4] != null ?  widget.list[4].toString()
+    List<Course> courses = widget.list[4] != null && widget.list[4] != "" ?  widget.list[4].toString()
         .split('|')
         .map((e) => Course.fromString(e))
         .toList() : [];
@@ -98,14 +98,20 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
       highest_edu_value = "";
     }
 
-    try{
+    if(widget.list[12] == "1"){
+      highesteducationController_status.text = "Pursuing (Running)";
+    }else if(widget.list[12] == "2"){
+      highesteducationController_status.text = "Completed";
+    }
+
+    /*try{
       highesteducationController2.text = courses[1].label;
       highest_edu_value2 = courses[1].value.toString();
 
     }catch(ex){
       highesteducationController2.text = "";
       highest_edu_value2 = "";
-    }
+    }*/
 
     try{
       highesteducationController3.text = courses[2].label;
@@ -115,9 +121,19 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
       highest_edu_value3 = "";
     }
 
-    edudetailsController.text =   utils().replaceNull(prefs.getString(SharedPrefs.educationDetail).toString());
+
+    specialization.text = widget.list[11];
+    edudetailsController.text =   widget.list[5];
     raputedController.text =  utils().replaceNull(prefs.getString(SharedPrefs.instituteName).toString().split(",")[0]);
     admiistrativeController.text =   utils().replaceNull(prefs.getString(SharedPrefs.adminPositionName).toString());
+
+    if(widget.list[12] == "1"){
+      highesteducationController_status.text = "Pursuing (Running)";
+    }else if(widget.list[12] == "2"){
+      highesteducationController_status.text = "Completed";
+    }
+
+     highest_edu_value2 = widget.list[12];
 
     setState(() {
       _isCheckedreputed =   prefs.getString(SharedPrefs.isFromIITIIMNIT).toString() == "0" || prefs.getString(SharedPrefs.isFromIITIIMNIT) == null  ? false : true;
@@ -127,15 +143,15 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
 
 
     if(highesteducationController.text.isNotEmpty) {
-      itemedu.add(highesteducationController.text + "|" + highest_edu_value);
+      itemedu[0] = highesteducationController.text + "|" + highest_edu_value;
     }
 
     if(highesteducationController2.text.isNotEmpty){
-      itemedu.add(highesteducationController2.text+"|"+highest_edu_value2);
+      itemedu[1] =  highesteducationController2.text+"|"+highest_edu_value2;
     }
 
     if(highesteducationController3.text.isNotEmpty){
-      itemedu.add(highesteducationController3.text+"|"+highest_edu_value3);
+      itemedu[2]  = highesteducationController3.text+"|"+highest_edu_value3;
     }
 
     // reputed_edu_value =  prefs.getString(SharedPrefs.instituteName).toString().split(",")[1];
@@ -227,7 +243,7 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
             if(value.degree_name.toLowerCase() == "other"){
 
               String education = "";
-              DialogClass().showDailogwithTextField(context , "Enter Your EDucation" , "Submit Education" , "Enter Education" , Icons.history_edu , (p0) async {
+              DialogClass().showDailogwithTextField(context , "Enter Your Education" , "Submit Education" , "Enter Education" , Icons.history_edu , (p0) async {
 
                 education = p0;
 
@@ -251,7 +267,18 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
 
           },),
           SizedBox(height: 20,),
-          CustomDropdown(icondata: MdiIcons.bookEducation  ,controller: highesteducationController2 , labelText: TranslationService.translate("highest_education"), onButtonPressed: () async {
+          CustomDropdown(icondata: MdiIcons.bookEducation  ,controller: highesteducationController_status , labelText: "*"+TranslationService.translate("education_running_status"), onButtonPressed: () async {
+
+            final resedu =  [EduFetchstate(degree_name: "Pursuing (Running)", Id: "1") , EduFetchstate(degree_name: "Completed", Id: "2")];
+
+            final value = await SingleSelectDialog().showBottomSheetEducation(context , resedu);
+            highesteducationController_status.text = value.degree_name;
+            highest_edu_value2 = value.Id;
+
+
+          },),
+          SizedBox(height: 20,),
+          /*CustomDropdown(icondata: MdiIcons.bookEducation  ,controller: highesteducationController2 , labelText: TranslationService.translate("highest_education"), onButtonPressed: () async {
 
 
             final value = await SingleSelectDialog().showBottomSheetEducation(context, await Values.getEducationList(context , "education" , ""));
@@ -322,6 +349,8 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
 
 
           },),
+          SizedBox(height: 20,),*/
+          CustomTextField(icondata: Icons.history_edu , controller: specialization , labelText: TranslationService.translate("specialization"), enabled: false, ),
           SizedBox(height: 20,),
           MultilineTextfield(icondata: Icons.history_edu, controller: edudetailsController, labelText: TranslationService.translate("educational_details"), enabled: false, minlines: 3, maxlines: 7),
           SizedBox(height: 20,),
@@ -346,13 +375,16 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
               SharedPreferences prefs = await SharedPreferences.getInstance();
 
 
+              print(widget.list[9]+"-=-="+prefs.getString(SharedPrefs.communityId));
 
 
-              if (highesteducationController.text
-                  .toString()
-                  .length > 0) {
-                if (prefs
-                    .getString(SharedPrefs.education) == null) {
+              List<Course> listcourse =   widget.list[4].toString()
+                  .split('|')
+                  .map((e) => Course.fromString(e))
+                  .toList();
+
+              if (listcourse[0].label.toString().length == 0) {
+
                   EasyLoading.show(status: 'Please wait...');
 
                   final _response = await Provider.of<ApiService>(
@@ -365,9 +397,9 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
                         "admin_position_name": "",
                         "is_from_iit_iim_nit": _isCheckedreputed == false ? 0 : 1,
                         "college_name": "",
-                        "education_list": itemedu.join(",").split(',')
-                            .map((e) => e.split('|')[1])
-                            .join(','),
+                        "education_list": highest_edu_value,
+                        "education_status": highest_edu_value2 ,
+                        "specialization":specialization.text.toString(),
                         "education_detail": edudetailsController.text.toString(),
                         "userId": widget.list[9],
                         "communityId": prefs.getString(SharedPrefs.communityId),
@@ -375,35 +407,35 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
                       }
                   );
 
+                  print(_response.body);
+
                   if (_response.body["data"]["affectedRows"] == 1) {
 
 
                     EasyLoading.dismiss();
-
-
-                      navService.goBack();
+                    navService.goBack();
 
                   } else {
-                    DialogClass().showDialog2(
-                        context, "Educational Details Submit Alert!",
-                        "All fields are compulsory", "Ok");
+
+                    EasyLoading.dismiss();
+
+
                   }
                 } else {
-                  EasyLoading.show(status: 'Please wait...');
+
+                  EasyLoading.show(status: 'Please wait....');
 
                   final _response = await Provider.of<ApiService>(
                       context, listen: false)
                       .postEducationUpdate(
                       {
-                        "is_from_admin_service": _isCheckedadminstraive == false
-                            ? 0
-                            : 1,
+                        "is_from_admin_service": _isCheckedadminstraive == false ? 0 : 1,
                         "admin_position_name": "",
                         "is_from_iit_iim_nit": _isCheckedreputed == false ? 0 : 1,
                         "college_name": "",
-                        "education_list": itemedu.join(",").split(',')
-                            .map((e) => e.split('|')[1])
-                            .join(','),
+                        "education_list": highest_edu_value,
+                        "education_status": highest_edu_value2 ,
+                        "specialization":specialization.text.toString(),
                         "education_detail": edudetailsController.text.toString(),
                         "Id": widget.list[8],
                       }
@@ -424,15 +456,14 @@ class EducationalDetailScreen  extends State<EducationalDetailStateful>{
 
                     EasyLoading.dismiss();
                     navService.goBack();
+
                   } else {
+
                     EasyLoading.dismiss();
                   }
                 }
-              } else {
-                DialogClass().showDialog2(context, "Education Details Submit Alert!",
-                    "Field marked with * are compulsory", "Ok");
               }
-            }
+
           },)
 
         ]))));

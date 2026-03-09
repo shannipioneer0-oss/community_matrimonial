@@ -58,6 +58,35 @@ final class _$ApiService extends ApiService {
 
 
   @override
+  Future<Response<dynamic>> postMobileExists(Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('signup/mobile_exists');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+
+  @override
+  Future<Response<dynamic>> postUpdateStatus(Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('signup/update_status');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+
+
+  @override
   Future<Response<dynamic>> profile_fetch(Map<String, dynamic> requestBody) {
     final Uri $url = Uri.parse('fetch_data/profile_fetch');
     final $body = requestBody;
@@ -82,6 +111,35 @@ final class _$ApiService extends ApiService {
     );
     return client.send<dynamic, dynamic>($request);
   }
+
+
+  @override
+  Future<Response<dynamic>> postDeleteImages(Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('profile/delete_pictures');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+
+  @override
+  Future<Response<dynamic>> postDeleteInterest(Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('profile/delete_send_interest');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
 
 
   @override
@@ -1234,6 +1292,23 @@ final class _$ApiService extends ApiService {
     );
     return client.send<dynamic, dynamic>($request);
   }
+
+
+
+  @override
+  Future<Response<dynamic>> postSendNotification(Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('profile/send_notification');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+
+    return client.send<dynamic, dynamic>($request);
+  }
+
 
   @override
   Future<Response<dynamic>> postFetchNotification(

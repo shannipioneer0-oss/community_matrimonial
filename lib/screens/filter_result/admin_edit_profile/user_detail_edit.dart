@@ -2,6 +2,8 @@
 
 
 
+import 'dart:math';
+
 import 'package:accordion/accordion.dart';
 import 'package:accordion/controllers.dart';
 import 'package:community_matrimonial/app_utils/Dialogs.dart';
@@ -15,6 +17,7 @@ import 'package:community_matrimonial/utils/Strings.dart';
 import 'package:community_matrimonial/utils/utils.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
@@ -58,9 +61,14 @@ class UserDetailScreen  extends State<UserDetailStateful>{
       color: Color(0xffffffff), fontSize: 18, fontWeight: FontWeight.bold);
 
 
+  String randomotp = "";
   @override
   void initState() {
     super.initState();
+
+    final random = Random();
+    const digits = '0123456789';
+    randomotp = List.generate(6 , (index) => digits[random.nextInt(digits.length)]).join();
 
     _checkConnectivity();
 
@@ -82,10 +90,10 @@ class UserDetailScreen  extends State<UserDetailStateful>{
 
 
 
-  String fullname = "" , dob = ""  , age = "" , createdby = "" , marital = "" , caste = "" , subcaste = "" , lang_known = "", mother_tongue = "" , profileId = "" ,basic_details_id = "" ,createdby_id = "" ,marital_id = "" ,caste_id = "" ,subcaste_id = "" , lang_known_id = "" , mother_tonuge_id = "" , nri_details = "" ,isnri = "";
+  String fullname = "" , dob = "" , gender = "" , age = "" , createdby = "" , marital = "" , caste = "" , subcaste = "" , lang_known = "", mother_tongue = "" , profileId = "" ,basic_details_id = "" ,createdby_id = "" ,marital_id = "" ,caste_id = "" ,subcaste_id = "" , lang_known_id = "" , mother_tonuge_id = "" , nri_details = "" ,isnri = "";
   String height = "" , wieght = "" , skintone = "" ,bld_group = "" , body_type ="" ,diet_type = "" ,drink_type = "" ,smoke_type = "" ,fitness ="", handicap = "" ,handicap_details ="" , overall_health_details= "" , contact_details_id = "" ,skintone_id = "" ,diet_type_id = "" ,drink_type_id = "" ,smoke_type_id = "" ,body_type_id = "";
   String mobile= "" ,alt_mobile = "" , email ="" ,alt_email = "", country = "" , perm_state = "" , perm_city = "" , work_state = "" ,work_city = "" , work_address = "" , perm_address = "" , contact_time = "" , lifestyles_id = "" , country_id = "" ,perm_state_id = "" , perm_city_id ="" , work_state_id = "" ,work_city_id = "";
-  String education = "" , edu_details = "" , is_reputed = "" , institute_name = "" , is_administrative = "" , admin_position= "" ,education_id = "" ,highest_education_id = "" ,institute_name_id = "" ;
+  String education = "" , edu_details = "" , status = "" ,specialization = "" , is_reputed = "" , institute_name = "" , is_administrative = "" , admin_position= "" ,education_id = "" ,highest_education_id = "" ,institute_name_id = "" ;
   String occuapation = "" , occupation_details = "" , annual_income = "" , employment_type = "" , office_address = ""  , occuapation_id = "" , occuapation_details_id = "";
   String rashi = "" , birth_star = "" , gotra = "" ,bdate = "" ,bcity ="" ,btime = "" , magalik = "" , belive_horoscope = "" , location_coords = "" , time_zone = "" , horoscope_id = "" , rashi_id = "" ,birthstar_id ="";
   String fml_value = "" , fml_status = "" , fml_type = "" , num_brother  ="" , num_sister = "" ,num_married_bro = "" ,num_married_sister = "" , father_name = "" , mother_name = "" , father_coccup = "" ,mother_occup = "" ,house_owned = "" ,house_type = "" , family_slogan = "" , parent_stay = "" , family_details = "" , family_id = "" , fml_status_id = "" , fml_type_id = "" ,fml_value_id ="" , house_type_id = "";
@@ -140,6 +148,12 @@ class UserDetailScreen  extends State<UserDetailStateful>{
        communityName = prefs!.getString(SharedPrefs.communityName).toString();
 
        var userData = _response.body["data"][0][0]["0"];
+
+
+       if(_response.body["data"][19][0].toString() != "{}"){
+
+         gender =  _response.body["data"][19][0]["0"]["gender"].toString();
+       }
 
 
        if(_response.body["data"][0][0].toString() != "{}") {
@@ -215,7 +229,6 @@ class UserDetailScreen  extends State<UserDetailStateful>{
 
        var healthDetails = _response.body["data"][2][0]["0"];
 
-
        if(healthDetails != null) {
 
          wieght = healthDetails['weight'] ?? "";
@@ -274,6 +287,8 @@ class UserDetailScreen  extends State<UserDetailStateful>{
          education = adminServiceDetails['education'] != null
              ? adminServiceDetails['education']
              : "";
+         specialization = adminServiceDetails['specialization']  ?? "";
+         status = adminServiceDetails["status"];
          edu_details = adminServiceDetails['education_detail'] != null
              ? adminServiceDetails['education_detail']
              : "";
@@ -614,6 +629,15 @@ class UserDetailScreen  extends State<UserDetailStateful>{
               SizedBox(height: 5),
               Container(child: Text("Profile ID : "+profileId , textAlign: TextAlign.center, style: TextStyle(fontSize: 16 ,color: ColorsPallete.purple ,fontWeight: FontWeight.bold),),),
 
+              GestureDetector(onTap: (){
+
+                Clipboard.setData(ClipboardData(text: mobile)).then((_) {
+
+                });
+
+              }  ,child:Container(child: Text("Mobile No. : "+mobile , textAlign: TextAlign.center, style: TextStyle(fontSize: 16 ,color: ColorsPallete.purple ,fontWeight: FontWeight.bold),),),),
+
+
               ElevatedButton(
                 onPressed: () {
 
@@ -671,6 +695,11 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                         }
                       }
 
+                    await ApiService.create().postSendNotification({"Ids":[widget.userId[0]] , "type":"profile" , "message":"Your Profile Is Verified" , "sender_type":"admin",
+                    "sender_id": prefs.getString(SharedPrefs.userId) ,
+                      "reciever_id":widget.userId[0] , "title":"User Verification Notification" , "body":"Your Profile Is Verified from Ravaldev Matrimony",
+                      "communityId":prefs.getString(SharedPrefs.communityId) });
+
                   } else {
                     final res = await DialogClass().showDialogBeforesubmit(
                         context, "Unverify User",
@@ -695,6 +724,15 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                         });
                       }
                     }
+
+
+                    await ApiService.create().postSendNotification({"Ids":[widget.userId[0]] , "type":"profile" ,
+                      "message":"Your Profile Is Unverified" , "sender_type":"admin",
+                      "sender_id": prefs.getString(SharedPrefs.userId) ,
+                      "reciever_id":widget.userId[0] , "title":"User Verification Notification" , "body":"Your Profile Is Unverified from Ravaldev Matrimony",
+                      "communityId":prefs.getString(SharedPrefs.communityId) });
+
+
                   }
 
                 }else{
@@ -711,7 +749,125 @@ class UserDetailScreen  extends State<UserDetailStateful>{
               }, style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white54, // Set the background color to grey
                  foregroundColor: Colors.white, // Set the text color to white
-              ),  child: Text(user_verify == "1" ? "User Is Verified" : "Verify User" , style: TextStyle(color:  user_verify == "1" ? Colors.green : Colors.red , ),))
+              ),  child: Text(user_verify == "1" ? "User Is Verified" : "Verify User" , style: TextStyle(color:  user_verify == "1" ? Colors.green : Colors.red , ),)),
+
+
+              ElevatedButton(onPressed: (){
+
+                TextEditingController controller  = new TextEditingController();
+                TextEditingController controllerPassword  =new TextEditingController();
+
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text("Delete Account Alert!"),
+                      content: SingleChildScrollView(
+                        padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 10),
+
+                            Text("Are you sure you want to delete this profile?"),
+                            SizedBox(height: 20),
+
+                            Text("Enter reason to delete"),
+                            SizedBox(height: 8),
+
+                            TextField(
+                              controller: controller,
+                              minLines: 1,
+                              maxLines: 2,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+
+                            SizedBox(height: 20),
+
+                            Text("Enter $randomotp below to delete"),
+                            SizedBox(height: 8),
+
+                            TextField(
+                              controller: controllerPassword,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+
+                            SizedBox(height: 10),
+                          ],
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "Cancel",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            if (controllerPassword.text.trim() == randomotp) {
+                              Navigator.pop(context);
+
+                              SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+
+                              final response = await Provider.of<ApiService>(
+                                context,
+                                listen: false,
+                              ).postDeleteAccount({
+                                "delete_account_reason": controller.text.trim(),
+                                "userId": widget.userId[0],
+                              });
+
+                              if (response.body["success"].toString() == "1") {
+
+
+                                navService.goBack();
+
+
+                              }
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return AlertDialog(
+                                    content: Text(
+                                        "Enter $randomotp properly to delete."),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text("OK"),
+                                      )
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+                          },
+                          child: Text("Delete"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+
+
+
+              }, child: Text("Delete Profile")),
+
 
             ],
           ),
@@ -750,7 +906,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                   mother_tongue ,
                 createdby_id,
                 marital_id ,caste_id ,subcaste_id , lang_known_id , mother_tonuge_id,
-                basic_details_id ,isnri ,nri_details ,widget.userId ,profileId]);
+                basic_details_id ,isnri ,nri_details ,widget.userId[0] ,profileId ,gender]);
 
               initdata();
 
@@ -766,6 +922,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                       ProfileDetailItem(label: TranslationService.translate("full_name_key"), value: fullname , isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("dob_key"), value: dob, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("age_key"), value: age),
+                      ProfileDetailItem(label: TranslationService.translate("gender"), value: gender),
                       ProfileDetailItem(label: TranslationService.translate("created_by_key"), value: createdby, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("marital_status_key"), value: marital, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("caste_key"), value: caste, isrequired : "1"),
@@ -783,7 +940,8 @@ class UserDetailScreen  extends State<UserDetailStateful>{
 
                   final res =  await navService.pushNamed("/lifestyle_details_edit" , args:[height , wieght , skintone , bld_group , body_type , diet_type ,
                     handicap ,handicap_details , fitness ,drink_type ,smoke_type , overall_health_details , skintone_id ,body_type_id , diet_type_id
-                    ,drink_type_id ,smoke_type_id ,lifestyles_id , widget.userId ,profileId]);
+                    ,drink_type_id ,smoke_type_id ,lifestyles_id , widget.userId[0] ,profileId]);
+
                   initdata();
 
                 } , child: Icon(Icons.edit, color: Colors.white),),
@@ -818,7 +976,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                   final res =  await navService.pushNamed("/contact_details_edit" , args: [mobile , alt_mobile ,email ,
                     alt_email ,country , perm_state ,perm_city , work_state ,work_city ,perm_address ,
                     work_address ,contact_time , country_id ,perm_state_id ,perm_city_id ,work_state_id ,
-                    work_city_id ,contact_details_id ,widget.userId ,profileId]);
+                    work_city_id ,contact_details_id ,widget.userId[0] ,profileId]);
                   initdata();
 
                 } ,child: Icon(Icons.edit, color: Colors.white),),
@@ -849,7 +1007,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                 isOpen: false,
                 leftIcon: GestureDetector(onTap: () async {
 
-                  final res =  await navService.pushNamed("/education_details_edit" ,args:[is_administrative , admin_position , is_reputed , institute_name , education ,edu_details , institute_name_id , highest_education_id , education_id ,widget.userId , profileId] );
+                  final res =  await navService.pushNamed("/education_details_edit" ,args:[is_administrative , admin_position , is_reputed , institute_name , education ,edu_details , institute_name_id , highest_education_id , education_id ,widget.userId[0] , profileId ,specialization , status] );
                   initdata();
 
 
@@ -864,6 +1022,9 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                     children: [
                       ProfileDetailItem(label: TranslationService.translate("education_key"), value: result.join(", "), isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("edu_details_key"), value: edu_details),
+                      ProfileDetailItem(label: TranslationService.translate("education_running_status"), value: status == "1" ? "Pursuing (Running)" : status == "2" ? "Completed" : ""),
+
+                      ProfileDetailItem(label: TranslationService.translate("specialization"), value: specialization),
                      /* ProfileDetailItem(label: TranslationService.translate("is_reputed_key"), value: is_reputed == "0" ? "No" : "Yes"),
                       ProfileDetailItem(label: TranslationService.translate("institute_name_key"), value: institute_name),
                       ProfileDetailItem(label: TranslationService.translate("is_administrative_key") , value: is_administrative == "0" ? "No" : "Yes"),
@@ -876,7 +1037,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                 isOpen: false,
                 leftIcon: GestureDetector(onTap: () async {
 
-                  final res =  await  navService.pushNamed("/occuaptional_details_edit" ,args:[occuapation , occupation_details , annual_income ,employment_type ,office_address ,occuapation_id ,occuapation_details_id ,widget.userId , profileId]);
+                  final res =  await  navService.pushNamed("/occuaptional_details_edit" ,args:[occuapation , occupation_details , annual_income ,employment_type ,office_address ,occuapation_id ,occuapation_details_id ,widget.userId[0] , profileId]);
                   initdata();
 
                 }  ,child: Icon(Icons.edit, color: Colors.white),),
@@ -901,7 +1062,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                 isOpen: false,
                 leftIcon: GestureDetector( onTap: () async {
 
-                  final res =  await navService.pushNamed("/horoscope_details_edit" ,args:[rashi ,birth_star ,gotra , bdate , bcity ,btime ,magalik , belive_horoscope , rashi_id ,birthstar_id , horoscope_id ,widget.userId , profileId]);
+                  final res =  await navService.pushNamed("/horoscope_details_edit" ,args:[rashi ,birth_star ,gotra , bdate , bcity ,btime ,magalik , belive_horoscope , rashi_id ,birthstar_id , horoscope_id ,widget.userId[0] , profileId]);
                   initdata();
 
                 } ,child: Icon(Icons.edit, color: Colors.white),),
@@ -947,7 +1108,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                 isOpen: false,
                 leftIcon: GestureDetector( onTap: () async {
 
-                  final res =  await navService.pushNamed("/fml_details_edit" ,args:[fml_value , fml_type ,num_brother ,num_sister, num_married_bro ,num_married_sister ,father_name ,mother_name ,father_coccup ,mother_occup , house_owned ,fml_status , house_type ,family_slogan , fml_value_id , fml_type_id , fml_status_id ,house_type_id , family_id ,widget.userId ,profileId]);
+                  final res =  await navService.pushNamed("/fml_details_edit" ,args:[fml_value , fml_type ,num_brother ,num_sister, num_married_bro ,num_married_sister ,father_name ,mother_name ,father_coccup ,mother_occup , house_owned ,fml_status , house_type ,family_slogan , fml_value_id , fml_type_id , fml_status_id ,house_type_id , family_id ,widget.userId[0] ,profileId]);
                   initdata();
 
 

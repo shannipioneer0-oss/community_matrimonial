@@ -216,7 +216,7 @@ class FamilyDetailScreen  extends State<FamilyDetailsStateful>{
       } else {
         SharedPreferences prefs = await SharedPreferences.getInstance();
 
-        if (widget.list[0] == null) {
+        if (widget.list[0] == null || widget.list[0].toString().length == 0) {
           EasyLoading.show(status: 'Please wait...');
 
           print({
@@ -297,9 +297,10 @@ class FamilyDetailScreen  extends State<FamilyDetailsStateful>{
           if (_response.body["success"] == 1) {
 
             EasyLoading.dismiss();
-
             navService.goBack();
+
           }
+
         }
       }
     }

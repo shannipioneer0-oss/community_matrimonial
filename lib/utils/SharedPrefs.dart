@@ -8,6 +8,7 @@ class SharedPrefs{
   static String free_membership_date = "free_membership_date";
   static String free_membership_duration = "free_membership_duration";
 
+  static String gender_fetch = "gender_fetch";
   static String userId = "userId";
   static String firstName = "firstName_prefs";
   static String lastname = "lastName_prefs";
@@ -80,6 +81,8 @@ class SharedPrefs{
   static const String isFromIITIIMNIT = "is_from_iit_iim_nit";
   static const String instituteName = "institute_name";
   static const String education = "education";
+  static const String specialization = "specialization";
+  static const String status = "status";
   static const String educationDetail = "education_detail";
 
   static const String occupation_id = "occupation_id";
@@ -154,6 +157,18 @@ class SharedPrefs{
   static const String pic8 = "pic8";
   static const String pic9 = "pic9";
   static const String pic10 = "pic10";
+  static const String oldpic1 = "oldpic1";
+  static const String oldpic2 = "oldpic2";
+  static const String oldpic3 = "oldpic3";
+  static const String oldpic4 = "oldpic4";
+  static const String oldpic5 = "oldpic5";
+  static const String oldpic6 = "oldpic6";
+  static const String oldpic7 = "oldpic7";
+  static const String oldpic8 = "oldpic8";
+  static const String oldpic9 = "oldpic9";
+  static const String oldpic10 = "oldpic10";
+
+
   static const String isVerifyPic1 = "isverifypic1";
   static const String isVerifyPic2 = "isverifypic2";
   static const String isVerifyPic3 = "isverifypic3";

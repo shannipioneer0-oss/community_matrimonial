@@ -1,0 +1,584 @@
+
+import 'package:flutter/cupertino.dart';
+import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../network_utils/service/api_service.dart';
+import 'SharedPrefs.dart';
+
+class Apiclass {
+
+
+
+  Future<void> apiclass(BuildContext context) async {
+
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if(prefs.getString(SharedPrefs.isLogin) == "1") {
+
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      final _response2 = await Provider.of<ApiService>(context, listen: false).postProfileDetailsFetchValuelabel(
+          {
+            "userId" : prefs.getString(SharedPrefs.userId),
+            "communityId":prefs.getString(SharedPrefs.communityId),
+            "myuserId":prefs.getString(SharedPrefs.userId),
+            "Id":prefs.getString(SharedPrefs.userId),
+            "original": "en",
+            "translate": ["en"]
+          }
+      );
+
+      print({
+        "userId" : prefs.getString(SharedPrefs.userId),
+        "communityId":prefs.getString(SharedPrefs.communityId),
+        "myuserId":prefs.getString(SharedPrefs.userId),
+        "Id":prefs.getString(SharedPrefs.userId),
+        "original": "en",
+        "translate": ["en"]
+      });
+
+      // print(_response2.body["data"][3][0]["0"]["education"].toString()+"-=-=-=-=-=()");
+
+
+      double percent = 0.0;
+
+      var userData = _response2.body["data"][0][0]["0"];
+
+      await prefs.setString(SharedPrefs.translate, "en");
+
+      if(_response2.body["data"][0][0].toString() != "{}") {
+
+        print(userData["subcaste_txt"]+"()()===()()");
+
+        await prefs.setString(
+            SharedPrefs.basic_details_id, userData["Id"].toString());
+        await prefs.setString(SharedPrefs.fullname, userData["fullname"]);
+        await prefs.setString(SharedPrefs.createdBy, userData["created_by"] ?? "");
+        await prefs.setString(SharedPrefs.dob, userData["dob"]);
+        await prefs.setString(SharedPrefs.age, userData["age"]);
+        await prefs.setString(
+            SharedPrefs.maritalStatus, userData["marital_status"] ?? "");
+        await prefs.setString(SharedPrefs.caste, userData["caste"] ?? "");
+        // await prefs.setString(SharedPrefs.subcaste, userData["subcaste"] ?? "");
+        await prefs.setString(SharedPrefs.subcaste_shakh, userData["subcaste_txt"] ?? "");
+
+        await prefs.setString(
+            SharedPrefs.languageKnown, userData["language_known"] ?? "");
+        await prefs.setString(
+            SharedPrefs.motherTongue, userData["mother_tongue"] ?? "");
+        await prefs.setString(SharedPrefs.isnri, userData["isnri"] ?? "");
+        await prefs.setString(SharedPrefs.nri_details, userData["nri_detail"] ?? "");
+        await prefs.setString(
+            SharedPrefs.profileId, userData["profileId"] ?? "");
+
+
+        percent = percent +  10;
+      }
+
+
+
+      if(_response2.body["data"][1][0].toString() != "{}") {
+
+        var contactInfo = _response2.body["data"][1][0]["0"];
+
+        //
+
+        await prefs.setString(
+            SharedPrefs.contact_details_id, contactInfo["Id"].toString());
+        await prefs.setString(
+            SharedPrefs.mobileNumber, contactInfo["mobile_number"]);
+        await prefs.setString(
+            SharedPrefs.whatsappNumber, contactInfo["whatsapp_number"]);
+        await prefs.setString(
+            SharedPrefs.permanentAddress, contactInfo["permanent_adddress"]);
+        await prefs.setString(SharedPrefs.emailId, contactInfo["emailid"]);
+        await prefs.setString(
+            SharedPrefs.alternateMobile, contactInfo["alternate_mobile"] ?? "");
+        await prefs.setString(
+            SharedPrefs.alternateEmail, contactInfo["alternate_email"] ?? "");
+        await prefs.setString(
+            SharedPrefs.workingAddress, contactInfo["working_address"] ?? "");
+        await prefs.setString(
+            SharedPrefs.contactTime, contactInfo["contact_time"] ?? "");
+        await prefs.setString(
+            SharedPrefs.permCountry, contactInfo["perm_country"] ?? "");
+        await prefs.setString(SharedPrefs.permState, contactInfo["perm_state"] ?? "");
+        await prefs.setString(SharedPrefs.permCity, contactInfo["perm_city"] ?? "");
+        await prefs.setString(
+            SharedPrefs.work_country, contactInfo["work_country"] ?? "");
+        await prefs.setString(SharedPrefs.workState, contactInfo["work_state"] ?? "");
+        await prefs.setString(SharedPrefs.workCity, contactInfo["work_city"] ?? "");
+
+        percent = percent +  15.5;
+      }
+
+      var healthDetails = _response2.body["data"][2][0]["0"];
+
+      if(_response2.body["data"][2][0].toString() != "{}") {
+
+        await prefs.setString(
+            SharedPrefs.lifestyle_details_id, healthDetails["Id"].toString());
+        await prefs.setString(SharedPrefs.weight, healthDetails['weight'] ?? "");
+        await prefs.setString(SharedPrefs.height, healthDetails['height'] ?? "");
+        await prefs.setString(SharedPrefs.skinTone, healthDetails['skintone'] ?? "");
+        await prefs.setString(
+            SharedPrefs.bloodGroup, healthDetails['blood_group'] ?? "");
+        await prefs.setString(SharedPrefs.fitness, healthDetails['fitness'] ?? "");
+        await prefs.setString(SharedPrefs.bodyType, healthDetails['body_type'] ?? "");
+        await prefs.setString(
+            SharedPrefs.isHandicap, healthDetails['is_handicap']);
+        await prefs.setString(
+            SharedPrefs.handicapDetail, healthDetails['handicap_detail'] ?? "");
+        await prefs.setString(SharedPrefs.dietType, healthDetails['diet_type'] ?? "");
+        await prefs.setString(SharedPrefs.drinkType, healthDetails['drink_type'] ?? "");
+        await prefs.setString(SharedPrefs.smokeType, healthDetails['smoke_type'] ?? "");
+
+        percent = percent +  12.5;
+
+      }
+
+      var adminServiceDetails = _response2.body["data"][3][0]["0"];
+
+      if(_response2.body["data"][3][0].toString() != "{}") {
+        await prefs.setString(
+            SharedPrefs.education_id, adminServiceDetails["Id"].toString());
+        await prefs.setString(SharedPrefs.isFromAdminService,
+            adminServiceDetails['is_from_admin_service'] ?? "");
+        await prefs.setString(SharedPrefs.adminPositionName,
+            adminServiceDetails['admin_position_name'] ?? "");
+        await prefs.setString(SharedPrefs.isFromIITIIMNIT,
+            adminServiceDetails['is_from_iit_iim_nit'] ?? "");
+        await prefs.setString(
+            SharedPrefs.instituteName, adminServiceDetails['institute_name'] ?? "");
+        await prefs.setString(
+            SharedPrefs.education, adminServiceDetails['education'] ?? "");
+
+        await prefs.setString(
+            SharedPrefs.specialization , adminServiceDetails['specialization'] ?? "");
+
+        await prefs.setString(
+            SharedPrefs.status , adminServiceDetails['status'] ?? "");
+
+        await prefs.setString(
+            SharedPrefs.educationDetail, adminServiceDetails['education_detail']);
+
+        percent = percent +  5;
+
+      }
+
+      var occupationDetails = _response2.body["data"][4][0]["0"];
+
+      if(_response2.body["data"][4][0].toString() != "{}") {
+        await prefs.setString(
+            SharedPrefs.occupation_id, occupationDetails["Id"].toString());
+        await prefs.setString(
+            SharedPrefs.occupation, occupationDetails['occupation'] ?? "");
+        await prefs.setString(
+            SharedPrefs.occupationDetail, occupationDetails['occupation_detail'] ?? "");
+        await prefs.setString(
+            SharedPrefs.annualIncome, occupationDetails['annual_income']);
+        await prefs.setString(
+            SharedPrefs.employmentType, occupationDetails['employment_type'] ?? "");
+        await prefs.setString(
+            SharedPrefs.officeAddress, occupationDetails['office_address']);
+
+        percent = percent +  5.55;
+
+      }
+
+      var familyDetails = _response2.body["data"][5][0]["0"];
+
+      if(_response2.body["data"][5][0].toString() != "{}") {
+        await prefs.setString(
+            SharedPrefs.family_id, familyDetails["Id"].toString());
+        await prefs.setString(
+            SharedPrefs.familyStatus, familyDetails['family_status'] ?? "");
+        await prefs.setString(
+            SharedPrefs.familyType, familyDetails['family_type'] ?? "");
+        await prefs.setString(
+            SharedPrefs.familyValue, familyDetails['family_value'] ?? "");
+        await prefs.setString(SharedPrefs.noBrother, familyDetails['no_brother']);
+        await prefs.setString(SharedPrefs.noSister, familyDetails['no_sister']);
+        await prefs.setString(
+            SharedPrefs.marriedBrother, familyDetails['married_brother']);
+        await prefs.setString(
+            SharedPrefs.marriedSister, familyDetails['married_sister']);
+        await prefs.setString(
+            SharedPrefs.fatherName, familyDetails['father_name'] ?? "");
+        await prefs.setString(
+            SharedPrefs.motherName, familyDetails['mother_name'] ?? "");
+        await prefs.setString(
+            SharedPrefs.fatherOccupation, familyDetails['father_occupation']);
+        await prefs.setString(
+            SharedPrefs.motherOccupation, familyDetails['mother_occupation']);
+        await prefs.setString(
+            SharedPrefs.houseOwned, familyDetails['house_owned'] ?? "");
+        await prefs.setString(SharedPrefs.houseType, familyDetails['house_type'] ?? "");
+        await prefs.setString(SharedPrefs.parentsStayOptions,
+            familyDetails['parents_stay_options'] ?? "");
+        await prefs.setString(
+            SharedPrefs.detailFamily, familyDetails['detail_family']);
+
+        percent = percent +  15.5;
+      }
+
+
+      var astroDetails = _response2.body["data"][6][0]["0"];
+
+      if(_response2.body["data"][6][0].toString() != "{}") {
+        await prefs.setString(
+            SharedPrefs.horoscope_id, astroDetails["Id"].toString());
+        //  await prefs.setString(
+        // SharedPrefs.astroRashi, astroDetails['astro_rashi']);
+        // await prefs.setString(SharedPrefs.birthStar, astroDetails['birth_star']);
+        await prefs.setString(SharedPrefs.gotra, astroDetails['gotra']);
+        await prefs.setString(
+            SharedPrefs.believeHoroscope, astroDetails['believe_horoscope']);
+        await prefs.setString(SharedPrefs.birthDate, astroDetails['birth_date']);
+        await prefs.setString(
+            SharedPrefs.birthPlace, astroDetails['birth_place']);
+        await prefs.setString(SharedPrefs.birthTime, astroDetails['birth_time']);
+        await prefs.setString(
+            SharedPrefs.birthCountry, astroDetails['birth_country']);
+        await prefs.setString(
+            SharedPrefs.horoscopeDoc, astroDetails['horoscope_doc']);
+        await prefs.setString(SharedPrefs.timezone, astroDetails['timezone']);
+        await prefs.setString(
+            SharedPrefs.isMangalik, astroDetails['is_mangalik']);
+
+        percent = percent +  14;
+      }
+
+
+
+      if(_response2.body["data"][7][0].toString() != "{}") {
+        var pictures = _response2.body["data"][7][0]["0"];
+
+       // print(pictures['Id'].toString()+"----------------------++++++++");
+
+        await prefs.setString(
+            SharedPrefs.pic_id, pictures['Id'].toString() ?? '');
+        await prefs.setString(
+            SharedPrefs.pic1, pictures['pic1'] ?? '');
+        await prefs.setString(
+            SharedPrefs.pic1, pictures['pic1'] ?? '');
+        await prefs.setString(
+            SharedPrefs.pic2, pictures['pic2'] ?? '');
+        await prefs.setString(
+            SharedPrefs.pic3, pictures['pic3'] ?? '');
+        await prefs.setString(
+            SharedPrefs.pic4, pictures['pic4'] ?? '');
+        await prefs.setString(
+            SharedPrefs.pic5, pictures['pic5'] ?? '');
+        await prefs.setString(
+            SharedPrefs.pic6, pictures['pic6'] ?? '');
+        await prefs.setString(
+            SharedPrefs.pic7, pictures['pic7'] ?? '');
+        await prefs.setString(
+            SharedPrefs.pic8, pictures['pic8'] ?? '');
+        await prefs.setString(
+            SharedPrefs.pic9, pictures['pic9'] ?? '');
+        await prefs.setString(
+            SharedPrefs.pic10, pictures['pic10'] ?? '');
+
+
+        await prefs.setString(
+            SharedPrefs.oldpic1, pictures['oldpic1'] ?? '');
+        await prefs.setString(
+            SharedPrefs.oldpic2, pictures['oldpic2'] ?? '');
+        await prefs.setString(
+            SharedPrefs.oldpic3, pictures['oldpic3'] ?? '');
+        await prefs.setString(
+            SharedPrefs.oldpic4, pictures['oldpic4'] ?? '');
+        await prefs.setString(
+            SharedPrefs.oldpic5, pictures['oldpic5'] ?? '');
+        await prefs.setString(
+            SharedPrefs.oldpic6, pictures['oldpic6'] ?? '');
+        await prefs.setString(
+            SharedPrefs.oldpic7, pictures['oldpic7'] ?? '');
+        await prefs.setString(
+            SharedPrefs.oldpic8, pictures['oldpic8'] ?? '');
+        await prefs.setString(
+            SharedPrefs.oldpic9, pictures['oldpic9'] ?? '');
+        await prefs.setString(
+            SharedPrefs.oldpic10, pictures['oldpic10'] ?? '');
+
+
+        await prefs.setString(SharedPrefs.isVerifyPic1,
+            pictures['isverifypic1'] ?? '0');
+        await prefs.setString(SharedPrefs.isVerifyPic2,
+            pictures['isverifypic2'] ?? '0');
+        await prefs.setString(SharedPrefs.isVerifyPic3,
+            pictures['isverifypic3'] ?? '0');
+        await prefs.setString(SharedPrefs.isVerifyPic4,
+            pictures['isverifypic4'] ?? '0');
+        await prefs.setString(SharedPrefs.isVerifyPic5,
+            pictures['isverifypic5'] ?? '0');
+        await prefs.setString(SharedPrefs.isVerifyPic6,
+            pictures['isverifypic6'] ?? '0');
+        await prefs.setString(SharedPrefs.isVerifyPic7,
+            pictures['isverifypic7'] ?? '0');
+        await prefs.setString(SharedPrefs.isVerifyPic8,
+            pictures['isverifypic8'] ?? '0');
+        await prefs.setString(SharedPrefs.isVerifyPic9,
+            pictures['isverifypic9'] ?? '0');
+        await prefs.setString(SharedPrefs.isVerifyPic10,
+            pictures['isverifypic10'] ?? '0');
+
+        int valincre = 0;
+
+        String value = pictures['pic1'] ?? '';
+        String value2 = pictures['pic2'] ?? '';
+        String value3 = pictures['pic3'] ?? '';
+
+        value != '' ? valincre = valincre +2 : 0;
+        value2 != '' ? valincre = valincre +1 : 0;
+        value3 != '' ? valincre = valincre +1 : 0;
+
+        percent = percent +  valincre;
+
+      }
+
+      var userproofs = _response2.body["data"][9][0]["0"];
+
+      // print(userproofs+"=================");
+
+      if(_response2.body["data"][9][0].toString() != "{}"){
+
+        await prefs.setString(SharedPrefs.id_proof, userproofs['id_proofs'].toString() ?? '');
+        await prefs.setString(SharedPrefs.education_proof, userproofs['education_proof'].toString() ?? '');
+        await prefs.setString(SharedPrefs.income_proof , userproofs['income_proof'].toString() ?? '');
+
+        print(userproofs['id_proofs'].toString()+"---====");
+
+        String value = userproofs['id_proofs'].toString() ?? '';
+        String value2 = userproofs['education_proof'].toString() ?? '';
+        String value3 = userproofs['income_proof'].toString() ?? '';
+
+        int valincre = 0;
+
+        value != '' ? valincre = valincre +2 : 0;
+        value2 != '' ? valincre = valincre +1 : 0;
+        value3 != '' ? valincre = valincre +1 : 0;
+
+        percent = percent +  valincre;
+
+      }
+
+      var userDetails = _response2.body["data"][10][0]["0"];
+
+      if(_response2.body["data"][10][0].toString() != "{}") {
+        await prefs.setString(
+            SharedPrefs.partner_prefs_id, userDetails['Id'].toString() ?? '');
+        await prefs.setString(
+            SharedPrefs.ageRange, userDetails['age_range'] ?? '');
+        await prefs.setString(
+            SharedPrefs.heightRange, userDetails['height_range'] ?? '');
+        await prefs.setString(
+            SharedPrefs.maritalStatus_prefs, userDetails['marital_status'] ?? '');
+        await prefs.setString(
+            SharedPrefs.caste_prefs, userDetails['caste'] ?? '');
+        await prefs.setString(
+            SharedPrefs.subcaste_prefs, userDetails['subcaste'] ?? '');
+        await prefs.setString(
+            SharedPrefs.state_prefs, userDetails['state'] ?? '');
+        await prefs.setString(SharedPrefs.city_prefs, userDetails['city'] ?? '');
+        await prefs.setString(
+            SharedPrefs.skintoneprefs, userDetails['skintone'] ?? '');
+        await prefs.setString(
+            SharedPrefs.education_prefs, userDetails['education_list'] ?? '');
+        await prefs.setString(
+            SharedPrefs.occupation_prefs, userDetails['occupation'] ?? '');
+        await prefs.setString(
+            SharedPrefs.familyValue_prefs, userDetails['family_value'] ?? '');
+        await prefs.setString(
+            SharedPrefs.dietType_prefs, userDetails['diet_type'] ?? '');
+        await prefs.setString(
+            SharedPrefs.bodyType_prefs, userDetails['body_type'] ?? '');
+        await prefs.setString(
+            SharedPrefs.drinkType_prefs, userDetails['drink_type'] ?? '');
+        await prefs.setString(
+            SharedPrefs.smokeType_prefs, userDetails['smoke_type'] ?? '');
+        await prefs.setString(
+            SharedPrefs.annualIncome_prefs, userDetails['annual_income'] ?? '');
+        await prefs.setString(
+            SharedPrefs.partnerDetails, userDetails['partner_details'] ?? '');
+
+
+        String from_age = "" , to_age = "" , from_height = "" , to_height = "";
+        /*if(userDetails['age_range'] ?? '' == ""){
+      if (prefs.getString(SharedPrefs.gender).toString().toLowerCase() == "male") {
+
+        from_age =   (int.parse(prefs.getString(SharedPrefs.age).toString()) - 3).toString();
+        to_age   =   prefs.getString(SharedPrefs.age).toString();
+
+      } else {
+
+        from_age =    prefs.getString(SharedPrefs.age).toString();
+        to_age   =   (int.parse(prefs.getString(SharedPrefs.age).toString()) + 3).toString();
+
+      }
+
+      await prefs.setString(SharedPrefs.ageRange , from_age+"-"+to_age ?? '');
+
+    }*/
+
+
+
+        var userverify = _response2.body["data"][15][0]["0"];
+
+        print(userverify.toString());
+
+        if(_response2.body["data"][15][0].toString() != "{}"){
+
+          String  user_verify =  userverify['user_verify'].toString() ?? '';
+          String  email_verify = userverify['email_verify'].toString() ?? '';
+          String   mobile_verify = userverify['mobile_verify'].toString() ?? '';
+
+          prefs.setString(SharedPrefs.verify_email, email_verify);
+          prefs.setString(SharedPrefs.user_verify, user_verify);
+          prefs.setString(SharedPrefs.mobile_verify , mobile_verify);
+          prefs.setString(SharedPrefs.role_type , userverify['role'].toString());
+
+        }
+
+
+        var hobbyverify = _response2.body["data"][16][0]["0"];
+
+        print(userverify.toString());
+
+        if(_response2.body["data"][16][0].toString() != "{}"){
+
+          String  hobbies =  hobbyverify['hobbies'].toString() ?? '';
+          prefs.setString(SharedPrefs.hobbies, hobbies);
+
+        }
+
+
+
+
+
+
+
+        percent = percent +  14;
+      }
+
+      print(percent.toString()+"-----------");
+
+      if(_response2.body["data"][17][0].toString() != "{}"){
+
+
+        var details1 = _response2.body["data"][17][0]["0"]["member_details1"];
+        var details2 = _response2.body["data"][17][0]["0"]["member_details2"];
+        var details3 = _response2.body["data"][17][0]["0"]["member_details3"];
+        var details4 = _response2.body["data"][17][0]["0"]["member_details4"];
+        var details5 = _response2.body["data"][17][0]["0"]["member_details5"];
+        var details6 = _response2.body["data"][17][0]["0"]["member_details6"];
+
+        var ref_member1 = _response2.body["data"][17][0]["0"]["ref_member_name1"];
+        var ref_add1 = _response2.body["data"][17][0]["0"]["ref_member_add1"];
+        var ref_mobile1 = _response2.body["data"][17][0]["0"]["ref_member_mobile1"];
+        var ref_member2 = _response2.body["data"][17][0]["0"]["ref_member_name2"];
+        var ref_add2 = _response2.body["data"][17][0]["0"]["ref_member_add2"];
+        var ref_mobile2 = _response2.body["data"][17][0]["0"]["ref_member_mobile2"];
+
+
+        await prefs.setString(SharedPrefs.membername1, details1.toString().split(",")[0]);
+        await prefs.setString(SharedPrefs.relation1, details1.toString().split(",")[1]);
+        await prefs.setString(SharedPrefs.marital1, details1.toString().split(",")[2]);
+        await prefs.setString(SharedPrefs.age1, details1.toString().split(",")[3]);
+        await prefs.setString(SharedPrefs.education1, details1.toString().split(",")[4]);
+        await prefs.setString(SharedPrefs.occupation_income1, details1.toString().split(",")[5]);
+
+        await prefs.setString(SharedPrefs.membername2, details2.toString().split(",")[0]);
+        await prefs.setString(SharedPrefs.relation2, details2.toString().split(",")[1]);
+        await prefs.setString(SharedPrefs.marital2, details2.toString().split(",")[2]);
+        await prefs.setString(SharedPrefs.age2, details2.toString().split(",")[3]);
+        await prefs.setString(SharedPrefs.education2, details2.toString().split(",")[4]);
+        await prefs.setString(SharedPrefs.occupation_income2, details2.toString().split(",")[5]);
+
+        await prefs.setString(SharedPrefs.membername3, details3.toString().split(",")[0]);
+        await prefs.setString(SharedPrefs.relation3, details3.toString().split(",")[1]);
+        await prefs.setString(SharedPrefs.marital3, details3.toString().split(",")[2]);
+        await prefs.setString(SharedPrefs.age3, details3.toString().split(",")[3]);
+        await prefs.setString(SharedPrefs.education3, details3.toString().split(",")[4]);
+        await prefs.setString(SharedPrefs.occupation_income3, details3.toString().split(",")[5]);
+
+        await prefs.setString(SharedPrefs.membername4, details4.toString().split(",")[0]);
+        await prefs.setString(SharedPrefs.relation4, details4.toString().split(",")[1]);
+        await prefs.setString(SharedPrefs.marital4, details4.toString().split(",")[2]);
+        await prefs.setString(SharedPrefs.age4, details4.toString().split(",")[3]);
+        await prefs.setString(SharedPrefs.education4, details4.toString().split(",")[4]);
+        await prefs.setString(SharedPrefs.occupation_income4, details4.toString().split(",")[5]);
+
+        await prefs.setString(SharedPrefs.membername5, details5.toString().split(",")[0]);
+        await prefs.setString(SharedPrefs.relation5, details5.toString().split(",")[1]);
+        await prefs.setString(SharedPrefs.marital5, details5.toString().split(",")[2]);
+        await prefs.setString(SharedPrefs.age5, details5.toString().split(",")[3]);
+        await prefs.setString(SharedPrefs.education5, details5.toString().split(",")[4]);
+        await prefs.setString(SharedPrefs.occupation_income5, details5.toString().split(",")[5]);
+
+        await prefs.setString(SharedPrefs.membername6, details6.toString().split(",")[0]);
+        await prefs.setString(SharedPrefs.relation6, details6.toString().split(",")[1]);
+        await prefs.setString(SharedPrefs.marital6, details6.toString().split(",")[2]);
+        await prefs.setString(SharedPrefs.age6, details6.toString().split(",")[3]);
+        await prefs.setString(SharedPrefs.education6, details6.toString().split(",")[4]);
+        await prefs.setString(SharedPrefs.occupation_income6, details6.toString().split(",")[5]);
+
+        await prefs.setString(SharedPrefs.refmembername1, ref_member1);
+        await prefs.setString(SharedPrefs.refmemberadd1, ref_add1);
+        await prefs.setString(SharedPrefs.refmembermobile1, ref_mobile1);
+
+        await prefs.setString(SharedPrefs.refmembername2, ref_member2);
+        await prefs.setString(SharedPrefs.refmemberadd2, ref_add2);
+        await prefs.setString(SharedPrefs.refmembermobile2, ref_mobile2);
+
+        await prefs.setString(SharedPrefs.fml_details_id, _response2.body["data"][17][0]["0"]["Id"].toString());
+
+
+      }
+
+      if(_response2.body["data"][18][0].toString() != "{}"){
+
+
+        print(_response2.body["data"][18][0].toString()+"=======------");
+
+        await prefs.setString(SharedPrefs.isverify_payment , _response2.body["data"][18][0]["0"]["isverify"].toString());
+      }
+
+
+      if(_response2.body["data"][19][0].toString() != "{}"){
+
+
+        print(_response2.body["data"][19][0]["0"]["gender"].toString()+"=======------");
+
+        await prefs.setString(SharedPrefs.gender_fetch , _response2.body["data"][19][0]["0"]["gender"].toString());
+      }
+
+
+
+      await prefs.setString(SharedPrefs.profile_percentage , percent.toString());
+
+
+
+      navService.pushNamed("/main_screen" , args: -1);
+
+    }else{
+
+      navService.pushNamed("/login");
+
+    }
+
+
+  }
+
+
+
+
+
+
+}

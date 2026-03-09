@@ -104,7 +104,7 @@ class Notification extends State<NotificationStateful> {
         appBar: AppBar(
           title: Text('Notifications' , style: TextStyle(color: Colors.black87 , fontSize: 18),),
           toolbarOpacity: 1,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.white,
           elevation: 0.0,
           leading: IconButton(
             icon: Image.asset("assets/images/ic_launcher.png" , width: 50, height: 40,),

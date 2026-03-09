@@ -75,6 +75,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
   TextEditingController langController = new TextEditingController();
   TextEditingController mothertongueController = new TextEditingController();
   TextEditingController nriController = new TextEditingController();
+  TextEditingController controllergender =new TextEditingController();
 
   String firtname = "" , lastname = ""  , dob = "" ,passdate = "";
   String created_value = "" , marital_value = "" , caste_value = "" , subcaste_value = "" , mother_tongue_value = "" , lang_known_value = "";
@@ -91,6 +92,10 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    setState(() {
+      user_verify = prefs.getString(SharedPrefs.user_verify).toString();
+    });
+
     print(widget.list[2]+"-=-={}{}");
 
     firstnameController.text = widget.list[0] ;
@@ -102,6 +107,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
     subcasteController.text =  widget.list[6];
     langController.text  =   widget.list[7];
     mothertongueController.text = widget.list[8];
+    controllergender.text = widget.list[20];
 
     passdate = widget.list[2];
 
@@ -127,10 +133,12 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
 
   }
 
-
+  String user_verify = "0";
   late ConnectivityResult _connectivityResult;
+  List<DataFetchParams> items_gender = [DataFetchParams(label: "Male", value: "Male", value2: "Male") , DataFetchParams(label: "Female", value: "Female", value2: "Female")];
 
   bool isnri = false;
+
   @override
   Widget build(BuildContext context) {
 
@@ -157,9 +165,16 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
           SizedBox(height: 20,),
           CustomTextField(icondata: Icons.person , controller: lastnameController , labelText: TranslationService.translate("enter_surname"), enabled: lastname.isEmpty ? false : false,),
           SizedBox(height: 20,),
+          CustomDropdown(icondata: Icons.supervised_user_circle, controller: controllergender, labelText: "Select Gender", onButtonPressed: () async {
+
+              final value = await SingleSelectDialog().showBottomSheet3(context, items_gender);
+              controllergender.text = value.label;
+
+          }),
+          SizedBox(height: 20,),
           GestureDetector(onTap: () async {
 
-//print(dob.split("-")[2].toString());
+                 //print(dob.split("-")[2].toString());
 
             if(dob.isEmpty || dob.isNotEmpty){
 
@@ -193,9 +208,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                 String day = "",
                     month = "";
 
-                if (date.day
-                    .toString()
-                    .length < 2) {
+                if (date.day.toString().length < 2) {
                   day = "0" + date.day.toString();
                 } else {
                   day = date.day.toString();
@@ -361,6 +374,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                     "marital_status": marital_value,
                     "religion": "Hindu",
                     "caste": caste_value,
+                    "gender": controllergender.text.toString(),
                     "subcaste": subcasteController.text.toString(),
                     "language_known": lang_known_value,
                     "mother_tongue": mother_tongue_value,
@@ -384,6 +398,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                         "marital_status": marital_value,
                         "religion": "Hindu",
                         "caste": caste_value,
+                        "gender":  controllergender.text.toString() ,
                         "subcaste": subcasteController.text.toString(),
                         "language_known": lang_known_value,
                         "mother_tongue": mother_tongue_value,
@@ -412,7 +427,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                 } else {
                   EasyLoading.show(status: 'Please wait...');
 
-                  print(widget.list[15]+"[][]");
+                  print(widget.list[18]+"[][]");
 
                   final _response = await Provider.of<ApiService>(
                       context, listen: false)
@@ -426,12 +441,14 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                         "marital_status": marital_value,
                         "religion": "Hindu",
                         "caste": caste_value,
+                        "gender": controllergender.text.toString(),
                         "subcaste": subcasteController.text.toString(),
                         "isnri" : isnri == false ? "0" : "1" ,
                         "nri_detail" : nriController.text.toString(),
                         "language_known": lang_known_value,
                         "mother_tongue": mother_tongue_value,
                         "Id": widget.list[15],
+                        "userId": widget.list[18],
                       }
                   );
 

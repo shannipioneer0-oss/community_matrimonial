@@ -9,6 +9,7 @@ import 'package:community_matrimonial/utils/ImageOverlayPainter.dart';
 import 'package:community_matrimonial/utils/SharedPrefs.dart';
 import 'package:community_matrimonial/utils/Strings.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_device_imei/flutter_device_imei.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
@@ -89,6 +90,8 @@ class LoginScreen extends State<LoginAppStateful> {
 
              if(count == 2){
 
+               count = 0;
+
                DialogClass().showCustomProgressDialog(context);
 
                final flavor = FlavorConfig.instance.name;
@@ -98,7 +101,7 @@ class LoginScreen extends State<LoginAppStateful> {
                SharedPreferences pref = await SharedPreferences.getInstance();
 
 
-               print(pref.getString(SharedPrefs.token_id));
+               print(pref.getString(SharedPrefs.token_id).toString()+"-------");
 
                final _response = await Provider.of<ApiService>(context, listen: false).postSendOtpSms(
                    {
@@ -112,10 +115,10 @@ class LoginScreen extends State<LoginAppStateful> {
 
                print(_response.body.toString());
 
-               print(_response.body["data"][0]["mobile"]+"====");
+               //print(_response.body["data"][0]["mobile"]+"====");
                if(_response.body != null) {
 
-                 print(_response.body["data"][0]["mobile"]+"======");
+                // print(_response.body["data"][0]["mobile"]+"======");
 
                  if (_response.body["data"] != "not_exists") {
 
@@ -168,7 +171,7 @@ class LoginScreen extends State<LoginAppStateful> {
 
                        Navigator.of(context , rootNavigator: true).pop();
                        navService.pushNamed("/login_verify",
-                           args: [controllermobilenumber.text.toString(), "0"]);
+                           args: [controllermobilenumber.text.toString() , "0"]);
 
                      }else{
 
@@ -423,6 +426,18 @@ class LoginScreen extends State<LoginAppStateful> {
 
             Container(margin: EdgeInsets.only(top: 15) ,child:RichTextWithIndividualOnTap()),
 
+             SizedBox(height: 20,),
+
+             GestureDetector(child: RichText(text: createTextSpan("HELP LINE", Colors.pink , onTap: (){
+
+               navService.pushNamed("/contact_us");
+
+             }))),
+
+
+
+
+
              Visibility(visible: false  ,child:Container(width: MediaQuery.of(context).size.width*0.4   ,margin: EdgeInsets.only(top: 25)   ,child:RoundedContainerWithImage(text: TranslationService.translate("login_google"), color: Colors.pink, image: 'assets/images/heart.png', textimage: 'G', )),)
 
           ],
@@ -450,7 +465,13 @@ class LoginScreen extends State<LoginAppStateful> {
   }
 
 
-
+  TextSpan createTextSpan(String text, Color color, {Function()? onTap}) {
+    return TextSpan(
+      text: text,
+      style: TextStyle(color: color , fontSize:15 , decoration: TextDecoration.underline, fontWeight: FontWeight.bold),
+      recognizer: onTap != null ? (TapGestureRecognizer()..onTap = onTap) : null,
+    );
+  }
 
 
 

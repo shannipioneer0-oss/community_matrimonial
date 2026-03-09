@@ -36,15 +36,20 @@ class DashboardListStateful extends State<DashboardList> {
     return widget.user.shortlist.split(",").contains(widget.user.userId);
   }
 
+
+  List list_likes = [];
+
   bool iscontainLikes() {
     return widget.user.likes.split(",").contains(widget.user.userId);
   }
 
 
-
   @override
   void initState() {
     super.initState();
+
+
+    initprefs();
 
     print(Strings.IMAGE_BASE_URL +
         "/uploads/" +utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+
@@ -52,6 +57,21 @@ class DashboardListStateful extends State<DashboardList> {
 
     print(widget.user.pic);
   }
+
+  String role= "";
+  initprefs() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      role = prefs.getString(SharedPrefs.role_type).toString();
+    });
+
+
+    print(role+"===---");
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -227,13 +247,29 @@ class DashboardListStateful extends State<DashboardList> {
               ],
             ),
 
+            role == "admin" ? Positioned( bottom: 20 ,left: 0 ,child: GestureDetector(onTap: (){
+
+              navService.pushNamed("/user_detail_other", args: [widget.user.userId , "0" ]);
+
+
+            }  ,child:Container(
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(16.0),
+                ),
+                color:
+                backgroundColor, // Set the background color as needed
+              ),
+              child: Image.asset("assets/images/edit.png" ,color: Colors.white, width: 20, height: 20,),),
+            )) : Container(),
             Positioned(
                 bottom: 10,
-                left: 20,
+                left: 40,
                 child: Container(
                     height: 60,
                     alignment: Alignment.center,
-                    width: MediaQuery.of(context).size.width * 0.8,
+                    width: MediaQuery.of(context).size.width * 0.7,
                     child: Row(
                       children: [
                         Expanded(
@@ -416,11 +452,32 @@ class DashboardListStateful extends State<DashboardList> {
                                           }
                                         } else {}
                                       } else {
-                                        DialogClass().showDialog2(
-                                            context,
-                                            "Express Interest alert!",
-                                            "Already Expressed Interest",
-                                            "Ok");
+
+
+                                        final res = await DialogClass().showDialogBeforesubmit(context, "Delete Express Alert!", "Are you sure want to delete expressed interest " , "OK" , "1");
+
+                                          if(res ==  "1"){
+
+                                            final res = await ApiService.create().postDeleteInterest({"fromId": prefs.getString(SharedPrefs.userId) , "toId":widget.user.userId , "communityId":prefs.getString(SharedPrefs.communityId)});
+
+                                            print(res.body);
+
+                                            if(res.body["data"]["affectedRows"] == 0 || res.body["data"]["affectedRows"] == 1){
+
+                                              List<String> list_likes = widget.user.likes.split(",");
+
+                                              setState(() {
+
+                                                widget.user.likes =  widget.user.likes.replaceAll(widget.user.userId , "");
+
+                                              });
+
+                                            }
+
+                                          }
+
+
+
                                       }
                                     } else {
                                       DialogClass().showDialog2(

@@ -89,6 +89,7 @@ dependencies:
   open_filex: ^4.4.0
   flutter_device_imei: ^0.0.5
   share_plus: ^8.0.3
+  firebase_analytics:
 
 
 

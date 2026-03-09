@@ -1,14 +1,15 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 class FancyBorderedImage extends StatelessWidget {
   final String? imagePath;
   final String? imageUrl;
+  final String? path;
   final double borderWidth;
   final double borderRadius;
   final String? isverify;
   final VoidCallback? onEditPressed;
+  final VoidCallback? onDeletePressed;
 
   FancyBorderedImage({
     this.imagePath,
@@ -17,6 +18,8 @@ class FancyBorderedImage extends StatelessWidget {
     this.borderRadius = 12.0,
     this.isverify,
     this.onEditPressed,
+    this.onDeletePressed,
+    this.path
   });
 
   @override
@@ -48,6 +51,7 @@ class FancyBorderedImage extends StatelessWidget {
             _buildPinkishOverlay(),
             _buildEditButton(),
             Align(alignment: Alignment.topRight   ,child:Container(padding: EdgeInsets.all(5) , width: 35 , height: 30 , color: Colors.pink.withOpacity(0.8)  ,alignment: Alignment.topRight, child:isverify == "0" ?  Icon(Icons.verified_user_outlined , color: Colors.grey,) : isverify == "1" ? Icon(Icons.verified_user ,color: Colors.white,) : Icon(Icons.close_rounded ,color: Colors.white,)),),
+            Align(alignment: Alignment.topLeft, child: path != "null" && path != null && path != "0" && path != "" ? GestureDetector(onTap: onDeletePressed  ,child:Container(padding: EdgeInsets.all(5), width: 30 , height: 30 , color: Colors.pink.withOpacity(0.8) , child:Icon(Icons.delete , color: Colors.white,)),) : Container())
           ],
         ),
       ),

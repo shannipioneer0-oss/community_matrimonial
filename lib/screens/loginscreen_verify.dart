@@ -94,6 +94,7 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
 
   }
 
+
   initGetOtp() async {
 
     final _response = await Provider.of<ApiService>(
@@ -180,7 +181,8 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
       Positioned(top: MediaQuery.of(context).size.height*0.36 , left:MediaQuery.of(context).size.width*0.65 ,child: Image.asset("assets/images/heart.png" , width: 45 , height: 45, color: Colors.pink,),),
       Positioned(top: MediaQuery.of(context).size.height*0.45, left:MediaQuery.of(context).size.width*0.17 ,child: Text("" , style: TextStyle(color: Colors.black87 , fontSize:18 , fontWeight: FontWeight.w700 ),)),
 
-      Positioned(top: MediaQuery.of(context).size.height*0.5 ,child: Card(
+
+      Positioned(top: MediaQuery.of(context).size.height*0.55 ,child: Card(
         elevation: 8.0, // Set the elevation for the embossed effect
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0), // Set the border radius
@@ -399,6 +401,12 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
           SharedPrefs.instituteName, adminServiceDetails['institute_name'] ?? "");
       await prefs.setString(
           SharedPrefs.education, adminServiceDetails['education'] ?? "");
+
+      await prefs.setString(
+          SharedPrefs.status , adminServiceDetails['status'] ?? "");
+
+      await prefs.setString(
+          SharedPrefs.specialization , adminServiceDetails['specialization'] ?? "");
       await prefs.setString(
           SharedPrefs.educationDetail, adminServiceDetails['education_detail'] ?? "");
 
@@ -642,6 +650,13 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
         await prefs.setString(SharedPrefs.isverify_payment , _response2.body["data"][18][0]["0"]["isverify"].toString());
       }
 
+      if(_response2.body["data"][19][0].toString() != "{}"){
+
+
+        print(_response2.body["data"][19][0].toString()+"=======------");
+
+        await prefs.setString(SharedPrefs.gender_fetch , _response2.body["data"][19][0]["0"]["gender"].toString());
+      }
 
 
 
@@ -782,6 +797,8 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
 
              ],),
               SizedBox(height: 15),
+
+
 
           ],)
 

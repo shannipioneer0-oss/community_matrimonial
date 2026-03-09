@@ -2,7 +2,11 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
+
+    id("com.google.gms.google-services")
 }
+
+
 
 import java.util.Properties
 import java.io.FileInputStream
@@ -22,6 +26,7 @@ android {
     flavorDimensions += "app"
 
     productFlavors {
+
         create("appA") {
             dimension = "app"
             applicationIdSuffix = ".appa"
@@ -33,6 +38,7 @@ android {
             applicationIdSuffix = ".appb"
             resValue("string", "app_name", "BJP Matrimony")
         }
+
     }
 
     compileOptions {

@@ -405,6 +405,15 @@ class PhotoInfo {
   final String? pic7;
   final String? pic8;
 
+  final String? oldpic1;
+  final String? oldpic2;
+  final String? oldpic3;
+  final String? oldpic4;
+  final String? oldpic5;
+  final String? oldpic6;
+  final String? oldpic7;
+  final String? oldpic8;
+
   @JsonKey(name: 'isverifypic1')
   final String? isVerifyPic1;
 
@@ -454,6 +463,14 @@ class PhotoInfo {
      this.pic6,
      this.pic7,
       this.pic8,
+    this.oldpic1,
+    this.oldpic2,
+    this.oldpic3,
+    this.oldpic4,
+    this.oldpic5,
+    this.oldpic6,
+    this.oldpic7,
+    this.oldpic8,
      this.isVerifyPic1,
      this.isVerifyPic2,
      this.isVerifyPic3,

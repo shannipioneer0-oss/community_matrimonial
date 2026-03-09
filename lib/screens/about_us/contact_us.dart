@@ -4,6 +4,7 @@ import 'package:community_matrimonial/network_utils/service/api_service.dart';
 import 'package:community_matrimonial/utils/SharedPrefs.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
@@ -67,9 +68,13 @@ class ContactUsState extends State<ContactUsScreen> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    final flavor = FlavorConfig.instance.name;
+
+    String communityId =  flavor == "appA" ? "20" : "2";
+
     final _response = await Provider.of<ApiService>(context , listen: false).
     selectContactUs({
-      "communityId": prefs.getString(SharedPrefs.communityId),
+      "communityId": communityId,
     });
 
     setState(() {

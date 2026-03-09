@@ -2,8 +2,9 @@ import 'package:community_matrimonial/app_utils/Dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
-
 import '../network_utils/service/api_service.dart';
+
+
 
 class LaunchCodeScreen extends StatefulWidget {
   const LaunchCodeScreen({super.key});
@@ -30,11 +31,11 @@ class _LaunchCodeScreenState extends State<LaunchCodeScreen> {
 
        final res = await  ApiService.create().update_launch({});
 
-      navService.pushNamedAndRemoveUntil("/intro");
+      navService.pushNamedAndRemoveUntil("/login");
 
     }else if(_codeController.text.toString() == "992424"){
 
-      navService.pushNamedAndRemoveUntil("/intro");
+      navService.pushNamedAndRemoveUntil("/login");
 
     }else{
 

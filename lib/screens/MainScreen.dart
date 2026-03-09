@@ -31,6 +31,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../utils/Strings.dart';
 import 'package:http/http.dart' as http;
@@ -75,8 +76,45 @@ class MainScreenAppState extends State<MainScreenContainer> {
 
 
     initScreen();
+
+    initUpdates();
+
   }
 
+
+  initUpdates() async {
+
+    final res = await ApiService.create().select_version({});
+
+    print(res.body);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    Future.delayed(Duration(milliseconds: 500) , () async {
+
+
+      if(packageInfo.version.toString().compareTo(res.body["data"][0]["version"].toString()) == 0 || packageInfo.version.toString().compareTo(res.body["data"][0]["version"].toString()) > 0) {
+
+        //   DialogClass().showPremiumInfoDialog(context,  TranslationService.translate("no_need_updates") , TranslationService.translate("no_need_updates_details"), "Ok");
+
+
+      }else if(packageInfo.version.toString().compareTo(res.body["data"][0]["version"].toString()) < 0){
+
+        final res = await  DialogClass().showPremiumInfoDialog(context,  TranslationService.translate("update_app") , TranslationService.translate("update_app_details"), "Ok");
+
+        if(res == true || res == false){
+
+          launchUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.matrimonial.community_matrimonial_latest2.appa&hl=en_IN"));
+
+        }
+
+      }
+
+    });
+
+
+  }
 
   @override
   void dispose() {

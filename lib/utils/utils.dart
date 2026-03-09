@@ -20,6 +20,7 @@ class utils{
 
 
   bool isValidDate(String rawDate) {
+
     try {
       final parts = rawDate.split('-');
       if (parts.length != 3) return false;
@@ -35,6 +36,7 @@ class utils{
     } catch (e) {
       return false;
     }
+
   }
 
 
@@ -356,9 +358,7 @@ class utils{
 
     image1 = prefs.getString(SharedPrefs.pic1).toString();
 
-     fullname =
-         prefs.getString(SharedPrefs.firstName).toString() + " " +
-             prefs.getString(SharedPrefs.lastname).toString();
+     fullname = prefs.getString(SharedPrefs.firstName).toString() + " " + prefs.getString(SharedPrefs.lastname).toString();
      dob = prefs.getString(SharedPrefs.dob).toString();
     createdby = prefs.getString(SharedPrefs.createdBy).toString();
     marital = prefs.getString(SharedPrefs.maritalStatus).toString();
@@ -409,11 +409,8 @@ class utils{
            || perm_state == "null" || perm_city == "null" ||
            education == "null" || father_name == "null" || mother_name == "null"
            || father_coccup == "null" || mother_occup == "null" ||
-           house_owned == "null" || house_type == "null" ||
-           membername1 == "null" || membername2 == "null"
-           || relation1 == "null" || relation2 == "null" ||
-           marital1 == "null" || marital2 == "null" || age1 == "null" ||
-           age2 == "null") {
+           house_owned == "null" || house_type == "null" ) {
+
          final result = await DialogClass().showPremiumInfoDialog(
              context, TranslationService.translate("incomplete_alert_title"),
              TranslationService.translate("incomplete_alert_message"),
@@ -440,6 +437,90 @@ class utils{
     return true;
 
    }
+
+
+   Future<bool> isCompleted(BuildContext context) async {
+
+    String fullname = "" , dob = ""  ,createdby = "" , marital = "" , caste = "" , subcaste = "";
+    String image1 = "";
+    String height = "" , wieght = "" , skintone = "" ,body_type = "" , handicap ="" , mobile = "" , country = "" ;
+    String perm_state = "" ,perm_city = ""  ,education = "" , occuapation = "" ,father_name = "" , mother_name = "";
+    String father_coccup = "" , mother_occup = ""  , house_owned = "" , house_type = ""  ;
+    String membername1 = "" ,membername2 ="" ,relation1 = "" ,relation2 = "" ,marital1 = "" ,marital2 = "" , age1 = "" ,age2 ="" ;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    image1 = prefs.getString(SharedPrefs.pic1).toString();
+
+    fullname = prefs.getString(SharedPrefs.firstName).toString() + " " + prefs.getString(SharedPrefs.lastname).toString();
+    dob = prefs.getString(SharedPrefs.dob).toString();
+    createdby = prefs.getString(SharedPrefs.createdBy).toString();
+    marital = prefs.getString(SharedPrefs.maritalStatus).toString();
+    caste = prefs.getString(SharedPrefs.caste).toString();
+    subcaste = prefs.getString(SharedPrefs.subcaste_shakh).toString();
+
+    height = prefs.getString(SharedPrefs.height).toString();
+    wieght = prefs.getString(SharedPrefs.weight).toString();
+    skintone = prefs.getString(SharedPrefs.skinTone).toString();
+    body_type = prefs.getString(SharedPrefs.bodyType).toString();
+    handicap = prefs.getString(SharedPrefs.isHandicap).toString();
+
+    mobile = prefs.getString(SharedPrefs.mobileNumber).toString();
+    country = prefs.getString(SharedPrefs.permCountry).toString();
+    perm_state =prefs.getString(SharedPrefs.permState).toString();
+    perm_city =  prefs.getString(SharedPrefs.permCity).toString();
+
+    education = prefs.getString(SharedPrefs.education).toString();
+    occuapation = prefs.getString(SharedPrefs.occupation).toString();
+
+    father_name = prefs.getString(SharedPrefs.fatherName).toString();
+    mother_name = prefs.getString(SharedPrefs.motherName).toString();
+    father_coccup =prefs.getString(SharedPrefs.fatherOccupation).toString();
+    mother_occup = prefs.getString(SharedPrefs.motherOccupation).toString();
+    house_owned = prefs.getString(SharedPrefs.houseOwned).toString();
+    house_type =prefs.getString(SharedPrefs.houseType).toString();
+
+
+    membername1 = prefs.getString(SharedPrefs.membername1).toString();
+    relation1 = prefs.getString(SharedPrefs.relation1).toString();
+    marital1 = prefs.getString(SharedPrefs.marital1).toString();
+    age1 = prefs.getString(SharedPrefs.age1).toString();
+
+    membername2 = prefs.getString(SharedPrefs.membername1).toString();
+    relation2 = prefs.getString(SharedPrefs.relation1).toString();
+    marital2 = prefs.getString(SharedPrefs.marital1).toString();
+    age2 = prefs.getString(SharedPrefs.age1).toString();
+
+
+
+    if(prefs.getString(SharedPrefs.role_type) != "admin") {
+
+      if ( (image1 == null || image1 == "" || image1 == "null")  ||    fullname.trim() == "null" || dob == "null" || createdby == "null" ||
+          marital == "null" || caste == "null" || subcaste == "null" ||
+          height == "null" || wieght == "null" || skintone == "null" ||
+          body_type == "null" || handicap == "null" || mobile == "null" ||
+          country == "null"
+          || perm_state == "null" || perm_city == "null" ||
+          education == "null" || father_name == "null" || mother_name == "null"
+          || father_coccup == "null" || mother_occup == "null" ||
+          house_owned == "null" || house_type == "null" ) {
+
+
+
+
+        return false;
+
+      }
+
+
+    }
+
+
+
+    return true;
+
+  }
+
 
 
 }

@@ -76,7 +76,6 @@ class PrivacyPolicyState extends State<TermsConditionsScreen> {
     final flavor = FlavorConfig.instance.name;
 
     String communityId =  flavor == "appA" ? "20" : "2";
-
     print(flavor);
 
     final _response = await ApiService.create().

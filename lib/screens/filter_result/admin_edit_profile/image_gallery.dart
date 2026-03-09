@@ -82,6 +82,16 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
       path7 = widget.list[6] ?? "null";
       path8 = widget.list[7] ?? "null";
 
+
+      listimageuploadpath2.add(path1);
+      listimageuploadpath2.add(path2);
+      listimageuploadpath2.add(path3);
+      listimageuploadpath2.add(path4);
+      listimageuploadpath2.add(path5);
+      listimageuploadpath2.add(path6);
+      listimageuploadpath2.add(path7);
+      listimageuploadpath2.add(path8);
+
       print(path2+"-------"+imagepath1);
 
       if(path1 != "null"){
@@ -169,6 +179,179 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
 
 
   }
+
+
+  List<String> listimageuploadpath2 = [];
+
+  Future<void> updatePhotos() async {
+
+    ConnectivityResult result = await Connectivity().checkConnectivity();
+
+    setState(() {
+      _connectivityResult = result;
+    });
+
+    if (_connectivityResult == ConnectivityResult.none) {
+
+      DialogClass().showDialog2(context, "No Internet", "Sorry Internet is not available", "OK");
+
+    }else {
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      if (prefs.getString(SharedPrefs.pic1) == null) {
+        EasyLoading.show(status: 'Uploading , Please wait...');
+
+        try {
+          // Prepare the request
+          var request = http.MultipartRequest('POST', Uri.parse(
+              Strings.BASE_URL + "profile/insert_photos"));
+
+          // Attach files
+          for (var i = 0; i < listimagesPath.length; i++) {
+            request.fields["pic" + (i + 1).toString()] =
+                prefs.getString(SharedPrefs.profileid).toString() + "_" +
+                    getFileName(File(listimagesPath[i]));
+
+            var file = await http.MultipartFile.fromPath(
+              'sampleFile[]',
+              listimagesPath[i],
+            );
+
+            request.files.add(file);
+          }
+
+          // Attach additional data
+          request.fields["profileId"] =
+              prefs.getString(SharedPrefs.profileid).toString();
+          request.fields["userId"] =
+              prefs.getString(SharedPrefs.userId).toString();
+          request.fields["communityId"] =
+              prefs.getString(SharedPrefs.communityId).toString();
+          request.fields["imagesubpath"] = utils().imagePath(prefs.getString(SharedPrefs.communityId).toString());
+
+          // Send the request
+          var response = await request.send();
+
+          print(response.stream.bytesToString());
+
+          // Check the response
+          if (response.statusCode == 200) {
+
+            if(listimagesPath.length > 0) {
+              for (var i = 0; i < listimagesPath.length; i++) {
+                await prefs.setString("pic" + (i + 1).toString(),
+                    prefs.getString(SharedPrefs.profileid).toString() + "_" +
+                        getFileName(File(listimagesPath[i])) ?? '');
+              }
+
+            }
+          } else {
+
+            print('Failed to upload files. Status Code: ${response.statusCode}');
+
+          }
+
+          navService.goBack();
+
+          EasyLoading.dismiss();
+        } catch (e) {
+          print('Error uploading files: $e');
+
+          EasyLoading.dismiss();
+        }
+      } else {
+
+        EasyLoading.show(status: 'Uploading , Please wait...');
+
+        print("update_photos"+"____"+update_id);
+
+        var request = http.MultipartRequest('PATCH', Uri.parse(
+            Strings.BASE_URL + "profile/update_photos"));
+
+
+        for (int i = 0; i < listimage.length; i++) {
+          print(listimage[i]+"=-=-=-=");
+
+          if (listimage[i] != "0") {
+
+            request.fields["pic" + (i + 1).toString()] =
+                prefs.getString(SharedPrefs.profileid).toString() + "_" +
+                    getFileName(File(listimage[i]));
+
+            var file = await http.MultipartFile.fromPath(
+              'sampleFile[]',
+              listimage[i],
+            );
+            request.files.add(file);
+
+            request.fields["isverifypic" + (i + 1).toString()] = "0";
+            print(listimage[i] + " -----   uploads");
+
+          } else {
+
+            if(i < 7) {
+              request.fields["pic" + (i + 1).toString()] =
+                  listimageuploadpath2[i] ?? "null";
+
+              request.fields["isverifypic" + (i + 1).toString()] = "-1";
+            }
+
+
+          }
+
+
+          request.fields["oldpic" + (i + 1).toString()] =
+              prefs.getString("pic" + (i + 1).toString()) ?? "null";
+
+        }
+
+        request.fields["profileId"] =
+            prefs.getString(SharedPrefs.profileid).toString();
+        request.fields["userId"] =
+            prefs.getString(SharedPrefs.userId).toString();
+        request.fields["communityId"] =
+            prefs.getString(SharedPrefs.communityId).toString();
+        request.fields["imagesubpath"] = utils().imagePath(prefs.getString(SharedPrefs.communityId).toString());
+
+        request.fields["Id"] = update_id;
+
+
+        var response = await request.send();
+
+        print(await response.stream.bytesToString());
+
+        // Check the response
+        if (response.statusCode == 200) {
+
+          for (var i = 0; i < listimage.length; i++) {
+            if (listimage[i] != "0") {
+
+              await prefs.setString("pic" + (i + 1).toString() , prefs.getString(SharedPrefs.profileid).toString() + "_" + getFileName(File(listimage[i])) ?? '');
+
+            } else {
+
+              await prefs.setString("pic" + (i + 1).toString() , listimageuploadpath2[i] ?? "0");
+
+            }
+
+          }
+
+        } else {
+
+          print('Failed to upload files. Status Code: ${response.statusCode}');
+
+        }
+
+        navService.goBack();
+        EasyLoading.dismiss();
+
+      }
+    }
+
+
+  }
+
 
   @override
   void initState() {
@@ -386,10 +569,54 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
           SizedBox(width:15),
           Expanded(flex: 1 ,child: FancyBorderedImage(
             imagePath: imagepath1 == "" || imagepath1 == "0" ? null : imagepath1 , // Replace with your local image path
+            path: path1,
             imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path1, // Replace with your network image URL
             borderWidth: 4.0,
             borderRadius: 12.0,
-            isverify:isverifyPic1.toString()
+            isverify:isverifyPic1.toString(),
+            onDeletePressed:() async {
+
+              final res = await DialogClass().showDialogBeforesubmit(context, "Delete Alert!", "Are you sure want to delete image1" , "OK" , "1");
+
+
+              if(res ==  "1"){
+
+                final _response = await ApiService.create().postDeleteImages({
+                  "pos": 1 , "userId": prefs.getString(SharedPrefs.userId)
+                });
+
+                if (_response.body["data"]["affectedRows"] == 1) {
+
+
+                  listimageuploadpath2.removeAt(0);
+                  listimageuploadpath2.insert(7 ,"0");
+
+                  /*for(int i=0; i<listimageuploadpath2.length; i++) {
+
+
+      if (i < listimageuploadpath2.length-1) {
+
+      listimageuploadpath2[i] = listimageuploadpath2[i + 1];
+
+      }else{
+
+      listimageuploadpath2[i] = "0";
+
+      }
+
+      print(listimageuploadpath2[i]+"===pos");
+
+      }*/
+
+
+                  updatePhotos();
+
+                }
+
+              }
+
+
+            }
             ,onEditPressed: (){
 
               ImagePickerWithCrop(callbackFunction: (String path) {
@@ -411,10 +638,46 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
           SizedBox(width:10),
           Expanded(flex: 1 ,child: FancyBorderedImage(
             imagePath: imagepath2 == "" || imagepath2 == "0" ? null : imagepath2, // Replace with your local image path
+            path: path2,
             imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path2, // Replace with your network image URL
             borderWidth: 4.0,
             borderRadius: 12.0,
             isverify:isverifyPic2.toString(),
+            onDeletePressed:() async {
+
+              final res = await DialogClass().showDialogBeforesubmit(context, "Delete Alert!", "Are you sure want to delete image2" , "OK" , "1");
+
+              if(res == "1") {
+                final _response = await ApiService.create().postDeleteImages({
+                  "pos": 2, "userId": prefs.getString(SharedPrefs.userId)
+                });
+
+                if (_response.body["data"]["affectedRows"] == 1) {
+
+                  listimageuploadpath2.removeAt(1);
+
+                  listimageuploadpath2.insert(7  ,"0");
+
+                  /* for (int i = 0; i < listimageuploadpath2.length; i++) {
+            if (i < listimageuploadpath2.length - 1) {
+              print(i + 1);
+              listimageuploadpath2[i] = listimageuploadpath2[i + 1];
+            } else {
+              listimageuploadpath2[i] = "0";
+            }
+
+            print(listimageuploadpath2[i]+"===pos");
+
+          }
+*/
+
+
+                  updatePhotos();
+                }
+              }
+
+
+            },
             onEditPressed: (){
 
 
@@ -436,11 +699,49 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
           ),),
           SizedBox(width:10),
           Expanded(flex: 1 ,child: FancyBorderedImage(
-            imagePath: imagepath3 == "" || imagepath3 == "0" ? null : imagepath3, // Replace with your local image path
+            imagePath: imagepath3 == "" || imagepath3 == "0" ? null : imagepath3, // Replace with your local image
+            path: path3,
             imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path3, // Replace with your network image URL
             borderWidth: 4.0,
             borderRadius: 12.0,
               isverify:isverifyPic3.toString(),
+            onDeletePressed:() async {
+
+              final res = await DialogClass().showDialogBeforesubmit(context, "Delete Alert!", "Are you sure want to delete image3" , "OK" , "1");
+
+
+              if(res == "1"){
+                final _response = await ApiService.create().postDeleteImages({
+                  "pos": 3 , "userId": prefs.getString(SharedPrefs.userId)
+                });
+
+                if (_response.body["data"]["affectedRows"] == 1) {
+
+                  listimageuploadpath2.removeAt(2);
+                  listimageuploadpath2.insert(7  ,"0");
+
+                  /* for(int i=0; i<listimageuploadpath2.length; i++) {
+
+      if (i < listimageuploadpath2.length-1) {
+
+      print(i+1);
+      listimageuploadpath2[i] = listimageuploadpath2[i + 1];
+      }else{
+      listimageuploadpath2[i] = "0";
+      }
+
+      }*/
+
+
+
+                  updatePhotos();
+
+                }
+
+              }
+
+
+            },
             onEditPressed: (){
 
               ImagePickerWithCrop(callbackFunction: (String path) {
@@ -465,10 +766,44 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
           SizedBox(width:15),
           Expanded(flex: 1 ,child: FancyBorderedImage(
             imagePath: imagepath4 == "" || imagepath4 == "0"? null : imagepath4, // Replace with your local image path
+            path: path4,
             imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path4, // Replace with your network image URL
             borderWidth: 4.0,
             borderRadius: 12.0,
               isverify:isverifyPic4.toString(),
+            onDeletePressed:() async {
+
+              final res = await DialogClass().showDialogBeforesubmit(context, "Delete Alert!", "Are you sure want to delete image4" , "OK" , "1");
+
+              if(res ==  "1") {
+                final _response = await ApiService.create().postDeleteImages({
+                  "pos": 4, "userId": prefs.getString(SharedPrefs.userId)
+                });
+
+                if (_response.body["data"]["affectedRows"] == 1) {
+
+                  listimageuploadpath2.removeAt(3);
+                  listimageuploadpath2.insert(7  ,"0");
+
+/*
+            for (int i = 0; i < listimageuploadpath2.length; i++) {
+              if (i < listimageuploadpath2.length - 1) {
+                print(i + 1);
+                listimageuploadpath2[i] = listimageuploadpath2[i + 1];
+              } else {
+                listimageuploadpath2[i] = "0";
+              }
+            }
+*/
+
+
+
+                  updatePhotos();
+                }
+              }
+
+
+            },
             onEditPressed: (){
 
               ImagePickerWithCrop(callbackFunction: (String path) {
@@ -488,10 +823,47 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
           SizedBox(width:10),
           Expanded(flex: 1 ,child: FancyBorderedImage(
             imagePath: imagepath5 == "" || imagepath5 == "0" ? null : imagepath5, // Replace with your local image path
+            path: path5,
             imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path5, // Replace with your network image URL
             borderWidth: 4.0,
             borderRadius: 12.0,
               isverify:isverifyPic5.toString(),
+            onDeletePressed:() async {
+
+              final res = await DialogClass().showDialogBeforesubmit(context, "Delete Alert!", "Are you sure want to delete image5" , "OK" , "1");
+
+              if(res == "1"){
+
+                final _response = await ApiService.create().postDeleteImages({
+                  "pos": 5 , "userId": prefs.getString(SharedPrefs.userId)
+                });
+
+                if (_response.body["data"]["affectedRows"] == 1) {
+
+                  listimageuploadpath2.removeAt(4);
+                  listimageuploadpath2.insert(7  ,"0");
+
+                  /*  for(int i=0; i<listimageuploadpath2.length; i++) {
+
+      if (i < listimageuploadpath2.length-1) {
+
+      print(i+1);
+      listimageuploadpath2[i] = listimageuploadpath2[i + 1];
+      }else{
+      listimageuploadpath2[i] = "0";
+      }
+
+      }*/
+
+
+
+                  updatePhotos();
+
+                }
+              }
+
+
+            },
             onEditPressed: (){
 
               ImagePickerWithCrop(callbackFunction: (String path) {
@@ -514,10 +886,41 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
           SizedBox(width:10),
           Expanded(flex: 1 ,child: FancyBorderedImage(
             imagePath: imagepath6 == "" || imagepath6 == "0" ? null : imagepath6, // Replace with your local image path
+            path: path6,
             imageUrl: Strings.IMAGE_BASE_URL+"/uploads/"+utils().imagePath(prefs.getString(SharedPrefs.communityId).toString())+path6, // Replace with your network image URL
             borderWidth: 4.0,
             borderRadius: 12.0,
               isverify:isverifyPic6.toString(),
+            onDeletePressed:() async {
+
+              final res = await DialogClass().showDialogBeforesubmit(context, "Delete Alert!", "Are you sure want to delete image6" , "OK" , "1");
+
+              if(res == "1") {
+                final _response = await ApiService.create().postDeleteImages({
+                  "pos": 6, "userId": prefs.getString(SharedPrefs.userId)
+                });
+
+                if (_response.body["data"]["affectedRows"] == 1) {
+
+                  listimageuploadpath2.removeAt(5);
+                  listimageuploadpath2.insert(7  ,"0");
+
+                  /* for (int i = 0; i < listimageuploadpath2.length; i++) {
+              if (i < listimageuploadpath2.length - 1) {
+                print(i + 1);
+                listimageuploadpath2[i] = listimageuploadpath2[i + 1];
+              } else {
+                listimageuploadpath2[i] = "0";
+              }
+            }*/
+
+
+                  updatePhotos();
+                }
+              }
+
+
+            },
             onEditPressed: (){
 
 
@@ -547,10 +950,42 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
           SizedBox(width:15),
           Expanded(flex: 1 ,child: FancyBorderedImage(
             imagePath: imagepath7 == "" || imagepath7 == "0" ? null : imagepath7, // Replace with your local image path
+            path: path7,
             imageUrl: Strings.IMAGE_BASE_URL+"/uploads/matrimonial_photo/Matrimonial_Photo/"+path7, // Replace with your network image URL
             borderWidth: 4.0,
             borderRadius: 12.0,
               isverify:isverifyPic7.toString(),
+            onDeletePressed:() async {
+
+              final res = await DialogClass().showDialogBeforesubmit(context, "Delete Alert!", "Are you sure want to delete image7" , "OK" , "1");
+
+              if(res == "1") {
+                final _response = await ApiService.create().postDeleteImages({
+                  "pos": 7, "userId": prefs.getString(SharedPrefs.userId)
+                });
+
+                if (_response.body["data"]["affectedRows"] == 1) {
+
+                  listimageuploadpath2.removeAt(6);
+                  listimageuploadpath2.insert(7  ,"0");
+
+                  /*for (int i = 0; i < listimageuploadpath2.length; i++) {
+              if (i < listimageuploadpath2.length - 1) {
+                print(i + 1);
+                listimageuploadpath2[i] = listimageuploadpath2[i + 1];
+              } else {
+                listimageuploadpath2[i] = "0";
+              }
+            }*/
+
+
+
+                  updatePhotos();
+                }
+              }
+
+
+            },
             onEditPressed: (){
 
               ImagePickerWithCrop(callbackFunction: (String path) {
@@ -571,10 +1006,42 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
           SizedBox(width:10),
           Expanded(flex: 1 ,child: FancyBorderedImage(
             imagePath: imagepath8 == "" || imagepath8 == "0" ? null : imagepath8, // Replace with your local image path
+            path: path8,
             imageUrl: Strings.IMAGE_BASE_URL+"/uploads/matrimonial_photo/Matrimonial_Photo/"+path8, // Replace with your network image URL
             borderWidth: 4.0,
             borderRadius: 12.0,
               isverify:isverifyPic8.toString(),
+            onDeletePressed:() async {
+
+              final res = await DialogClass().showDialogBeforesubmit(context, "Delete Alert!", "Are you sure want to delete image8" , "OK" , "1");
+
+              if(res == "1") {
+                final _response = await ApiService.create().postDeleteImages({
+                  "pos": 8, "userId": prefs.getString(SharedPrefs.userId)
+                });
+
+                if (_response.body["data"]["affectedRows"] == 1) {
+
+                  listimageuploadpath2.removeAt(7);
+                  listimageuploadpath2.insert(7  ,"0");
+
+                  /*for (int i = 0; i < listimageuploadpath2.length; i++) {
+              if (i < listimageuploadpath2.length - 1) {
+                print(i + 1);
+                listimageuploadpath2[i] = listimageuploadpath2[i + 1];
+              } else {
+                listimageuploadpath2[i] = "0";
+              }
+            }*/
+
+
+
+
+                  updatePhotos();
+                }
+              }
+
+            },
             onEditPressed: (){
 
 

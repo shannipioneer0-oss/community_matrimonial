@@ -41,6 +41,10 @@ class NotificationItem {
   @JsonKey(name: 'communityId')
   final String communityId;
 
+  @JsonKey(name: 'datetime')
+  final String datetime;
+
+
   NotificationItem({
     required this.id,
     required this.notificationType,
@@ -49,6 +53,7 @@ class NotificationItem {
     required this.senderId,
     required this.receiverId,
     required this.communityId,
+    required this.datetime
   });
 
   factory NotificationItem.fromJson(Map<String, dynamic> json) =>

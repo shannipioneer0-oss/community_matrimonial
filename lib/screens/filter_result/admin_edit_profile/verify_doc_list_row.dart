@@ -167,6 +167,21 @@ class VerifyDocListRowStateful extends State<VerifyDocListRow> {
 
                 print(_response.body);
 
+
+        String message = "";
+
+        message = message + getLabeledStatus("Identity Verification", isidverify)+" ";
+        message = message + getLabeledStatus("Education Verification", iseducationverify)+" ";
+        message = message + getLabeledStatus("Income Verification", isincomeverify);
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+
+
+        await ApiService.create().postSendNotification({"Ids":[imageverifylist[0].userId] , "type":"verification" , "message": "Verification of documents from Ravaldev Matrimonial "+message , "sender_type":"admin",
+          "sender_id": prefs.getString(SharedPrefs.userId) ,
+          "reciever_id":imageverifylist[0].userId , "title":"Document Verification" , "body":"Verification of documents from Ravaldev Matrimonial "+message ,
+          "communityId":prefs.getString(SharedPrefs.communityId) });
+
         if (_response.body["data"]["affectedRows"] >= 1) {
 
           DialogClass().showDialog2(context, "Verification Success" , "Verification Process of Documents done For "+widget.fetchImages.name.toString()+" "+widget.fetchImages.surname.toString(), "Ok");
@@ -178,6 +193,25 @@ class VerifyDocListRowStateful extends State<VerifyDocListRow> {
 
     ],),)));
 
+  }
+
+
+  String getStatusMessage(String? status) {
+    if (status == "1") {
+      return "Verified";
+    } else if (status == "2") {
+      return "Rejected";
+    } else {
+      return ""; // nothing for 0 or null
+    }
+  }
+
+
+
+  String getLabeledStatus(String label, String? status) {
+    String msg = getStatusMessage(status);
+    if (msg.isEmpty) return "";
+    return "$label: $msg";
   }
 
 

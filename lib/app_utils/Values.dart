@@ -56,14 +56,14 @@ class DataFetchstate {
 class EduFetchstate {
   final String Id;
   final String degree_name;
-  final String degree_hindi;
-  final String degree_guj;
-  final String degree_marathi;
-  final String degree_tamil;
-  final String degree_urdu;
+  final String? degree_hindi;
+  final String? degree_guj;
+  final String? degree_marathi;
+  final String? degree_tamil;
+  final String? degree_urdu;
 
 
-  EduFetchstate({required this.degree_name, required this.degree_hindi, required this.degree_guj, required this.degree_marathi, required this.degree_tamil, required this.degree_urdu,  required this.Id });
+  EduFetchstate({required this.degree_name,  this.degree_hindi,  this.degree_guj,  this.degree_marathi,  this.degree_tamil,  this.degree_urdu,  required this.Id });
 
 }
 

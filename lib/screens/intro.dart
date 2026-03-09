@@ -156,8 +156,6 @@ class IntroScreen extends State<IntroAppStateful> {
 
                  SharedPreferences prefs = await SharedPreferences.getInstance();
 
-                 print(prefs.getString(SharedPrefs.isLogin));
-
                  if(prefs.getString(SharedPrefs.isLogin) == "1") {
 
 
