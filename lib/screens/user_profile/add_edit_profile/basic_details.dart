@@ -76,6 +76,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
   TextEditingController mothertongueController = new TextEditingController();
   TextEditingController nriController = new TextEditingController();
 
+  TextEditingController currentactivityController = new TextEditingController();
   TextEditingController controllergender =new TextEditingController();
 
   String firtname = "" , lastname = ""  , dob = "";
@@ -94,6 +95,21 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
   }
 
   String passdate = "" , passdate2 = "";
+
+  List<DataFetch> currentactivityList = [
+    DataFetch(label: "JOB/SERVICE", value: "JOB/SERVICE"),
+    DataFetch(label: "BUSINESS", value: "BUSINESS"),
+    DataFetch(label: "HOUSE HOLD", value: "HOUSE HOLD"),
+    DataFetch(label: "RETIRED", value: "RETIRED"),
+    DataFetch(label: "FARMING", value: "FARMING"),
+    DataFetch(label: "STUDY", value: "STUDY"),
+    DataFetch(label: "JOB SEEKER", value: "JOB SEEKER"),
+    DataFetch(label: "SELF EMPLOYED", value: "SELF EMPLOYED"),
+    DataFetch(label: "PROFESSIONAL", value: "PROFESSIONAL"),
+    DataFetch(label: "CONSULTANT", value: "CONSULTANT"),
+    DataFetch(label: "SOCIAL WORK", value: "SOCIAL WORK"),
+    DataFetch(label: "ABROAD", value: "ABROAD"),
+  ];
 
 
   initView() async {
@@ -114,6 +130,8 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
     if(utils().replaceNull(prefs.getString(SharedPrefs.birthdate).toString()) != ""){
       dobController.text =  utils().formatGivenDate(prefs.getString(SharedPrefs.birthdate).toString());
     }
+
+    currentactivityController.text = prefs.getString(SharedPrefs.caurrentActivity).toString();
 
     passdate = prefs.getString(SharedPrefs.birthdate).toString();
     passdate2 = prefs.getString(SharedPrefs.birthdate).toString();
@@ -299,6 +317,15 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
         },),
         SizedBox(height: 20,),
         CustomTextField(icondata: Icons.person , controller: subcasteController , labelText: TranslationService.translate("shakh"), enabled: false,),
+        SizedBox(height: 20,),
+        CustomDropdown(icondata: Icons.person  ,controller: currentactivityController , labelText: TranslationService.translate("current_activity"), onButtonPressed: () async {
+
+          final value = await SingleSelectDialog().showBottomSheet(context, currentactivityList , "Select Current Activity");
+          currentactivityController.text = value.label;
+         // caste_value = value.value;
+
+
+        },),
 
        /* SizedBox(height: 20,),
         CustomDropdown(icondata: Icons.language  ,controller: langController , labelText: TranslationService.translate("lang_known"), onButtonPressed: () async {
@@ -382,9 +409,11 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
           casteError == "null" ||
           subCasteError == "null" ||
           maritalStatusError == "null") {
+
         DialogClass().showDialog2(
-            context, "Basic Details Submit Alert!", "All fields are compulsory",
+            context , "Basic Details Submit Alert!", "All fields are compulsory",
             "Ok");
+
       } else {
         SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -412,6 +441,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                 "mother_tongue": mother_tongue_value,
                 "isnri" : isnri == false ? "0" : "1" ,
                 "nri_detail" : nriController.text.toString(),
+                "current_activity": currentactivityController.text.toString(),
                 "userId": prefs.getString(SharedPrefs.userId),
                 "communityId": prefs.getString(SharedPrefs.communityId),
                 "profileId": prefs.getString(SharedPrefs.profileid)
@@ -433,26 +463,17 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
             await prefs.setString(
                 SharedPrefs.createdBy, profilecreatedController.text
                 .toString() + "," + created_value);
-            await prefs.setString(
-                SharedPrefs.dob, passdate2
-                .toString());
-            await prefs.setString(
-                SharedPrefs.birthdate, passdate2
-                .toString());
-            await prefs.setString(
-                SharedPrefs.maritalStatus, maritalController.text
-                .toString() + "," + marital_value);
-            await prefs.setString(SharedPrefs.caste, casteController.text
-                .toString() + "," + caste_value);
-            await prefs.setString(SharedPrefs.subcaste_shakh, subcasteController
-                .text.toString());
-            await prefs.setString(SharedPrefs.languageKnown, langController
-                .text.toString() + "*" + lang_known_value);
-            await prefs.setString(
-                SharedPrefs.motherTongue, mothertongueController.text
-                .toString() + "," + mother_tongue_value);
+
+            await prefs.setString(SharedPrefs.dob, passdate2.toString());
+            await prefs.setString(SharedPrefs.birthdate, passdate2.toString());
+            await prefs.setString(SharedPrefs.maritalStatus, maritalController.text.toString() + "," + marital_value);
+            await prefs.setString(SharedPrefs.caste, casteController.text.toString() + "," + caste_value);
+            await prefs.setString(SharedPrefs.subcaste_shakh, subcasteController.text.toString());
+            await prefs.setString(SharedPrefs.languageKnown, langController.text.toString() + "*" + lang_known_value);
+            await prefs.setString(SharedPrefs.motherTongue, mothertongueController.text.toString() + "," + mother_tongue_value);
             await prefs.setString(SharedPrefs.isnri, isnri == true ? "1" : "0");
             await prefs.setString(SharedPrefs.nri_details, nriController.text.toString());
+            await prefs.setString(SharedPrefs.caurrentActivity ,  currentactivityController.text.toString());
             await prefs.setString(SharedPrefs.basic_details_id, _response
                 .body["data"]["insertId"].toString());
 
@@ -495,6 +516,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                 "nri_detail" : nriController.text.toString(),
                 "language_known": lang_known_value,
                 "mother_tongue": mother_tongue_value,
+                "current_activity": currentactivityController.text.toString(),
                 "Id": prefs.getString(SharedPrefs.basic_details_id),
                 "userId" : prefs.getString(SharedPrefs.userId)
               }
@@ -535,6 +557,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                 SharedPrefs.motherTongue, mothertongueController.text
                 .toString() + "," + mother_tongue_value);
             await prefs.setString(SharedPrefs.isnri, isnri == true ? "1" : "0");
+            await prefs.setString(SharedPrefs.caurrentActivity ,  currentactivityController.text.toString());
             await prefs.setString(SharedPrefs.nri_details, nriController.text.toString());
 
 

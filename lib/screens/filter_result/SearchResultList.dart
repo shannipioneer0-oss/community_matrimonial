@@ -24,8 +24,9 @@ class SearchResultList extends StatefulWidget {
   final String type;
   final int select;
   final void Function(int flag) press;
+  final bool isSelected;
 
-  SearchResultList({required this.fetchmatches , required this.index, required this.prefs, required this.type, required this.select, required this.press});
+  SearchResultList({required this.fetchmatches , required this.index, required this.prefs, required this.type, required this.select, required this.press ,required this.isSelected});
 
   @override
   SearchResultListStateful createState() => SearchResultListStateful();
@@ -51,6 +52,8 @@ class SearchResultListStateful extends State<SearchResultList> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+
 
     print(widget.fetchmatches.dob+"+++++=====");
 
@@ -85,12 +88,35 @@ class SearchResultListStateful extends State<SearchResultList> {
 
     print(widget.fetchmatches.pic+"()()====");
 
-    return Column(children: [
+    return SafeArea(child: Column(children: [
       GestureDetector(
            behavior: HitTestBehavior.deferToChild,
           onTap: () {
-            navService.pushNamed("/user_detail",
-                args: [widget.fetchmatches.userId, widget.fetchmatches.name , widget.fetchmatches.mobRegToken , widget.fetchmatches.profileId , widget.type]);
+
+             if(widget.select == 1) {
+
+               navService.pushNamed("/user_detail",
+                   args: [
+                     widget.fetchmatches.userId,
+                     widget.fetchmatches.name,
+                     widget.fetchmatches.mobRegToken,
+                     widget.fetchmatches.profileId,
+                     widget.type
+                   ]);
+
+             }else{
+
+               setState(() {
+                 if(type == 0) {
+                   type = 1;
+                 }else{
+                   type = 0;
+                 }
+               });
+
+               widget.press(type);
+
+             }
           },
           onLongPress: (){
              setState(() {
@@ -106,7 +132,7 @@ class SearchResultListStateful extends State<SearchResultList> {
           },
           child: Container(
               height: 215,
-              color: widget.select == 3 ?  Colors.blueGrey : widget.select == 2 && type == 1 ? Colors.grey  : Colors.transparent,
+              color: widget.select == 3 ?  Colors.blueGrey : widget.select == 2 && widget.isSelected ? Colors.grey  : Colors.transparent,
               child: Stack(
                 children: [
                   Container(
@@ -143,7 +169,9 @@ class SearchResultListStateful extends State<SearchResultList> {
                                     }  ,child:ClipRRect(
                                       borderRadius: BorderRadius.circular(16.0),
                                       child: Image.network(
-                                        widget.fetchmatches.pic != "" && (widget.fetchmatches.verifypic1 == "1")
+                                          ( widget.type == "in" || widget.type == "uve" )   ? Strings.IMAGE_BASE_URL +
+                                      "/uploads/"+utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+
+                                          widget.fetchmatches.pic  :   widget.fetchmatches.pic != "" && (widget.fetchmatches.verifypic1 == "1")
                                             ? Strings.IMAGE_BASE_URL +
                                                 "/uploads/"+utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+
                                                 widget.fetchmatches.pic
@@ -174,7 +202,7 @@ class SearchResultListStateful extends State<SearchResultList> {
                                                     .width *
                                                 0.55,
                                             child: Text(
-                                            role == "admin" ?  widget.fetchmatches.name+" "+widget.fetchmatches.surname+"\n"+widget.fetchmatches.mobile_number+" - "+widget.fetchmatches.gender+" - "+"("+widget.fetchmatches.status+")"
+                                            role == "admin" ?  widget.fetchmatches.name+" "+widget.fetchmatches.surname+"\n"+widget.fetchmatches.mobile_number+" - "+widget.fetchmatches.gender
                                                   .toString() : widget.fetchmatches.name+" "+widget.fetchmatches.surname,
                                               textAlign: TextAlign.left,
                                               style: TextStyle(
@@ -260,8 +288,7 @@ class SearchResultListStateful extends State<SearchResultList> {
                                                         .width *
                                                     0.5,
                                                 child: Text(
-                                                  widget
-                                                      .fetchmatches.occupation,
+                                          widget.fetchmatches.occupation == "" ?  widget.fetchmatches.current_activity :   widget.fetchmatches.current_activity +" - "+ widget.fetchmatches.occupation,
                                                   textAlign: TextAlign.left,
                                                   maxLines: 2,
                                                   style: TextStyle(
@@ -731,13 +758,14 @@ class SearchResultListStateful extends State<SearchResultList> {
       SizedBox(
         height: 10,
       )
-    ]);
+    ]));
   }
 }
 
 class SearchResultListOther extends StatefulWidget {
   final UserMatch fetchmatches;
   final SharedPreferences prefs;
+
 
   SearchResultListOther({required this.fetchmatches, required this.prefs});
 
@@ -815,7 +843,7 @@ class SearchResultListOtherStateful extends State<SearchResultListOther> {
                                     }  ,child:ClipRRect(
                                       borderRadius: BorderRadius.circular(16.0),
                                       child: Image.network(
-                                          widget.fetchmatches.pic != null && ( widget.fetchmatches.verifypic1 == "1")
+                                        widget.fetchmatches.pic != null && ( widget.fetchmatches.verifypic1 == "1")
                                               ? Strings.IMAGE_BASE_URL +
                                               "/uploads/" +utils().imagePath(widget.prefs.getString(SharedPrefs.communityId).toString())+
                                               widget.fetchmatches.pic.toString()

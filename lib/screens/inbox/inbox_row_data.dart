@@ -18,8 +18,9 @@ class InboxRowData extends StatelessWidget {
    UserMatch user;
    int selectedindex;
    SharedPreferences prefs;
+   VoidCallback press;
 
-  InboxRowData(this.user , this.selectedindex ,this.prefs);
+  InboxRowData(this.user , this.selectedindex ,this.prefs , this.press);
 
 
    void _showImageDialog(BuildContext context , String url) {
@@ -391,6 +392,25 @@ class InboxRowData extends StatelessWidget {
             ),
           ),
 
+          Positioned(right: 10 , bottom: 5 ,child: IconButton(onPressed: () async {
+
+            final res = await DialogClass().showDialogBeforesubmit(context, "Delete Express Alert!", "Are you sure want to delete expressed interest " , "OK" , "1");
+
+            if(res ==  "1"){
+
+              final res = await ApiService.create().postDeleteInterest({"fromId": prefs.getString(SharedPrefs.userId) , "toId": user.userId , "communityId":prefs.getString(SharedPrefs.communityId)});
+
+              print(res.body);
+
+              if(res.body["data"]["affectedRows"] == 0 || res.body["data"]["affectedRows"] == 1){
+
+                  press();
+
+              }
+
+            }
+
+          }, icon: Icon(Icons.delete)))
           // Other Button: Chat Here
           /*Positioned(
             bottom: 10,

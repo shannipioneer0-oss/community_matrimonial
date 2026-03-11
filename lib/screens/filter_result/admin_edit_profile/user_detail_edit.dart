@@ -103,10 +103,11 @@ class UserDetailScreen  extends State<UserDetailStateful>{
   String verifypic1= "" ,verifypic2= "" ,verifypic3= "",verifypic4= "",verifypic5= "",verifypic6= "",verifypic7= "",verifypic8= "",verifypic9= "",verifypic10= "";
   String Idproof = "" ,eduproof = "" ,incomeproof = "" ;
   String user_verify = "" , email_verify = "" ,mobile_verify = "";
-  String communityName = "" , hobbies = "";
+  String communityName = "" , hobbies = "" , mobile_number = "";
   String communityId = "";
   bool isload =  false;
-  List result =[];
+  List result = [];
+  String current_activity = "";
 
   SharedPreferences? prefs;
 
@@ -152,7 +153,10 @@ class UserDetailScreen  extends State<UserDetailStateful>{
 
        if(_response.body["data"][19][0].toString() != "{}"){
 
+         mobile_number =  _response.body["data"][19][0]["0"]["mobile"].toString();
+         profileId =  _response.body["data"][19][0]["0"]["profile_id"].toString();
          gender =  _response.body["data"][19][0]["0"]["gender"].toString();
+
        }
 
 
@@ -172,13 +176,11 @@ class UserDetailScreen  extends State<UserDetailStateful>{
 
          profileId = userData["profileId"];
          basic_details_id = userData["Id"].toString();
+         current_activity = userData["current_activity"];
 
-         createdby_id = userData["created_by"] != null
-             ? userData["created_by"].split(",")[1]
-             : "";
+         createdby_id = userData["created_by"] != null ? userData["created_by"].split(",")[1] : "";
          marital_id = userData["marital_status"].split(",")[1];
-         caste_id =
-         userData["caste"] != null ? userData["caste"].split(",")[1] : "";
+         caste_id = userData["caste"] != null ? userData["caste"].split(",")[1] : "";
        }
        // subcaste_id  = userData["subcaste"] != null ?  userData["subcaste"].split(",")[1] : "";
         //lang_known_id = userData["language_known"].split("*")[1];
@@ -631,17 +633,19 @@ class UserDetailScreen  extends State<UserDetailStateful>{
 
               GestureDetector(onTap: (){
 
-                Clipboard.setData(ClipboardData(text: mobile)).then((_) {
+                Clipboard.setData(ClipboardData(text: mobile_number)).then((_) {
 
                 });
 
-              }  ,child:Container(child: Text("Mobile No. : "+mobile , textAlign: TextAlign.center, style: TextStyle(fontSize: 16 ,color: ColorsPallete.purple ,fontWeight: FontWeight.bold),),),),
+              }  ,child:Container(child: Text("Mobile No. : "+mobile_number , textAlign: TextAlign.center, style: TextStyle(fontSize: 16 ,color: ColorsPallete.purple ,fontWeight: FontWeight.bold),),),),
 
 
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
 
-                  navService.pushNamed("/image_gallery_other_edit" , args: [pic1 ,pic2 ,pic3 ,pic4 ,pic5 ,pic6 ,pic7 ,pic8 ,profileId , widget.userId]);
+                 final res = await  navService.pushNamed("/image_gallery_other_edit" , args: [pic1 ,pic2 ,pic3 ,pic4 ,pic5 ,pic6 ,pic7 ,pic8 ,profileId , widget.userId[0]]);
+
+                 initdata();
 
                 },
                 style: ElevatedButton.styleFrom(
@@ -916,7 +920,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                   mother_tongue ,
                 createdby_id,
                 marital_id ,caste_id ,subcaste_id , lang_known_id , mother_tonuge_id,
-                basic_details_id ,isnri ,nri_details ,widget.userId[0] ,profileId ,gender]);
+                basic_details_id ,isnri ,nri_details ,widget.userId[0] ,profileId ,gender , current_activity]);
 
               initdata();
 
@@ -937,6 +941,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                       ProfileDetailItem(label: TranslationService.translate("marital_status_key"), value: marital, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("caste_key"), value: caste, isrequired : "1"),
                       ProfileDetailItem(label: TranslationService.translate("shakh"), value: subcaste, isrequired : "1"),
+                      ProfileDetailItem(label: TranslationService.translate("current_activity"), value: current_activity, isrequired : "1"),
 /*
                       isnri == "1" ? ProfileDetailItem(label: TranslationService.translate("nri_details"), value: nri_details) : Container(),
 */

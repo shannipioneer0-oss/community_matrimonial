@@ -65,7 +65,8 @@ class Apiclass {
         await prefs.setString(SharedPrefs.caste, userData["caste"] ?? "");
         // await prefs.setString(SharedPrefs.subcaste, userData["subcaste"] ?? "");
         await prefs.setString(SharedPrefs.subcaste_shakh, userData["subcaste_txt"] ?? "");
-
+        await prefs.setString(
+            SharedPrefs.caurrentActivity , userData["current_activity"] ?? "");
         await prefs.setString(
             SharedPrefs.languageKnown, userData["language_known"] ?? "");
         await prefs.setString(

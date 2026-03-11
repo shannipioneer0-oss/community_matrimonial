@@ -12,6 +12,8 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../network_utils/model/profile_details_model.dart';
+
 
 class DashboardList extends StatefulWidget {
   final UserMatch user;
@@ -44,6 +46,8 @@ class DashboardListStateful extends State<DashboardList> {
   }
 
 
+
+
   @override
   void initState() {
     super.initState();
@@ -73,6 +77,439 @@ class DashboardListStateful extends State<DashboardList> {
   }
 
 
+
+  void showMessageDialog(BuildContext context) {
+    TextEditingController messageController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Enter Message"),
+          content: TextField(
+            controller: messageController,
+            maxLines: 3,
+            decoration: const InputDecoration(
+              hintText: "Type your message here",
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                String message = messageController.text;
+                Navigator.pop(context);
+
+                List itemIds = [];
+                itemIds.add(widget.user.userId);
+
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                await ApiService.create().postSendNotification({"Ids":  itemIds , "type":"list" , "message": message , "sender_type":"admin",
+                  "sender_id": prefs.getString(SharedPrefs.userId) ,
+                  "reciever_id": itemIds , "title":"Message From Ravaldev Matrimony" , "body": message ,
+                  "communityId":prefs.getString(SharedPrefs.communityId) });
+
+              },
+              child: const Text("Send"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+  void showOptionsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          titlePadding: EdgeInsets.zero,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 20, top: 15),
+                child: Text(
+                  "Options",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+
+
+              ListTile(
+                leading: Icon(Icons.visibility_outlined),
+                title: Text("View Profile"),
+                onTap: () async {
+                  Navigator.pop(context);
+
+                  final result =  await navService.pushNamed("/user_detail",
+                      args: [widget.user.userId, widget.user.name , widget.user.mobRegToken , widget.user.profileId]);
+
+
+
+                  if(result != null){
+                    widget.onUpdate(0);
+
+                  }
+                  // view detail action
+                },
+              ),
+
+              ListTile(
+                leading: Icon(Icons.visibility_outlined),
+                title: Text("View Photos"),
+                onTap: () async {
+                  Navigator.pop(context);
+
+                  final res = await ApiService.create().profile_fetch({"type":"pictures" , "userId": widget.user.userId , "communityId": widget.prefs.getString(SharedPrefs.communityId) , "translate":["en"]});
+                  print(res.body);
+
+                  PhotoInfo photinfo =  PhotoInfo.fromJson(res.body["data"][0][0]);
+
+                  if(photinfo.pic1 != "null" && photinfo.pic1 != "" && photinfo.pic1 != null) {
+                    navService.pushNamed("/img_gallery_other",
+                        args: [photinfo, widget.user.fullname]);
+                  }
+                  // view detail action
+                },
+              ),
+
+
+              ListTile(
+                leading: Icon(Icons.bookmark_border),
+                title: Text(iscontain() == false ?  "Shortlist" : "Remove Shortlist"),
+                onTap: () async {
+                  Navigator.pop(context);
+
+
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+
+                  if (iscontain() == false) {
+
+                      final _response =
+                          await Provider.of<ApiService>(context, listen: false)
+                          .postshortlistInsert({
+                        "fromId": prefs.getString(SharedPrefs.userId),
+                        "memberId": widget.user.userId,
+                        "is_shortlist": "1",
+                        "communityId": prefs.getString(SharedPrefs.communityId)
+                      });
+
+                      print(_response.body.toString());
+
+                      if (_response.body["success"] == 1) {
+                        setState(() {
+                          //   widget.user.isshortlist = true;
+                          widget.user.shortlist =
+                              widget.user.shortlist + "," + widget.user.userId;
+                        });
+
+                        print(widget.user.shortlist +
+                            " " +
+                            iscontain().toString());
+                      }
+
+                  } else {
+
+                      final _response =
+                          await Provider.of<ApiService>(context, listen: false)
+                          .postshortlistInsert({
+                        "fromId": prefs.getString(SharedPrefs.userId),
+                        "memberId": widget.user.userId,
+                        "is_shortlist": "0",
+                        "communityId": prefs.getString(SharedPrefs.communityId)
+                      });
+
+                      print(_response.body.toString());
+
+                      if (_response.body["success"] == 1) {
+                        setState(() {
+                          //  widget.user.isshortlist = false;
+                          widget.user.shortlist = widget.user.shortlist
+                              .replaceAll("," + widget.user.userId, "");
+                        });
+
+                        print(widget.user.shortlist +
+                            " " +
+                            iscontain().toString());
+                      }
+                    }
+
+
+
+                  // shortlist action
+                },
+              ),
+
+              ListTile(
+                leading: Icon(Icons.favorite_border),
+                title: Text( iscontainLikes() == false ?  "Send Interest" : "Remove Interest"),
+                onTap: () async {
+                  Navigator.pop(context);
+
+
+
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                  print(prefs.getString(SharedPrefs.validityDays));
+
+                  if (prefs.getString(SharedPrefs.validityDays) !=
+                      null && !prefs.getString(SharedPrefs.validityDays)!.isEmpty) {
+                    if (int.parse(prefs
+                        .getString(SharedPrefs.numLikes)
+                        .toString()) <=
+                        2000) {
+
+                      if (iscontainLikes() == false) {
+                        final result = await DialogClass()
+                            .showDialogBeforesubmit(
+                            context,
+                            "Express Interest!",
+                            "Are you sure you want to Send like to this person?",
+                            "Send Like",
+                            "like");
+
+                          final _response =
+                          await Provider.of<ApiService>(
+                              context,
+                              listen: false)
+                              .postExpressInterestInsert({
+                            "from_id": prefs
+                                .getString(SharedPrefs.userId),
+                            "to_id": widget.user.userId,
+                            "is_sent": "1",
+                            "communityId": prefs.getString(
+                                SharedPrefs.communityId)
+                          });
+
+                          if (_response.body["data"]
+                          ["affectedRows"] ==
+                              1) {
+                            setState(() {
+                              widget.user.likes =
+                                  widget.user.likes +
+                                      "," +
+                                      widget.user.userId;
+                            });
+
+                            final _response =
+                            await Provider.of<ApiService>(
+                                context,
+                                listen: false)
+                                .postInsertNotification({
+                              "notifi_type": "interest",
+                              "message": "Like Request from " +
+                                  prefs
+                                      .getString(
+                                      SharedPrefs.fullname)
+                                      .toString(),
+                              "sender_type": "user",
+                              "sender_id": prefs.getString(
+                                  SharedPrefs.userId),
+                              "reciever_id": widget.user.userId,
+                              "communityId": prefs.getString(
+                                  SharedPrefs.communityId)
+                            });
+
+                            print(widget.user.mobRegToken);
+                            /* SendNotification().sendWhatsapp(
+                                              widget.user.whatsapp,
+                                              "Like Request From " +
+                                                  prefs
+                                                      .getString(SharedPrefs
+                                                      .fullname)
+                                                      .toString()+"\n"+
+                                                  "The Request is from Community Matrimonial regarding like request from " +
+                                                  prefs
+                                                      .getString(SharedPrefs
+                                                      .fullname)
+                                                      .toString() +
+                                                  " Please kindly accept or reject request from Notification section from app or website",
+                                            );*/
+                          }
+
+
+
+
+
+
+                      } else {
+                        DialogClass().showDialog2(
+                            context,
+                            "Express Interest alert!",
+                            "Already Expressed Interest",
+                            "Ok");
+                      }
+                    } else {
+                      DialogClass().showDialog2(
+                          context,
+                          "Express Interest alert!",
+                          "Please upgrade to Membership Plans to Exprress More Interests",
+                          "Ok");
+                    }
+                  } else {
+                    if (int.parse(prefs
+                        .getString(SharedPrefs.numLikes)
+                        .toString()) <=
+                        3000) {
+
+
+                      if (iscontainLikes() == false) {
+
+                          final _response =
+                          await Provider.of<ApiService>(
+                              context,
+                              listen: false)
+                              .postExpressInterestInsert({
+                            "from_id": prefs
+                                .getString(SharedPrefs.userId),
+                            "to_id": widget.user.userId,
+                            "is_sent": "1",
+                            "communityId": prefs.getString(
+                                SharedPrefs.communityId)
+                          });
+
+                          if (_response.body["data"]
+                          ["affectedRows"] ==
+                              1) {
+                            setState(() {
+                              widget.user.likes =
+                                  widget.user.likes +
+                                      "," +
+                                      widget.user.userId;
+                            });
+
+                            final _response =
+                            await Provider.of<ApiService>(
+                                context,
+                                listen: false)
+                                .postInsertNotification({
+                              "notifi_type": "interest",
+                              "message": "Like Request from " +
+                                  prefs
+                                      .getString(
+                                      SharedPrefs.fullname)
+                                      .toString(),
+                              "sender_type": "user",
+                              "sender_id": prefs.getString(
+                                  SharedPrefs.userId),
+                              "reciever_id": widget.user.userId,
+                              "communityId": prefs.getString(
+                                  SharedPrefs.communityId)
+                            });
+
+                            print(widget.user.mobRegToken);
+                            /* SendNotification().sendWhatsapp(
+                                                widget.user.whatsapp,
+                                                "Like Request From " +
+                                                    prefs
+                                                        .getString(SharedPrefs
+                                                            .fullname)
+                                                        .toString()+"\n"+
+                                                "The Request is from Community Matrimonial regarding like request from " +
+                                                    prefs
+                                                        .getString(SharedPrefs
+                                                            .fullname)
+                                                        .toString() +
+                                                    " Please kindly accept or reject request from Notification section from app or website",
+                                               );
+                                            */
+
+
+                          }
+
+
+
+                      } else {
+
+
+                      // final res = await DialogClass().showDialogBeforesubmit(context, "Delete Express Alert!", "Are you sure want to delete expressed interest " , "OK" , "1");
+
+                      //  if(res ==  "1"){
+
+                          final res = await ApiService.create().postDeleteInterest({"fromId": prefs.getString(SharedPrefs.userId) , "toId":widget.user.userId , "communityId":prefs.getString(SharedPrefs.communityId)});
+
+                          print(res.body);
+
+                          if(res.body["data"]["affectedRows"] == 0 || res.body["data"]["affectedRows"] == 1){
+
+                            List<String> list_likes = widget.user.likes.split(",");
+
+                            setState(() {
+
+                              widget.user.likes =  widget.user.likes.replaceAll(widget.user.userId , "");
+
+                            });
+
+                          }
+
+
+
+
+
+                      }
+                    } else {
+                      DialogClass().showDialog2(
+                          context,
+                          "Express Interest alert!",
+                          "Please upgrade to Membership Plans",
+                          "Ok");
+                    }
+                  }
+
+
+
+
+                  // interest action
+                },
+              ),
+
+
+
+              role == "admin" ? ListTile(
+                leading: Icon(Icons.notifications_outlined),
+                title: Text("Send Notification"),
+                onTap: () {
+                  Navigator.pop(context);
+
+                  showMessageDialog(context);
+                  // notification action
+                },
+              ) : Container(),
+
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
     final backgroundColor = widget.user.isshortlist == iscontain()
@@ -92,6 +529,11 @@ class DashboardListStateful extends State<DashboardList> {
              widget.onUpdate(0);
 
            }
+
+        },
+        onLongPress: () async{
+
+          showOptionsDialog(context);
 
         },
         child: Stack(
@@ -233,11 +675,12 @@ class DashboardListStateful extends State<DashboardList> {
                                   SizedBox(
                                     width: 5,
                                   ),
-                                  Text(widget.user.occupation.toString(),
+                                  Container(width: MediaQuery.of(context).size.width*0.6  ,child:Text( widget.user.occupation == "" ?  widget.user.current_activity   : widget.user.current_activity +" - "+  widget.user.occupation.toString(),
+                                      maxLines: 2,
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 14,
-                                          fontWeight: FontWeight.w300))
+                                          fontWeight: FontWeight.w300)))
                                 ],
                               ),
                             ),
@@ -487,6 +930,11 @@ class DashboardListStateful extends State<DashboardList> {
                                           "Ok");
                                     }
                                   }
+
+
+
+
+
                                 },
                                 icon: Image.asset(
                                   "assets/images/send_icon.png",

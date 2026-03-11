@@ -210,7 +210,7 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
           // Attach files
           for (var i = 0; i < listimagesPath.length; i++) {
             request.fields["pic" + (i + 1).toString()] =
-                prefs.getString(SharedPrefs.profileid).toString() + "_" +
+                widget.list[8] + "_" +
                     getFileName(File(listimagesPath[i]));
 
             var file = await http.MultipartFile.fromPath(
@@ -222,10 +222,8 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
           }
 
           // Attach additional data
-          request.fields["profileId"] =
-              prefs.getString(SharedPrefs.profileid).toString();
-          request.fields["userId"] =
-              prefs.getString(SharedPrefs.userId).toString();
+          request.fields["profileId"] = widget.list[8];
+          request.fields["userId"] = widget.list[9];
           request.fields["communityId"] =
               prefs.getString(SharedPrefs.communityId).toString();
           request.fields["imagesubpath"] = utils().imagePath(prefs.getString(SharedPrefs.communityId).toString());
@@ -241,7 +239,7 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
             if(listimagesPath.length > 0) {
               for (var i = 0; i < listimagesPath.length; i++) {
                 await prefs.setString("pic" + (i + 1).toString(),
-                    prefs.getString(SharedPrefs.profileid).toString() + "_" +
+                    widget.list[8] + "_" +
                         getFileName(File(listimagesPath[i])) ?? '');
               }
 
@@ -276,7 +274,7 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
           if (listimage[i] != "0") {
 
             request.fields["pic" + (i + 1).toString()] =
-                prefs.getString(SharedPrefs.profileid).toString() + "_" +
+                widget.list[8] + "_" +
                     getFileName(File(listimage[i]));
 
             var file = await http.MultipartFile.fromPath(
@@ -306,10 +304,8 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
 
         }
 
-        request.fields["profileId"] =
-            prefs.getString(SharedPrefs.profileid).toString();
-        request.fields["userId"] =
-            prefs.getString(SharedPrefs.userId).toString();
+        request.fields["profileId"] = widget.list[8];
+        request.fields["userId"] = widget.list[9];
         request.fields["communityId"] =
             prefs.getString(SharedPrefs.communityId).toString();
         request.fields["imagesubpath"] = utils().imagePath(prefs.getString(SharedPrefs.communityId).toString());
@@ -327,7 +323,7 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
           for (var i = 0; i < listimage.length; i++) {
             if (listimage[i] != "0") {
 
-              await prefs.setString("pic" + (i + 1).toString() , prefs.getString(SharedPrefs.profileid).toString() + "_" + getFileName(File(listimage[i])) ?? '');
+              await prefs.setString("pic" + (i + 1).toString() , widget.list[8] + "_" + getFileName(File(listimage[i])) ?? '');
 
             } else {
 
@@ -351,7 +347,6 @@ class ImageGalleryScreen  extends State<ImageGalleryStateful>{
 
 
   }
-
 
   @override
   void initState() {

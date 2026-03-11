@@ -364,6 +364,7 @@ Future<void> main() async {
 
 }
 
+
 initLoader(){
 
   EasyLoading.instance

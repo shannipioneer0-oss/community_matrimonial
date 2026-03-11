@@ -77,6 +77,8 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
   late  SharedPreferences prefs;
   int prefsint =0;
 
+
+
   @override
   void initState() {
     super.initState();
@@ -309,6 +311,7 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
 
 
   int select_type = 1;
+  ValueNotifier<int> refreshNotifier = ValueNotifier(0);
 
   @override
   Widget build(BuildContext context) {
@@ -316,7 +319,20 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
    // print(controller.totalItemCount.toString() +"()()()()"+ total_count.toString());
 
     return UniversalBackWrapper(
-        isRoot: false
+        isRoot: false,
+        isclear: true,
+        press: () {
+
+          print("item");
+          setState(() {
+
+            select_type = 2;
+            itemIds.clear();
+
+          });
+
+
+        }
 
         ,child:Scaffold(
 
@@ -339,58 +355,35 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
           slivers: [
 
             SliverAppBar(
-              title: prefsint != 0 ? Row(children: [ Text('Search Results ('+total_count+") \nRavaldev Matrimony"+" - ("+status+")" , style: TextStyle(color: Colors.black87 , fontSize: 18),) , prefs != null && prefs.getString(SharedPrefs.role_type) == "admin" ? IconButton(onPressed: (){
+              title: prefsint != 0 ? Row(children: [ Text('Search Results ('+total_count+") \nRavaldev Matrimony" , style: TextStyle(color: Colors.black87 , fontSize: 18),) , prefs != null && prefs.getString(SharedPrefs.role_type) == "admin" ? IconButton(onPressed: (){
 
                 print(itemIds);
 
                 setState(() {
 
                   if(select_type == 1){
-                    select_type = 2;
 
-                    List item = ["Select All" , "Select Specific"];
-                    showDialog(context: context, builder: (context) {
+                    select_type = 3;
+                    members_final.forEach((element) {
 
-                      return AlertDialog(title: Text("Select for Notification" , style: TextStyle(fontSize: 18 ,fontWeight: FontWeight.bold),),
-                      content: Container(height: MediaQuery.of(context).size.height*0.3  ,child:ListView.builder(itemCount: item.length  ,itemBuilder: (context, index) {
-
-                          return GestureDetector(onTap: (){
-
-                            Navigator.pop(context);
-                            setState(() {
-
-                              if(item[index] == "Select All") {
-
-                                select_type = 3;
-                                members_final.forEach((element) {
-
-                                  itemIds.add(element.userId);
-
-                                },);
-
-                              }else{
-
-                                select_type = 2;
-                                itemIds.clear();
-
-                              }
-
-                            });
-
-
-                          } ,child:Container(padding: EdgeInsets.all(10)  ,child: Text(item[index] , style: TextStyle(fontWeight: FontWeight.w400 , fontSize: 18),),));
-
-                      },),));
+                      itemIds.add(element.userId);
 
                     },);
-                  }else {
-                    select_type = 1;
-                    itemIds.clear();
+
+
                   }
 
                 });
 
-              }, icon: Icon( select_type == 1 ? Icons.check_box_outline_blank : Icons.check_box)) : Container() ],) : Container(),
+              }, icon: Icon( select_type == 1 ? Icons.check_box_outline_blank : Icons.check_box)) : Container() , SizedBox(width: 0,) , select_type == 1 ? Container() : IconButton(onPressed: (){
+
+                   setState(() {
+                     select_type = 1;
+                     itemIds.clear();
+                   });
+
+
+              }, icon: Icon(Icons.delete))  ],) : Container(),
               pinned: true,
               floating: true,
               snap: true,
@@ -433,9 +426,13 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
             ),
 
             //
+            SliverPadding(
+            padding: EdgeInsets.only(bottom: 80), // adjust based on bottom bar height
+            sliver:
             SliverList(
 
               delegate: SliverChildBuilderDelegate(
+
                 childCount: members.length,
 
                     (context, index) {
@@ -448,13 +445,18 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
                           itemIds.removeWhere((element) => element == members[index].userId);
                         }
 
-                      },);
+                        setState(() {
+                          select_type = 2;
+                        });
+
+                      }, isSelected: itemIds.contains(members[index].userId),);
 
 
                     }
               ),
             ),
-          ],
+
+            )],
         ),
 
     /*body: ListView.builder(itemCount: members.length ,controller: _scrollController  ,itemBuilder: (context, index) {

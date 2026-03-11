@@ -75,7 +75,8 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
   TextEditingController langController = new TextEditingController();
   TextEditingController mothertongueController = new TextEditingController();
   TextEditingController nriController = new TextEditingController();
-  TextEditingController controllergender =new TextEditingController();
+  TextEditingController controllergender = new TextEditingController();
+  TextEditingController controllerCurrentActivity = new TextEditingController();
 
   String firtname = "" , lastname = ""  , dob = "" ,passdate = "";
   String created_value = "" , marital_value = "" , caste_value = "" , subcaste_value = "" , mother_tongue_value = "" , lang_known_value = "";
@@ -108,6 +109,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
     langController.text  =   widget.list[7];
     mothertongueController.text = widget.list[8];
     controllergender.text = widget.list[20];
+    controllerCurrentActivity.text = widget.list[21];
 
     passdate = widget.list[2];
 
@@ -138,6 +140,21 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
   List<DataFetchParams> items_gender = [DataFetchParams(label: "Male", value: "Male", value2: "Male") , DataFetchParams(label: "Female", value: "Female", value2: "Female")];
 
   bool isnri = false;
+  List<DataFetch> currentactivityList = [
+    DataFetch(label: "JOB/SERVICE", value: "JOB/SERVICE"),
+    DataFetch(label: "BUSINESS", value: "BUSINESS"),
+    DataFetch(label: "HOUSE HOLD", value: "HOUSE HOLD"),
+    DataFetch(label: "RETIRED", value: "RETIRED"),
+    DataFetch(label: "FARMING", value: "FARMING"),
+    DataFetch(label: "STUDY", value: "STUDY"),
+    DataFetch(label: "JOB SEEKER", value: "JOB SEEKER"),
+    DataFetch(label: "SELF EMPLOYED", value: "SELF EMPLOYED"),
+    DataFetch(label: "PROFESSIONAL", value: "PROFESSIONAL"),
+    DataFetch(label: "CONSULTANT", value: "CONSULTANT"),
+    DataFetch(label: "SOCIAL WORK", value: "SOCIAL WORK"),
+    DataFetch(label: "ABROAD", value: "ABROAD"),
+  ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -271,7 +288,15 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
           },),
           SizedBox(height: 20,),
           CustomTextField(icondata: Icons.person , controller: subcasteController , labelText: TranslationService.translate("shakh"), enabled: false,),
+          SizedBox(height: 20,),
+          CustomDropdown(icondata: Icons.person  ,controller: controllerCurrentActivity , labelText: TranslationService.translate("current_activity"), onButtonPressed: () async {
 
+            final value = await SingleSelectDialog().showBottomSheet(context, currentactivityList , "Select Current Activity");
+            controllerCurrentActivity.text = value.label;
+            // caste_value = value.value;
+
+
+          },),
           /* SizedBox(height: 20,),
         CustomDropdown(icondata: Icons.language  ,controller: langController , labelText: TranslationService.translate("lang_known"), onButtonPressed: () async {
 

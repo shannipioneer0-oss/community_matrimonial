@@ -195,7 +195,13 @@ class InboxScreen extends State<InboxStateful>{
       pageFuture: (page) =>  _loadPage(context,  page , PAGE_SIZE, selectedIndex),
       itemBuilder: (context, index, UserMatch entry) {
 
-          return InboxRowData(entry , selectedIndex ,  prefs!);
+          return InboxRowData(entry , selectedIndex ,  prefs! , () {
+
+            selectedIndex = 0;
+
+            _loadPage(context, 0 , 8 , selectedIndex);
+
+          },);
 
       },
       errorBuilder: (context, error) {
@@ -235,7 +241,9 @@ class InboxScreen extends State<InboxStateful>{
       velocityThreshold: 8,
       pageFuture: (page) =>  _loadPage(context,  page , PAGE_SIZE, selectedIndex),
       itemBuilder: (context, index, UserMatch entry) {
-        return InboxRowData(entry ,selectedIndex , prefs!);
+        return InboxRowData(entry ,selectedIndex , prefs! , () {
+
+        },);
 
       },
       errorBuilder: (context, error) {

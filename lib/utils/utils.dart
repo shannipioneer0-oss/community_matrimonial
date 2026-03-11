@@ -1,5 +1,6 @@
 
 
+import 'dart:io';
 import 'dart:math';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -342,6 +343,21 @@ class utils{
     return false;
   }
 
+  String getDeviceType() {
+    if (Platform.isAndroid) {
+      return "Android";
+    } else if (Platform.isIOS) {
+      return "iOS";
+    } else if (Platform.isWindows) {
+      return "Windows";
+    } else if (Platform.isMacOS) {
+      return "MacOS";
+    } else if (Platform.isLinux) {
+      return "Linux";
+    } else {
+      return "Unknown";
+    }
+  }
 
 
 
@@ -354,6 +370,8 @@ class utils{
     String father_coccup = "" , mother_occup = ""  , house_owned = "" , house_type = ""  ;
     String membername1 = "" ,membername2 ="" ,relation1 = "" ,relation2 = "" ,marital1 = "" ,marital2 = "" , age1 = "" ,age2 ="" ;
 
+    String occupation = ""  ,   current_activity = "" ;
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     image1 = prefs.getString(SharedPrefs.pic1).toString();
@@ -364,6 +382,7 @@ class utils{
     marital = prefs.getString(SharedPrefs.maritalStatus).toString();
     caste = prefs.getString(SharedPrefs.caste).toString();
     subcaste = prefs.getString(SharedPrefs.subcaste_shakh).toString();
+    current_activity = prefs.getString(SharedPrefs.caurrentActivity).toString();
 
     height = prefs.getString(SharedPrefs.height).toString();
     wieght = prefs.getString(SharedPrefs.weight).toString();
@@ -420,9 +439,19 @@ class utils{
          return false;
 
        } else if (prefs.getString(SharedPrefs.user_verify).toString() == "0") {
+
          DialogClass().showPremiumInfoDialog(
              context, TranslationService.translate("verification_alert_title"),
              TranslationService.translate("verification_alert_message"),
+             TranslationService.translate("ok_button"));
+
+         return false;
+
+       } else if(occupation == "null" || current_activity == "null" || occupation.isEmpty || current_activity.isEmpty){
+
+         DialogClass().showPremiumInfoDialog(
+             context, TranslationService.translate("missing_info"),
+             TranslationService.translate("missing_info_detail"),
              TranslationService.translate("ok_button"));
 
          return false;

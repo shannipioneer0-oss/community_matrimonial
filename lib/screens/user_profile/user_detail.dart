@@ -134,7 +134,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
   String communityName = "";
   String hobbies = "" , mobilenumber = "";
   bool isload =  false , initialload = false;
-  String gender = "";
+  String gender = "" , current_activity = "";
 
   String membername1 = "";
   String relation1 = "";
@@ -254,9 +254,8 @@ class UserDetailScreen  extends State<UserDetailStateful>{
           age = utils().calculateAge(userData["dob"]).toString() ?? "";
           marital = userData["marital_status"].split(",")[0] ?? "";
           caste = userData["caste"].split(",")[0] ?? "";
-          subcaste = userData["subcaste"] != null
-              ? userData["subcaste_txt"]
-              : "";
+          subcaste = userData["subcaste"] != null ? userData["subcaste_txt"] : "";
+          current_activity = userData["current_activity"];
         /*  lang_known = userData["language_known"].split("*")[0] ?? "";
           mother_tongue = userData["mother_tongue"].split(",
           isnri = userData["isnri"] ?? "";
@@ -579,6 +578,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
 
          gender = prefs.getString(SharedPrefs.gender_fetch).toString();
          fullname = prefs.getString(SharedPrefs.fullname).toString();
+         current_activity = prefs.getString(SharedPrefs.caurrentActivity).toString();
 
          print(prefs.getString(SharedPrefs.dob).toString()+"()()");
 
@@ -1052,6 +1052,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                       ProfileDetailItem(label: TranslationService.translate("caste_key"), value: caste ,  isrequired: "1"),
                       ProfileDetailItem(label: TranslationService.translate("shakh"), value: subcaste ,  isrequired: "1"),
                       ProfileDetailItem(label: TranslationService.translate("gender"), value: gender ,  isrequired: "1"),
+                      ProfileDetailItem(label: TranslationService.translate("current_activity"), value: current_activity ,  isrequired: "1"),
                       /*ProfileDetailItem(label:TranslationService.translate("language_known_key"), value: lang_known),
                       ProfileDetailItem(label: TranslationService.translate("mother_tongue_key"), value: mother_tongue),
                       ProfileDetailItem(label: TranslationService.translate("is_nri") , value: isnri == "1" ? "Yes"  : "No"),

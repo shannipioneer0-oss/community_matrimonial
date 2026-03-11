@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:community_matrimonial/locale/TranslationService.dart';
 import 'package:community_matrimonial/screens/user_profile/CustomTextField.dart';
 import 'package:community_matrimonial/screens/user_profile/MultilineTextfield.dart';
+import 'package:community_matrimonial/utils/SharedPrefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_dialogs/material_dialogs.dart';
@@ -12,6 +13,7 @@ import 'package:material_dialogs/shared/types.dart';
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class DialogClass {
@@ -239,9 +241,11 @@ class DialogClass {
                    Row(children: [  Align(
                      alignment: Alignment.centerLeft,
                      child: ElevatedButton(
-                       onPressed: () {
+                       onPressed: () async {
 
                          Navigator.pop(context , 0);
+                         SharedPreferences prefs =await SharedPreferences.getInstance();
+                         prefs.setString(SharedPrefs.first , "1");
 
                        },
                        style: ElevatedButton.styleFrom(

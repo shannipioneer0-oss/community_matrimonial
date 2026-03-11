@@ -5,11 +5,15 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 class UniversalBackWrapper extends StatelessWidget {
   final Widget child;
   final bool isRoot;
+  bool? isclear;
+  VoidCallback? press;
 
-  const UniversalBackWrapper({
+   UniversalBackWrapper({
     super.key,
     required this.child,
-    this.isRoot = false
+    this.isRoot = false,
+    this.isclear = false,
+    this.press
   });
 
   @override
@@ -30,12 +34,23 @@ class UniversalBackWrapper extends StatelessWidget {
         }
         // Logic for all other screens
         else {
-          if (NavigationService.navigationKey.currentState!.canPop()) {
-            NavigationService.navigationKey.currentState!.pop();
-          } else {
-            // Safety fallback: if no stack, just exit
-            SystemNavigator.pop();
+
+          print(isclear.toString()+"======");
+
+          if(isclear == false) {
+            if (NavigationService.navigationKey.currentState!.canPop()) {
+              NavigationService.navigationKey.currentState!.pop();
+            } else {
+              // Safety fallback: if no stack, just exit
+              SystemNavigator.pop();
+            }
+          }else{
+
+            press?.call();
+
           }
+
+
         }
       },
       child: child,

@@ -65,6 +65,7 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
     Future.delayed(Duration(milliseconds: 500), ()
     {
       setState(() {
+
         if (widget.photo[0].pic1 != null && widget.photo[0].pic1!.isNotEmpty &&
             widget.photo[0].pic1 != "null" && widget.photo[0].pic1 != "0"  && widget.photo[0].isVerifyPic1 == "1") {
 
@@ -258,6 +259,7 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
 
         if (widget.photo[0].pic8 != null && widget.photo[0].pic8!.isNotEmpty &&
             widget.photo[0].pic8 != "null" && widget.photo[0].pic8 != "0" && widget.photo[0].isVerifyPic8 == "1") {
+
           listpics.add(Image.network(
             Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
                 prefs.getString(SharedPrefs.communityId).toString()) +
@@ -267,8 +269,10 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
               return RoundedContainer();
             },
           ));
+
         }else if (widget.photo[0].pic8 != null && widget.photo[0].pic8!.isNotEmpty &&
             widget.photo[0].pic8 != "null" && widget.photo[0].pic8 != "0" && widget.photo[0].isVerifyPic8 != "1") {
+
           listpics.add(Image.network(
             Strings.IMAGE_BASE_URL + "/uploads/" + utils().imagePath(
                 prefs.getString(SharedPrefs.communityId).toString()) +
@@ -278,6 +282,7 @@ class ImageGalleryScreen extends State<ImageGalleryStateful> {
               return RoundedContainer();
             },
           ));
+
         }
 
 

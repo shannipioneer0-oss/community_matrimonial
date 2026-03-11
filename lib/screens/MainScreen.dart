@@ -101,12 +101,19 @@ class MainScreenAppState extends State<MainScreenContainer> {
 
       }else if(packageInfo.version.toString().compareTo(res.body["data"][0]["version"].toString()) < 0){
 
-        final res = await  DialogClass().showPremiumInfoDialog3(context,  TranslationService.translate("update_app") , TranslationService.translate("update_app_details"), "Ok");
+        if(prefs.getString(SharedPrefs.first) == null) {
 
-        if(res == true || res == false){
+          final res = await DialogClass().showPremiumInfoDialog3(
+              context, TranslationService.translate("update_app"),
+              TranslationService.translate("update_app_details"), "Ok");
 
-          launchUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.matrimonial.community_matrimonial_latest2.appa&hl=en_IN"));
+          if (res == true || res == false) {
+            launchUrl(Uri.parse(
+                "https://play.google.com/store/apps/details?id=com.matrimonial.community_matrimonial_latest2.appa&hl=en_IN"));
 
+            prefs.setString(SharedPrefs.first, "1");
+
+          }
         }
 
       }

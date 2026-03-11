@@ -18,6 +18,9 @@ class User {
   @JsonKey(name: 'gender')
   String gender;
 
+  @JsonKey(name: 'current_activity')
+  String current_activity;
+
   @JsonKey(name: 'status')
   String status;
 
@@ -93,6 +96,7 @@ class User {
     required this.name,
     required this.surname,
     required this.status,
+    required this.current_activity,
     required this.mobRegToken,
     required this.webRegToken,
     required this.whatsapp,

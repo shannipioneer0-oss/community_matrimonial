@@ -10,9 +10,13 @@ import 'package:community_matrimonial/utils/Colors.dart';
 import 'package:community_matrimonial/utils/ImageOverlayPainter.dart';
 import 'package:community_matrimonial/utils/SharedPrefs.dart';
 import 'package:community_matrimonial/utils/Strings.dart';
+import 'package:community_matrimonial/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_device_imei/flutter_device_imei.dart';
+import 'package:flutter_device_imei/flutter_device_imei_platform_interface.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:community_matrimonial/utils/data.dart';
@@ -248,10 +252,18 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
 
                  SVProgressHUD.show(status: 'Verifying OTP Please Wait....');
 
+                 PackageInfo packageInfo = await PackageInfo.fromPlatform();
+                 String version = packageInfo.version;
+
+
+
+
                  final _response = await Provider.of<ApiService>(context, listen: false).verifyOtp(
                      {
                        "mobile": widget.mobile_number[0].toString(),
-                       "otp":  otp_value
+                       "otp":  otp_value,
+                       "version": version,
+                       "device_type": utils().getDeviceType()
                      }
                  );
 
@@ -316,6 +328,8 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
           SharedPrefs.motherTongue, userData["mother_tongue"] ?? "");
       await prefs.setString(
           SharedPrefs.profileId, userData["profileId"] ?? "");
+      await prefs.setString(
+          SharedPrefs.caurrentActivity, userData["current_activity"] ?? "");
 
       percent = percent +  10;
     }

@@ -30,8 +30,9 @@ UserMatch _$UserMatchFromJson(Map<String, dynamic> json) => UserMatch(
       oldpic1: json['oldpic1'] != null ? json['oldpic1'] as String? : null,
       isinterstSent: json['isinterstSent'] != null ? json['isinterstSent']  as bool : false,
       isshortlist: json['isinterstSent'] != null ? json['isinterstSent'] as bool : false,
-      whatsapp: json['whatsapp'] != null ? json['whatsapp'] as String : ""
-    );
+      whatsapp: json['whatsapp'] != null ? json['whatsapp'] as String : "",
+      current_activity: json['current_activity'] != null ? json['current_activity'] as String : "",
+);
 
 Map<String, dynamic> _$UserMatchToJson(UserMatch instance) => <String, dynamic>{
       'name': instance.name,

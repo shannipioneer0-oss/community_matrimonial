@@ -21,6 +21,9 @@ class UserMatch {
   @JsonKey(name: 'whatsapp')
   String whatsapp;
 
+  @JsonKey(name: 'current_activity')
+  String current_activity;
+
   @JsonKey(name: 'fullname')
   String fullname;
 
@@ -88,6 +91,7 @@ class UserMatch {
     required this.profileId,
     required this.dob,
     required this.userId,
+    required this.current_activity,
      this.iitNit,
      this.isAdminService,
      this.education,

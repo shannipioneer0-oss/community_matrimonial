@@ -40,7 +40,9 @@ class SharedPrefs{
   static const String subcaste_shakh = "subcaste_shakh";
   static const String languageKnown = "language_known";
   static const String motherTongue = "mother_tongue";
+  static const String caurrentActivity = "current_activity";
   static const String profileId = "profile_id";
+  static const String first = "first";
 
   // Contact Data
   static const String contact_details_id = "contact_details_id";

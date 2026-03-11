@@ -80,6 +80,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   await initLocalNotifications(); // Initialize plugin in this isolate too
   showNotificationFromMessage(message);
+
 }
 
 
@@ -109,6 +110,7 @@ Future<void> initLocalNotifications() async {
 
   await androidPlugin?.requestNotificationsPermission();
 }
+
 
 
 Future<void> showNotificationFromMessage(RemoteMessage message) async {
