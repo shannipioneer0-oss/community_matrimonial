@@ -63,6 +63,19 @@ class LoginScreen extends State<LoginAppStateful> {
       token = value!;
     });*/
 
+     initToken();
+
+  }
+
+  initToken() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? token = await FirebaseMessaging.instance.getToken();
+    prefs.setString(SharedPrefs.token_id , token.toString());
+
+    print(token.toString()+" --- login");
+
   }
 
   int count = 0;
