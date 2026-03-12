@@ -289,6 +289,8 @@ class LoginScreenVerify extends State<LoginVerifyAppStateful> {
                          "communityId":prefs.getString(SharedPrefs.communityId),
                          "myuserId":prefs.getString(SharedPrefs.userId),
                          "Id":prefs.getString(SharedPrefs.userId),
+                         "version": version,
+                         "device_type": utils().getDeviceType(),
                          "original": "en",
                          "translate": ["en"]
                        }

@@ -176,7 +176,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
 
          profileId = userData["profileId"];
          basic_details_id = userData["Id"].toString();
-         current_activity = userData["current_activity"];
+         current_activity = userData["current_activity"] != null ? userData["current_activity"] : "";
 
          createdby_id = userData["created_by"] != null ? userData["created_by"].split(",")[1] : "";
          marital_id = userData["marital_status"].split(",")[1];

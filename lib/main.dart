@@ -650,6 +650,8 @@ class MyScreen extends  State<MainScreen> {
 
     final res = await ApiService.create().select_launch({});
 
+    print(res.body);
+
     if(res.body["data"][0]["start"].toString() == "0"){
 
       Future.delayed(const Duration(milliseconds: 100), () {

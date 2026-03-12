@@ -1,6 +1,8 @@
 
+import 'package:community_matrimonial/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,12 +23,17 @@ class Apiclass {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      String version = packageInfo.version;
+
       final _response2 = await Provider.of<ApiService>(context, listen: false).postProfileDetailsFetchValuelabel(
           {
             "userId" : prefs.getString(SharedPrefs.userId),
             "communityId":prefs.getString(SharedPrefs.communityId),
             "myuserId":prefs.getString(SharedPrefs.userId),
             "Id":prefs.getString(SharedPrefs.userId),
+            "version": version,
+            "device_type": utils().getDeviceType(),
             "original": "en",
             "translate": ["en"]
           }

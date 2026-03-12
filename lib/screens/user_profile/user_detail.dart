@@ -1052,7 +1052,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
                       ProfileDetailItem(label: TranslationService.translate("caste_key"), value: caste ,  isrequired: "1"),
                       ProfileDetailItem(label: TranslationService.translate("shakh"), value: subcaste ,  isrequired: "1"),
                       ProfileDetailItem(label: TranslationService.translate("gender"), value: gender ,  isrequired: "1"),
-                      ProfileDetailItem(label: TranslationService.translate("current_activity"), value: current_activity ,  isrequired: "1"),
+                      ProfileDetailItem(label: TranslationService.translate("current_activity2"), value: current_activity ,  isrequired: "1"),
                       /*ProfileDetailItem(label:TranslationService.translate("language_known_key"), value: lang_known),
                       ProfileDetailItem(label: TranslationService.translate("mother_tongue_key"), value: mother_tongue),
                       ProfileDetailItem(label: TranslationService.translate("is_nri") , value: isnri == "1" ? "Yes"  : "No"),
