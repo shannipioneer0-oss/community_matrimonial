@@ -79,8 +79,6 @@ class LoginScreen extends State<LoginAppStateful> {
   }
 
   int count = 0;
-
-
   bool isAccepted = false;
 
 

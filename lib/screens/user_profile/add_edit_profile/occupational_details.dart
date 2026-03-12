@@ -196,7 +196,7 @@ class OccupationalDetailScreen  extends State<OccupationalDetailStateful>{
             context, listen: false)
             .postOccupationInsert(
             {
-              "occupation_list": occupation_value,
+              "occupation_list": occupationController.text.toString(),
               "occupation_detail": occupdetailsController.text.toString(),
               "annual_income": annualincomeController.text.toString(),
               "employment_type": employmenttypeController.text.toString(),
@@ -243,8 +243,8 @@ class OccupationalDetailScreen  extends State<OccupationalDetailStateful>{
             context, listen: false)
             .postOccupationUpdate(
             {
-              "occupation_list": occupation_value,
-              "occupation_detail": occupationController.text.toString(),
+              "occupation_list": occupationController.text.toString(),
+              "occupation_detail": occupdetailsController.text.toString(),
               "annual_income": annualincomeController.text.toString(),
               "employment_type": employmenttypeController.text.toString(),
               "office_address": officeaddressController.text.toString(),
