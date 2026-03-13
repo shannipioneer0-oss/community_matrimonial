@@ -80,7 +80,7 @@ class SignupScreenVerify extends State<SignupMobileVerifyAppStateful> {
 
     print(widget.mobile_number[1]);
 
-    if(widget.mobile_number[1] == "1") {
+    //if(widget.mobile_number[1] == "1") {
 
       print(widget.mobile_number[1]+"-=-=-=");
 
@@ -93,7 +93,7 @@ class SignupScreenVerify extends State<SignupMobileVerifyAppStateful> {
 
       print(responseSendSms.body);
 
-    }
+   // }
 
 
   }
