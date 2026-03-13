@@ -405,6 +405,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                     "mother_tongue": mother_tongue_value,
                     "isnri" : isnri == false ? "0" : "1" ,
                     "nri_detail" : nriController.text.toString(),
+                    "current_activity":controllerCurrentActivity.text.toString(),
                     "userId": widget.list[18][0],
                     "communityId": prefs.getString(SharedPrefs.communityId),
                     "profileId": widget.list[19]
@@ -427,6 +428,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                         "subcaste": subcasteController.text.toString(),
                         "language_known": lang_known_value,
                         "mother_tongue": mother_tongue_value,
+                        "current_activity":controllerCurrentActivity.text.toString(),
                         "isnri" : isnri == false ? "0" : "1" ,
                         "nri_detail" : nriController.text.toString(),
                         "userId": widget.list[18][0],
@@ -470,6 +472,7 @@ class BasicDetailsScreen  extends State<BasicDetailsStateful>{
                         "subcaste": subcasteController.text.toString(),
                         "isnri" : isnri == false ? "0" : "1" ,
                         "nri_detail" : nriController.text.toString(),
+                        "current_activity":controllerCurrentActivity.text.toString(),
                         "language_known": lang_known_value,
                         "mother_tongue": mother_tongue_value,
                         "Id": widget.list[15],

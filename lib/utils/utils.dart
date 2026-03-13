@@ -360,6 +360,25 @@ class utils{
   }
 
 
+  bool isVersionLower(String current, String latest) {
+    List<int> c = current.split('.').map(int.parse).toList();
+    List<int> l = latest.split('.').map(int.parse).toList();
+
+    int length = c.length > l.length ? c.length : l.length;
+
+    for (int i = 0; i < length; i++) {
+      int currentPart = i < c.length ? c[i] : 0;
+      int latestPart = i < l.length ? l[i] : 0;
+
+      if (currentPart < latestPart) return true;
+      if (currentPart > latestPart) return false;
+    }
+
+    return false;
+  }
+
+
+
 
    Future<bool> validationalerts(BuildContext context) async {
 
@@ -447,7 +466,7 @@ class utils{
 
          return false;
 
-       } else if(occupation == "null" || current_activity == "null" || occupation.isEmpty || current_activity.isEmpty){
+       } else if(occuapation == "null" || current_activity == "null" || occuapation.isEmpty || current_activity.isEmpty){
 
          DialogClass().showPremiumInfoDialog(
              context, TranslationService.translate("missing_info"),

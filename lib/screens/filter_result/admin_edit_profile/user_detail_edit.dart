@@ -355,7 +355,7 @@ class UserDetailScreen  extends State<UserDetailStateful>{
          employment_type = occupationDetails['employment_type'] ?? "";
          office_address = occupationDetails['office_address'] ?? "";
          occuapation_id = occupationDetails['occupation'] != null
-             ? occupationDetails['occupation'].split(",")[1]
+             ? occupationDetails['occupation']
              : "";
          occuapation_details_id = occupationDetails['Id'].toString();
        }

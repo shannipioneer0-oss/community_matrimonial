@@ -93,13 +93,14 @@ class MainScreenAppState extends State<MainScreenContainer> {
 
     Future.delayed(Duration(milliseconds: 500) , () async {
 
+      print(utils().isVersionLower("1.0.8", "1.0.11").toString()+"[][]");
 
       if(packageInfo.version.toString().compareTo(res.body["data"][0]["version"].toString()) == 0 || packageInfo.version.toString().compareTo(res.body["data"][0]["version"].toString()) > 0) {
 
         //   DialogClass().showPremiumInfoDialog(context,  TranslationService.translate("no_need_updates") , TranslationService.translate("no_need_updates_details"), "Ok");
 
 
-      }else if(packageInfo.version.toString().compareTo(res.body["data"][0]["version"].toString()) < 0){
+      }else if(utils().isVersionLower(packageInfo.version , res.body["data"][0]["version"].toString()) == true){
 
         if(prefs.getString(SharedPrefs.first) == null) {
 

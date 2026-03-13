@@ -112,36 +112,7 @@ class OccupationalDetailScreen  extends State<OccupationalDetailStateful>{
     body: SafeArea(child: SingleChildScrollView(child:Container(margin: EdgeInsets.only(left: 15 ,right: 15) ,child:Column(children: [
 
     Divider(),
-    Container(margin: EdgeInsets.only(top: 10) ,child:CustomDropdown(icondata: Icons.sell  ,controller: occupationController , labelText: TranslationService.translate("occupation"), onButtonPressed: () async {
-
-      final value = await SingleSelectDialog().showBottomSheetOccupation(context, await Values.getOccupationList(context , "education" , ""));
-      occupationController.text = value.occupation;
-      occupation_value = value.Id;
-
-      if(value.occupation.toLowerCase() == "other"){
-
-        String occupation = "";
-        DialogClass().showDailogwithTextField(context , "Enter Your Occupation" , "Submit Occupation" , "Enter Occupation" , Icons.history_edu , (p0) async {
-
-          occupation = p0;
-
-          final _response = await Provider.of<ApiService>(
-              context, listen: false).postInsertOccupationOther({"occupation": p0});
-
-          if (_response.body["data"]["affectedRows"] == 1) {
-
-            occupationController.text = occupation;
-            occupation_value = _response.body["data"]["insertId"];
-
-          }
-
-        },);
-
-
-      }
-
-
-    },)),
+      Container(margin: EdgeInsets.only(top: 10) ,child:CustomTextField(icondata: Icons.sell  ,controller: occupationController , labelText: TranslationService.translate("occupation"), enabled: false,)),
     SizedBox(height: 20,),
     MultilineTextfield(icondata: Icons.details, controller: occupdetailsController, labelText: TranslationService.translate("occup_details"), enabled: false, minlines: 3, maxlines: 7),
     SizedBox(height: 20,),
@@ -206,7 +177,7 @@ class OccupationalDetailScreen  extends State<OccupationalDetailStateful>{
             .postOccupationUpdate(
             {
               "occupation_list": occupationController.text.toString(),
-              "occupation_detail": occupationController.text.toString(),
+              "occupation_detail": occupdetailsController.text.toString(),
               "annual_income": annualincomeController.text.toString(),
               "employment_type": employmenttypeController.text.toString(),
               "office_address": officeaddressController.text.toString(),
