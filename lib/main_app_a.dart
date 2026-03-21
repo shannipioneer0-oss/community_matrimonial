@@ -79,6 +79,11 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions2.currentPlatform);
 
   await initLocalNotifications(); // Initialize plugin in this isolate too
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  ApiService.create().RecievedQueue({"messageId":message.data["msgId"] , "mobile":prefs.getString(SharedPrefs.mobile)});
+
   showNotificationFromMessage(message);
 
 }
@@ -118,10 +123,13 @@ Future<void> showNotificationFromMessage(RemoteMessage message) async {
   String? title = "";
   String? body ="";
   String tag = "";
+  String? msgId = "";
 
   try{
+
     title = message.notification?.title;
-    body = message.notification?.body;
+    body  = message.notification?.body;
+
     tag =  'default';
   }catch(ex){
 
@@ -131,7 +139,8 @@ Future<void> showNotificationFromMessage(RemoteMessage message) async {
 
     title = message.data['title'];
     body  = message.data['body'];
-    tag  = message.data['tag'];
+    tag   = message.data['tag'];
+    msgId = message.data['msgId'];
 
   }catch(ex){
 
@@ -139,6 +148,7 @@ Future<void> showNotificationFromMessage(RemoteMessage message) async {
 
   print(title);
   print(body);
+  print(msgId.toString()+"--msgId");
 
   final data = message.data;
 

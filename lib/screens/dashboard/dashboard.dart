@@ -1135,12 +1135,14 @@ class DashboardScreen extends State<DashboardAppStateful> {
  final ScrollController _scrollController = ScrollController();
 
  void scrollToIndex(int index) {
+
      double position = index >= 7  ? index * 170.0 : index * 150; // Assuming each item has a fixed height of 50
     _scrollController.animateTo(
      position,
      duration: Duration(milliseconds: 500),
      curve: Curves.easeInOut,
    );
+
  }
 
 

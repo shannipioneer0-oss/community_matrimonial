@@ -1294,6 +1294,39 @@ final class _$ApiService extends ApiService {
   }
 
 
+  @override
+  Future<Response<dynamic>> RecievedQueue(
+      Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('profile/recieved_queue');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+
+
+  @override
+  Future<Response<dynamic>> OpenedQueue(
+      Map<String, dynamic> requestBody) {
+    final Uri $url = Uri.parse('profile/opened_queue');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+
+
+
 
   @override
   Future<Response<dynamic>> postSendNotification(Map<String, dynamic> requestBody) {
@@ -1308,6 +1341,23 @@ final class _$ApiService extends ApiService {
 
     return client.send<dynamic, dynamic>($request);
   }
+
+
+  @override
+  Future<Response<dynamic>> postSendFCMNotification(Map<String, dynamic> requestBody) {
+
+    final Uri $url = Uri.parse('profile/send_fcm_notification');
+    final $body = requestBody;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+
+    return client.send<dynamic, dynamic>($request);
+  }
+
 
 
   @override

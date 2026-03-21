@@ -568,11 +568,97 @@ class MainScreen extends StatefulWidget {
 class MyScreen extends  State<MainScreen> {
 
   ///final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  ///
+  ///
+  ///
+  ///
+  ///
+
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+   AndroidInitializationSettings androidSettings =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  final DarwinInitializationSettings iosSettings =
+  DarwinInitializationSettings();
+
+  late final InitializationSettings initializationSettings =
+  InitializationSettings(
+    android: androidSettings,
+    iOS: iosSettings,
+  );
+
+  void setupFCM() {
+
+    // ✅ FOREGROUND RECEIVED
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print("Foreground → Received");
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+       String msgId = message.data["msgId"];
+      ApiService.create().RecievedQueue({"messageId":msgId , "mobile":prefs.getString(SharedPrefs.mobile)});
+
+    });
+
+    // ✅ BACKGROUND OPENED
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
+      print("Background → Opened");
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      print(message.data["msgId"]+"------"+prefs.getString(SharedPrefs.mobile));
+
+      List list = [];
+      list.add({"messageId":message.data["msgId"] , "mobile":prefs.getString(SharedPrefs.mobile)});
+
+      ApiService.create().OpenedQueue({"data":list});
+
+    });
+
+    // ✅ TERMINATED OPENED
+    FirebaseMessaging.instance.getInitialMessage().then((message) async {
+      if (message != null) {
+        print("Terminated → Opened");
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        print(message.data["msgId"]+"------"+prefs.getString(SharedPrefs.mobile));
+
+        List list = [];
+        list.add({"messageId":message.data["msgId"] , "mobile":prefs.getString(SharedPrefs.mobile)});
+
+        ApiService.create().OpenedQueue({"data":list});
+
+      }
+    });
+
+    // ✅ FOREGROUND OPENED (local notif tap)
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (response) async {
+        print("Foreground → Opened");
+
+        print(response);
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+
+
+        List list = [];
+        list.add({"messageId":response.data["msgId"] , "mobile":prefs.getString(SharedPrefs.mobile)});
+
+        ApiService.create().OpenedQueue({"data":list});
+
+      },
+    );
+  }
 
   @override
   void initState() {
     super.initState();
 
+    setupFCM();
 
 
   SystemChannels.platform.setMethodCallHandler((call) async {
@@ -630,15 +716,7 @@ class MyScreen extends  State<MainScreen> {
     });*/
 
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      // print foreground message here.
-      //print('Handling a foreground message ${message.messageId}');
-    });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
-
-    });
 
 
 
@@ -650,7 +728,7 @@ class MyScreen extends  State<MainScreen> {
 
     final res = await ApiService.create().select_launch({});
 
-    print(res.body);
+   // print(res.body);
 
     if(res.body["data"][0]["start"].toString() == "0"){
 

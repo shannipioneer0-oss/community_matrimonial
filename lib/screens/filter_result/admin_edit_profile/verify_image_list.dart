@@ -53,19 +53,20 @@ class VerifyImageListState  extends State<VerifyImageListStateful>{
   String communityId = "";
   SharedPreferences? prefs ;
 
-  Future<List<Verifyimagelist>> _loadPage(BuildContext context  ,int page, int pageSize) async {
+
+  Future<List<Verifyimagelist>> _loadPage(BuildContext context , String query  ,int page, int pageSize) async {
+
+    print(query+"====");
 
     if(page == 0) {
       EasyLoading.show(status: 'Please wait...');
     }
 
-     prefs = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
 
-    communityId  =prefs!.getString(SharedPrefs.communityId).toString();
+    communityId  = prefs!.getString(SharedPrefs.communityId).toString();
 
-
-
-    final _response = await Provider.of<ApiService>(context, listen: false).postVerifyImageList({"communityId": prefs?.getString(SharedPrefs.communityId) , "limit":int.parse(Strings.limit),
+    final _response = await Provider.of<ApiService>(context, listen: false).postVerifyImageList({"communityId": prefs?.getString(SharedPrefs.communityId) , "query":query , "limit":int.parse(Strings.limit),
       "offset":page*pageSize});
 
 
@@ -73,8 +74,6 @@ class VerifyImageListState  extends State<VerifyImageListStateful>{
 
 
     VerifyImageList searchResult = VerifyImageList.fromJson(_response.body);
-
-
 
     //  print(searchResult.getUsers()[0].name+"++++++");
 
@@ -84,11 +83,13 @@ class VerifyImageListState  extends State<VerifyImageListStateful>{
       //current_length = searchResult.data[0][0].length;
       // controller.totalItemCount = searchResult.getTotalRowCount()[0].totalRowCount;
       if(searchResult.data!.verifyimagelist2![0].total!.toInt() > 0) {
-        total_count =
-            searchResult.data!.verifyimagelist2![0].total.toString();
+
+        total_count = searchResult.data!.verifyimagelist2![0].total.toString();
       }else{
+
         total_count = "0";
       }
+
 
 
     });
@@ -96,11 +97,68 @@ class VerifyImageListState  extends State<VerifyImageListStateful>{
     EasyLoading.dismiss();
 
     return searchResult.data!.verifyimagelist;
+  }
+
+
+  final ScrollController scrollController = ScrollController();
+
+  List<Verifyimagelist> list = [];
+
+  int page = 0;
+  bool isLoading = false;
+  bool hasMore = true;
+  String text = "";
+
+
+  Future<void> loadMore() async {
+
+    if (isLoading || !hasMore) return;
+
+    isLoading = true;
+
+    print("1111111");
+
+    final newData = await _loadPage(context, text, page, PAGE_SIZE);
+
+    print("222222");
+
+    setState(() {
+      page++;
+
+      list.addAll(newData);
+
+      print(list.length.toString()+"=====-----");
+
+      if (newData.length < PAGE_SIZE) {
+        hasMore = false;
+      }
+
+      isLoading = false;
+    });
 
   }
 
 
 
+
+  @override
+  void initState() {
+    super.initState();
+
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 200) {
+        loadMore();
+      }
+    });
+
+    loadMore();
+  }
+
+
+
+  TextEditingController _controller = new TextEditingController();
+  Key listKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
@@ -119,50 +177,66 @@ class VerifyImageListState  extends State<VerifyImageListStateful>{
             },
           )),
       drawer: StylishDrawer(),
-      body: HugeListView<Verifyimagelist>(
-        scrollController: scroll,
-        listViewController: controller,
-        pageSize: PAGE_SIZE,
-        startIndex: 0,
-        velocityThreshold: 10,
-        firstShown: (item) => {
+      body: Column(
+        children: [
 
-          if( item >= controller.totalItemCount - 5 &&  controller.totalItemCount <= int.parse(total_count)){
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
 
-            print(item.toString()+"()"+controller.totalItemCount.toString()+"()"+total_count+"()"+current_length.toString()),
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      labelText: "Search",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
 
-            // if(int.parse(total_count)-controller.totalItemCount-int.parse(Strings.limit) > 0  ){
-            controller.totalItemCount =
-                controller.totalItemCount + int.parse(Strings.limit),
+                SizedBox(width: 8),
 
-            /*  }else{
-               controller.totalItemCount = controller.totalItemCount + int.parse(total_count)-controller.totalItemCount,
-            isscroll = false,
+                ElevatedButton(
+                  onPressed: () {
 
-          },*/
-            _loadPage(context ,  (controller.totalItemCount / int.parse(Strings.limit)).toInt() - 1  , PAGE_SIZE),
+                    setState(() {
+                      text = _controller.text;
+                      page = 0;
+                      list.clear();
+                      hasMore = true;
+                      isLoading = false;
+                    });
 
-          } },
-        pageFuture: (page) => _loadPage(context , page , PAGE_SIZE),
+                    loadMore();
 
-        itemBuilder: (context, index, Verifyimagelist entry) {
+                  },
+                  child: Text("Search"),
+                )
+              ],
+            ),
+          ),
 
-          return entry.name != null && entry.surname != null ? VerifyImageListRow(fetchImages: entry, index: index, communityId: communityId, prefs: prefs!,) : Container();
+          Expanded(
+            child: ListView.builder(
+              controller: scrollController,
+              itemCount: list.length + (hasMore ? 1 : 0),
+              itemBuilder: (context, index) {
 
-        },
-        errorBuilder: (context, error) {
+                if (index == list.length) {
+                  return Center(child: CircularProgressIndicator());
+                }
 
-          print(error);
-          return Center(child: Text("No Data Available"),);
-        },
-        thumbBuilder: DraggableScrollbarThumbs.SemicircleThumb,
-        placeholderBuilder: (context, index) => Container(),
-        alwaysVisibleThumb: false,
-        emptyBuilder: (context) {
-          return Center(child: Text("No Data Available"),);
-        },
+                final entry = list[index];
 
-      ),
+                return entry.name != null && entry.surname != null ? VerifyImageListRow(fetchImages: entry, index: index, communityId: communityId, prefs: prefs!,) : Container();
+
+
+              },
+            ),
+          )
+        ],
+      )
 
     );
 

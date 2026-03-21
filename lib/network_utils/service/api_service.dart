@@ -328,6 +328,9 @@ abstract class ApiService extends ChopperService {
   @Post(path: 'profile/send_notification')
   Future<Response> postSendNotification(@Body() Map<String, dynamic> requestBody);
 
+  @Post(path: 'profile/send_fcm_notification')
+  Future<Response> postSendFCMNotification(@Body() Map<String, dynamic> requestBody);
+
   @Post(path: 'fetch_data/fetch_notification')
   Future<Response> postFetchNotification(@Body() Map<String, dynamic> requestBody);
 
@@ -450,6 +453,14 @@ abstract class ApiService extends ChopperService {
 
   @Post(path: 'profile/update_family_member_details')
   Future<Response> update_family_member_details(@Body() Map<String, dynamic> requestBody);
+
+
+  @Post(path: 'profile/recieved_queue')
+  Future<Response> RecievedQueue(@Body() Map<String, dynamic> requestBody);
+
+  @Post(path: 'profile/opened_queue')
+  Future<Response> OpenedQueue(@Body() Map<String, dynamic> requestBody);
+
 
   @Post(path: 'adminpanel/role_community/select_member_list_community')
   Future<Response> select_member_list_community(@Body() Map<String, dynamic> requestBody);

@@ -8,6 +8,7 @@ import 'package:community_matrimonial/screens/filter/StylishCheckbox.dart';
 import 'package:community_matrimonial/screens/user_profile/AcceptReject.dart';
 import 'package:community_matrimonial/utils/Strings.dart';
 import 'package:flutter/material.dart';
+import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -56,6 +57,9 @@ class VerifyDocListRowStateful extends State<VerifyDocListRow> {
   @override
   void initState() {
     super.initState();
+
+    initprefs();
+
     if(widget.fetchImages.idProofs.toString() != "null"  && widget.fetchImages.idProofs != "" && widget.fetchImages.idProofs != "0" && (widget.fetchImages.isIdVerify == "0" || widget.fetchImages.isIdVerify == null || widget.fetchImages.isIdVerify == "2") ) {
 
       imagelist.add(ImageList(widget.fetchImages.idProofs.toString() ,widget.fetchImages.idProofOld.toString() , widget.fetchImages.isIdVerify.toString() , 0 , 1));
@@ -75,11 +79,26 @@ class VerifyDocListRowStateful extends State<VerifyDocListRow> {
 
   }
 
+  String role= "";
+  initprefs() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      role = prefs.getString(SharedPrefs.role_type).toString();
+    });
+
+
+    print(role+"===---");
+
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
 
-    return Container(padding: EdgeInsets.all(10) ,child:Card(elevation: 5 ,child:Container(padding: EdgeInsets.all(10) ,child: Column(crossAxisAlignment: CrossAxisAlignment.start ,  children: [
+    return Container(padding: EdgeInsets.all(10) , child:Card(elevation: 5 ,child:Container(padding: EdgeInsets.all(10) ,child:Stack(children: [ Column(crossAxisAlignment: CrossAxisAlignment.start ,  children: [
 
       Text(imageverifylist[0].name+" "+imageverifylist[0].surname ,style: TextStyle(fontSize: 17 ,fontWeight: FontWeight.bold , color: Colors.black87),),
       SizedBox(height: 5,),
@@ -165,7 +184,7 @@ class VerifyDocListRowStateful extends State<VerifyDocListRow> {
 
         final _response = await Provider.of<ApiService>(context, listen: false).postUpdateDocumentVerification({"isidverify": isidverify , "iseducationverify": iseducationverify , "isincomeverify": isincomeverify , "userId":widget.fetchImages.userId , "communityId":widget.communityId});
 
-                print(_response.body);
+        print(_response.body);
 
 
         String message = "";
@@ -191,7 +210,21 @@ class VerifyDocListRowStateful extends State<VerifyDocListRow> {
 
       }, child:Text("Verify Documents" , style: TextStyle(color: Colors.white ,fontWeight: FontWeight.bold),))))
 
-    ],),)));
+    ],) ,  role == "admin" ? Positioned( bottom: 0 ,left: 0 ,child: GestureDetector(onTap: (){
+
+      navService.pushNamed("/user_detail_other", args: [widget.fetchImages.userId , "2" ]);
+
+
+    }  ,child:Container(
+      padding: EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(16.0),
+        ),
+        color:Colors.pinkAccent, // Set the background color as needed
+      ),
+      child: Image.asset("assets/images/edit.png" ,color: Colors.white, width: 20, height: 20,),),
+    )) : Container()]))));
 
   }
 

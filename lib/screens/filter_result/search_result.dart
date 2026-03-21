@@ -312,6 +312,7 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
 
   int select_type = 1;
   ValueNotifier<int> refreshNotifier = ValueNotifier(0);
+  int type_select = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -361,25 +362,27 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
 
                 setState(() {
 
-                  if(select_type == 1){
+                  type_select++;
 
+                  if(select_type == 1) {
                     select_type = 3;
+
                     members_final.forEach((element) {
-
                       itemIds.add(element.userId);
-
                     },);
-
-
                   }
 
                 });
 
-              }, icon: Icon( select_type == 1 ? Icons.check_box_outline_blank : Icons.check_box)) : Container() , SizedBox(width: 0,) , select_type == 1 ? Container() : IconButton(onPressed: (){
+              }, icon: Icon( type_select < 3 ? select_type == 1 ? Icons.check_box_outline_blank : Icons.check_box : Icons.check_circle_rounded)) : Container() , SizedBox(width: 0,) , select_type == 1 ? Container() : IconButton(onPressed: (){
 
                    setState(() {
+
+                     type_select = 0;
+
                      select_type = 1;
                      itemIds.clear();
+
                    });
 
 
@@ -555,22 +558,56 @@ class SearchResultScreen extends State<SearchResultAppStateful> {
           actions: [
             TextButton(
               onPressed: () {
+
                 Navigator.pop(context);
+
+                setState(() {
+                  type_select = 0;
+                });
+
+
               },
               child: const Text("Cancel"),
             ),
             ElevatedButton(
               onPressed: () async {
+
                 String message = messageController.text;
                 Navigator.pop(context);
 
 
                 SharedPreferences prefs = await SharedPreferences.getInstance();
 
-                await ApiService.create().postSendNotification({"Ids":  itemIds , "type":"list" , "message": message , "sender_type":"admin",
-                  "sender_id": prefs.getString(SharedPrefs.userId) ,
-                  "reciever_id": itemIds , "title":"Message From Ravaldev Matrimony" , "body": message ,
-                  "communityId":prefs.getString(SharedPrefs.communityId) });
+                await ApiService.create().postSendFCMNotification({
+                  "Ids": itemIds,
+                  "type": type_select < 3 ? "list" : "all",
+                  "message": message,
+                  "sender_type": "admin",
+                  "sender_id": prefs.getString(SharedPrefs.userId),
+                  "reciever_id": itemIds,
+                  "title": "Message From Ravaldev Matrimony",
+                  "body": message,
+                  "communityId": prefs.getString(SharedPrefs.communityId),
+
+                  // new FCM fields
+                  "dcode": "RAVAL",
+                  "category": type_select < 3 ? "list" : "all",
+                  "sender_name": "admin",
+                  "files": "",
+                  "files_name": "",
+                  "community_logo_name": "",
+                  "community_logo": "",
+                  "group_type": "list",
+                  "group_id": "",
+                  "app_name": "RAVAL DEV MATRIMONY",
+                  "smj_name": "RAVAL DEV MATRIMONY",
+                  "msgId": "",
+                  "nonmember": ""
+                });
+
+                setState(() {
+                  type_select = 0;
+                });
 
               },
               child: const Text("Send"),
