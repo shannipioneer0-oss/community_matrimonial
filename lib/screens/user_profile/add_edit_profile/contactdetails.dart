@@ -81,7 +81,7 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
   TextEditingController workaddressController = new TextEditingController();
   TextEditingController contactdurationController = new TextEditingController();
 
-  String  country_value = "" , perm_State_value = "" , permcityValue = "";
+  String country_value = "" , perm_State_value = "" , permcityValue = "";
   String work_state_value = "" , work_city_value = "",  perm_address = "" , workaddress = "";
   String contact_duration_value = "";
   String country_value2 = "";
@@ -224,7 +224,8 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
               mobilemccerrocheck = number;
 
               code1 = CountryParser.parse(countryCode).phoneCode;
-              print(code1);
+
+              print(code1+"====="+countryCode);
 
 
             },
@@ -243,7 +244,6 @@ class ContactDetailsScreen  extends State<ContactDetailsStateful>{
                 mobileController.setValue(CountryParser.parse(res.split("_")[1]), res.split("_")[0]);
 
                 code1 = res.split("_")[1];
-
 
                 print(code1);
 
